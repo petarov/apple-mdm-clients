@@ -4,14 +4,14 @@ import jakarta.annotation.Nonnull;
 
 import java.time.Duration;
 
-public abstract class MDMClientBuilder<CFG extends MDMClientBuilder<CFG, CLIENT>, CLIENT> {
+public abstract class MdmClientBuilder<CFG extends MdmClientBuilder<CFG, CLIENT>, CLIENT> {
 
 	protected String                serviceUrl;
 	protected String                userAgent;
 	protected boolean               skipSslVerify = false;
 	protected Duration              connectTimeout;
 	protected Duration              readTimeout;
-	protected MDMClientProxyOptions proxyOptions;
+	protected MdmClientProxyOptions proxyOptions;
 
 	@SuppressWarnings("unchecked")
 	public CFG setServiceUrl(@Nonnull String serviceUrl) {
@@ -56,7 +56,7 @@ public abstract class MDMClientBuilder<CFG extends MDMClientBuilder<CFG, CLIENT>
 	 * @param proxyOptions optional proxy settings
 	 */
 	@SuppressWarnings("unchecked")
-	public CFG setProxyOptions(@Nonnull MDMClientProxyOptions proxyOptions) {
+	public CFG setProxyOptions(@Nonnull MdmClientProxyOptions proxyOptions) {
 		this.proxyOptions = proxyOptions;
 		return (CFG) this;
 	}

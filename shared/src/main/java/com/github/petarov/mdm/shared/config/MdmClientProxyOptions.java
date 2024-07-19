@@ -2,7 +2,7 @@ package com.github.petarov.mdm.shared.config;
 
 import jakarta.annotation.Nonnull;
 
-public abstract class MDMClientProxyOptions {
+public abstract class MdmClientProxyOptions {
 
 	protected String hostname = "";
 	protected int    port     = 8080;
@@ -18,7 +18,7 @@ public abstract class MDMClientProxyOptions {
 	 * @param hostname proxy server IP address or hostname
 	 */
 	@Nonnull
-	public MDMClientProxyOptions setHostname(@Nonnull String hostname) {
+	public MdmClientProxyOptions setHostname(@Nonnull String hostname) {
 		this.hostname = hostname;
 		return this;
 	}
@@ -32,7 +32,7 @@ public abstract class MDMClientProxyOptions {
 	 * @param port proxy port. Default is {@code 8080}
 	 */
 	@Nonnull
-	public MDMClientProxyOptions setPort(int port) {
+	public MdmClientProxyOptions setPort(int port) {
 		this.port = port;
 		return this;
 	}
@@ -42,7 +42,7 @@ public abstract class MDMClientProxyOptions {
 	}
 
 	@Nonnull
-	public MDMClientProxyOptions setUsername(@Nonnull String username) {
+	public MdmClientProxyOptions setUsername(@Nonnull String username) {
 		this.username = username;
 		return this;
 	}
@@ -53,7 +53,7 @@ public abstract class MDMClientProxyOptions {
 	}
 
 	@Nonnull
-	public MDMClientProxyOptions setPassword(@Nonnull String password) {
+	public MdmClientProxyOptions setPassword(@Nonnull String password) {
 		this.password = password;
 		return this;
 	}
@@ -67,7 +67,7 @@ public abstract class MDMClientProxyOptions {
 	 * @param type proxy server type. Only {@link Type#HTTP} is supported
 	 */
 	@Nonnull
-	public MDMClientProxyOptions setType(@Nonnull Type type) {
+	public MdmClientProxyOptions setType(@Nonnull Type type) {
 		this.type = type;
 		return this;
 	}
