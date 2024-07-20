@@ -1,0 +1,48 @@
+plugins {
+    id 'java'
+    id 'org.ajoberstar.grgit' version '5.2.2'
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+
+    // Version of all profiler components
+    group 'com.github.petarov'
+    version '0.0.1'
+
+    ext.classifier = ['master', 'release'].stream().anyMatch({
+        grgit.branch.current().getName().startsWith(it)
+    }).booleanValue() ? null : 'SNAPSHOT'
+    ext.copyright = 'MIT License, Copyright (c) 2024 Petar Petrov'
+
+    dependencies {
+        implementation 'io.vertx:vertx-web:4.5.9'
+    }
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+    }
+
+    jar {
+        archiveClassifier.set(project.ext.classifier)
+        manifest {
+            attributes(
+                    "Implementation-Title": project.name,
+                    "Implementation-Version": project.version,
+                    "Implementation-Id": grgit.head().id,
+                    "Implementation-Id-Short": grgit.head().abbreviatedId,
+                    "Implementation-LastModified": grgit.head().getDateTime().toOffsetDateTime().toString()
+            )
+        }
+    }
+
+    tasks.register('javadocJar', Jar) {
+        dependsOn javadoc
+        archiveClassifier.set('javadoc')
+        from tasks.javadoc.destinationDir
+    }
+}

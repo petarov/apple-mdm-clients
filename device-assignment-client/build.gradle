@@ -2,24 +2,12 @@ plugins {
     id 'java-library'
 }
 
-repositories {
-    mavenCentral()
-}
-
-version = '0.0.1-SNAPSHOT'
-
 dependencies {
     testImplementation libs.junit.jupiter
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     implementation project(':shared')
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
 }
 
 tasks.named('test') {
