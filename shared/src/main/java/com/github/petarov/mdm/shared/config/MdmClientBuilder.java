@@ -1,6 +1,7 @@
 package com.github.petarov.mdm.shared.config;
 
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import java.time.Duration;
 
@@ -12,6 +13,10 @@ public abstract class MdmClientBuilder<CFG extends MdmClientBuilder<CFG, CLIENT>
 	protected Duration              connectTimeout;
 	protected Duration              readTimeout;
 	protected MdmClientProxyOptions proxyOptions;
+
+	public record MdmBuilderOptions(String serviceUrl, String userAgent, boolean isSkipSslVerify,
+	                                Duration connectTimeout, Duration readTimeout,
+	                                @Nullable MdmClientProxyOptions proxyOptions) {}
 
 	@SuppressWarnings("unchecked")
 	public CFG setServiceUrl(@Nonnull String serviceUrl) {
