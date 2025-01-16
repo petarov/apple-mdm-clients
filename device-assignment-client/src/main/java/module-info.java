@@ -5,6 +5,8 @@ module com.github.petarov.mdm.da {
 	requires jakarta.annotation;
 
 	requires com.github.petarov.mdm.shared;
+	requires com.fasterxml.jackson.core;
+	requires java.mail;
 
 	exports com.github.petarov.mdm.da;
 }
