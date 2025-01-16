@@ -17,10 +17,6 @@ allprojects {
     }).booleanValue() ? null : 'SNAPSHOT'
     ext.copyright = 'MIT License, Copyright (c) 2024 Petar Petrov'
 
-//    dependencies {
-//        implementation 'io.vertx:vertx-web:4.5.9'
-//    }
-
     java {
         toolchain {
             languageVersion = JavaLanguageVersion.of(21)

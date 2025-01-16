@@ -3,11 +3,14 @@ plugins {
 }
 
 dependencies {
+    implementation project(':shared')
+    implementation 'org.bouncycastle:bcprov-jdk18on:1.78.1',
+            'org.bouncycastle:bcmail-jdk18on:1.78.1',
+            'com.sun.mail:javax.mail:1.6.2'
+
     testImplementation libs.junit.jupiter
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-    implementation project(':shared')
 }
 
 tasks.named('test') {
