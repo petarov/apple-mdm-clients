@@ -20,8 +20,8 @@ import java.util.zip.GZIPInputStream;
 
 class MdmHttpClientImpl implements MdmHttpClient {
 
-	private MdmClientBuilder.MdmBuilderOptions options;
-	private String                             proxyCredentials = "";
+	private final MdmClientBuilder.MdmBuilderOptions options;
+	private       String                             proxyCredentials = "";
 
 	MdmHttpClientImpl(MdmClientBuilder.MdmBuilderOptions options) {
 		this.options = options;
@@ -34,7 +34,7 @@ class MdmHttpClientImpl implements MdmHttpClient {
 										.getPassword()).getBytes(StandardCharsets.UTF_8)));
 	}
 
-	public HttpClient.Builder newBuilder() throws Exception {
+	public HttpClient.Builder createBuilder() throws Exception {
 		var builder = HttpClient.newBuilder();
 		builder.followRedirects(HttpClient.Redirect.NORMAL);
 		builder.connectTimeout(options.connectTimeout());
@@ -61,9 +61,10 @@ class MdmHttpClientImpl implements MdmHttpClient {
 		return builder;
 	}
 
-	public HttpRequest.Builder newRequestBuilder(String url) {
+	public HttpRequest.Builder createRequestBuilder(String url) {
 		var builder = HttpRequest.newBuilder(URI.create(url));
 		builder.setHeader("user-agent", options.userAgent());
+		builder.setHeader("accept-encoding", "gzip, deflate");
 
 		if (!proxyCredentials.isBlank()) {
 			builder.setHeader("proxy-authorization", proxyCredentials);
