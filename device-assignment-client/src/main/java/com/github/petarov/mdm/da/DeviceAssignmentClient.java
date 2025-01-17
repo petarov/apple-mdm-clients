@@ -1,3 +1,9 @@
 package com.github.petarov.mdm.da;
 
-public class DeviceAssignmentClient {}
+import java.net.http.HttpClient;
+
+public class DeviceAssignmentClient {
+
+	private HttpClient httpClient;
+
+}
