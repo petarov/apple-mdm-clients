@@ -5,5 +5,4 @@ plugins {
 
 rootProject.name = 'apple-mdm-clients'
 
-include 'shared'
-include 'device-assignment-client'
+include 'shared', 'device-assignment-client'

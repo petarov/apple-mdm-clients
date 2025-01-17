@@ -15,9 +15,10 @@ allprojects {
     ext.classifier = ['master', 'release'].stream().anyMatch({
         grgit.branch.current().getName().startsWith(it)
     }).booleanValue() ? null : 'SNAPSHOT'
-    ext.copyright = 'MIT License, Copyright (c) 2024 Petar Petrov'
+    ext.copyright = 'MIT License, Copyright (c) 2025 Petar Petrov'
 
     java {
+//        modularity.inferModulePath = true
         toolchain {
             languageVersion = JavaLanguageVersion.of(21)
         }
