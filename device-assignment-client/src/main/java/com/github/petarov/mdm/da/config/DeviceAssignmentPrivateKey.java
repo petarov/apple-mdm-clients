@@ -19,7 +19,7 @@ public record DeviceAssignmentPrivateKey(@Nonnull PrivateKey privateKey) {
 	 * Creates a private key wrapper from PKCS8 byte data input.
 	 */
 	@Nonnull
-	public static DeviceAssignmentPrivateKey create(@Nonnull InputStream input) {
+	public static DeviceAssignmentPrivateKey createFromDER(@Nonnull InputStream input) {
 		try {
 			var spec = new PKCS8EncodedKeySpec(input.readAllBytes());
 			return new DeviceAssignmentPrivateKey(KeyFactory.getInstance("RSA").generatePrivate(spec));
@@ -39,7 +39,7 @@ public record DeviceAssignmentPrivateKey(@Nonnull PrivateKey privateKey) {
 			var strippedPem = new String(input.readAllBytes(), StandardCharsets.UTF_8).replace(
 					"-----BEGIN RSA PRIVATE KEY-----\n", "").replace("-----END RSA PRIVATE KEY-----", "");
 			try (var encodedInput = new ByteArrayInputStream(Base64.getMimeDecoder().decode(strippedPem))) {
-				return create(encodedInput);
+				return createFromDER(encodedInput);
 			}
 		} catch (IOException e) {
 			throw new RuntimeException("Error read PEM input stream", e);
