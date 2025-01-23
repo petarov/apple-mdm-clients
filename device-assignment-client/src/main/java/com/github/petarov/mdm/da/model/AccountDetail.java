@@ -1,6 +1,8 @@
 package com.github.petarov.mdm.da.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.annotation.Nonnull;
@@ -25,6 +27,13 @@ import java.util.List;
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record AccountDetail(String adminId, String orgAddress, String orgEmail, String orgId, String orgIdHash,
-                            String orgName, String orgPhone, String orgType, String orgVersion, String serverName,
-                            String serverUuid, @Nonnull List<URL> urls) {}
+public record AccountDetail(@JsonSetter(nulls = Nulls.AS_EMPTY) String adminId,
+                            @JsonSetter(nulls = Nulls.AS_EMPTY) String orgAddress,
+                            @JsonSetter(nulls = Nulls.AS_EMPTY) String orgEmail,
+                            @JsonSetter(nulls = Nulls.AS_EMPTY) String orgId,
+                            @JsonSetter(nulls = Nulls.AS_EMPTY) String orgIdHash,
+                            @JsonSetter(nulls = Nulls.AS_EMPTY) String orgName, String orgPhone, String orgType,
+                            @JsonSetter(nulls = Nulls.AS_EMPTY) String orgVersion,
+                            @JsonSetter(nulls = Nulls.AS_EMPTY) String serverName,
+                            @JsonSetter(nulls = Nulls.AS_EMPTY) String serverUuid,
+                            @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<URL> urls) {}

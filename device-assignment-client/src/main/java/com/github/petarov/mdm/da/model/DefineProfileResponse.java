@@ -1,5 +1,7 @@
 package com.github.petarov.mdm.da.model;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.annotation.Nonnull;
@@ -13,4 +15,5 @@ import java.util.Map;
  */
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record DefineProfileResponse(@Nonnull Map<String, String> devices, String profileUuid) {}
+public record DefineProfileResponse(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Map<String, String> devices,
+                                    @JsonSetter(nulls = Nulls.AS_EMPTY) String profileUuid) {}

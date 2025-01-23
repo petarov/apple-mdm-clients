@@ -1,5 +1,7 @@
 package com.github.petarov.mdm.da.model;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
@@ -16,4 +18,5 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/activationlockstatusresponse">ActivationLockStatusResponse</a>
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record ActivationLockStatusResponse(String responseStatus, String serialNumber) {}
+public record ActivationLockStatusResponse(@JsonSetter(nulls = Nulls.AS_EMPTY) String responseStatus,
+                                           @JsonSetter(nulls = Nulls.AS_EMPTY) String serialNumber) {}

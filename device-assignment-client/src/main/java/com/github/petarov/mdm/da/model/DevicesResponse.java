@@ -1,8 +1,11 @@
 package com.github.petarov.mdm.da.model;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -21,5 +24,6 @@ import java.util.List;
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/fetchdeviceresponse">FetchDeviceResponse</a>
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record DevicesResponse(String cursor, @Nonnull List<Device> devices, @Nonnull OffsetDateTime fetchedUntil,
-                              boolean moreToFollow) {}
+public record DevicesResponse(@JsonSetter(nulls = Nulls.AS_EMPTY) String cursor,
+                              @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<Device> devices,
+                              @Nullable OffsetDateTime fetchedUntil, boolean moreToFollow) {}

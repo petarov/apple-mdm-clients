@@ -1,7 +1,6 @@
 package com.github.petarov.mdm.da.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.annotation.Nonnull;
@@ -57,15 +56,22 @@ import java.util.List;
  * @param url                     the URL of the MDM server
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/profile">Profile</a>
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public record Profile(@Nonnull List<String> anchorCerts, @JsonProperty("auto_advance_setup") boolean isAutoAdvanceSetup,
                       @JsonProperty("await_device_configured") boolean isAwaitDeviceConfigured,
-                      String configurationWebUrl, String department, @Nonnull List<String> devices,
-                      boolean isMdmRemovable, boolean isMultiUser, String language, String orgMagic, String profileName,
-                      String region, @Nonnull List<ProfileSkipItem> skipSetupItems,
-                      @Nonnull List<String> supervisingHostCerts, String supportEmailAddress, String supportPhoneNumber,
-                      String url) {
+                      @JsonSetter(nulls = Nulls.AS_EMPTY) String configurationWebUrl,
+                      @JsonSetter(nulls = Nulls.AS_EMPTY) String department,
+                      @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<String> devices, boolean isMdmRemovable,
+                      boolean isMultiUser, @JsonSetter(nulls = Nulls.AS_EMPTY) String language,
+                      @JsonSetter(nulls = Nulls.AS_EMPTY) String orgMagic,
+                      @JsonSetter(nulls = Nulls.AS_EMPTY) String profileName,
+                      @JsonSetter(nulls = Nulls.AS_EMPTY) String region, @Nonnull List<ProfileSkipItem> skipSetupItems,
+                      @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<String> supervisingHostCerts,
+                      @JsonSetter(nulls = Nulls.AS_EMPTY) String supportEmailAddress,
+                      @JsonSetter(nulls = Nulls.AS_EMPTY) String supportPhoneNumber,
+                      @JsonSetter(nulls = Nulls.AS_EMPTY) String url) {
 
 	/**
 	 * Profile builder.
@@ -75,101 +81,152 @@ public record Profile(@Nonnull List<String> anchorCerts, @JsonProperty("auto_adv
 		private List<String>          anchorCerts             = List.of();
 		private boolean               isAutoAdvanceSetup      = false;
 		private boolean               isAwaitDeviceConfigured = false;
-		private String                configurationWebUrl;
-		private String                department;
+		private String                configurationWebUrl     = "";
+		private String                department              = "";
 		private List<String>          devices                 = List.of();
 		private boolean               isMdmRemovable          = true;
 		private boolean               isMultiUser             = false;
-		private String                language;
-		private String                orgMagic;
-		private String                profileName;
-		private String                region;
+		private String                language                = "";
+		private String                orgMagic                = "";
+		private String                profileName             = "";
+		private String                region                  = "";
 		private List<ProfileSkipItem> skipSetupItems          = List.of();
 		private List<String>          supervisingHostCerts    = List.of();
-		private String                supportEmailAddress;
-		private String                supportPhoneNumber;
-		private String                url;
+		private String                supportEmailAddress     = "";
+		private String                supportPhoneNumber      = "";
+		private String                url                     = "";
 
+		/**
+		 * @see #anchorCerts()
+		 */
 		public ProfileBuilder setAnchorCerts(List<String> anchorCerts) {
 			this.anchorCerts = anchorCerts;
 			return this;
 		}
 
+		/**
+		 * @see #isAutoAdvanceSetup()
+		 */
 		public ProfileBuilder setAutoAdvanceSetup(boolean autoAdvanceSetup) {
 			isAutoAdvanceSetup = autoAdvanceSetup;
 			return this;
 		}
 
+		/**
+		 * @see #isAwaitDeviceConfigured()
+		 */
 		public ProfileBuilder setAwaitDeviceConfigured(boolean awaitDeviceConfigured) {
 			isAwaitDeviceConfigured = awaitDeviceConfigured;
 			return this;
 		}
 
+		/**
+		 * @see #configurationWebUrl()
+		 */
 		public ProfileBuilder setConfigurationWebUrl(String configurationWebUrl) {
 			this.configurationWebUrl = configurationWebUrl;
 			return this;
 		}
 
+		/**
+		 * @see #department()
+		 */
 		public ProfileBuilder setDepartment(String department) {
 			this.department = department;
 			return this;
 		}
 
+		/**
+		 * @see #devices()
+		 */
 		public ProfileBuilder setDevices(List<String> devices) {
 			this.devices = devices;
 			return this;
 		}
 
+		/**
+		 * @see #isMdmRemovable()
+		 */
 		public ProfileBuilder setMdmRemovable(boolean mdmRemovable) {
 			isMdmRemovable = mdmRemovable;
 			return this;
 		}
 
+		/**
+		 * @see #isMultiUser()
+		 */
 		public ProfileBuilder setMultiUser(boolean multiUser) {
 			isMultiUser = multiUser;
 			return this;
 		}
 
+		/**
+		 * @see #language()
+		 */
 		public ProfileBuilder setLanguage(String language) {
 			this.language = language;
 			return this;
 		}
 
+		/**
+		 * @see #orgMagic()
+		 */
 		public ProfileBuilder setOrgMagic(String orgMagic) {
 			this.orgMagic = orgMagic;
 			return this;
 		}
 
+		/**
+		 * @see #profileName()
+		 */
 		public ProfileBuilder setProfileName(String profileName) {
 			this.profileName = profileName;
 			return this;
 		}
 
+		/**
+		 * @see #region()
+		 */
 		public ProfileBuilder setRegion(String region) {
 			this.region = region;
 			return this;
 		}
 
+		/**
+		 * @see #skipSetupItems()
+		 */
 		public ProfileBuilder setSkipSetupItems(List<ProfileSkipItem> skipSetupItems) {
 			this.skipSetupItems = skipSetupItems;
 			return this;
 		}
 
+		/**
+		 * @see #supervisingHostCerts()
+		 */
 		public ProfileBuilder setSupervisingHostCerts(List<String> supervisingHostCerts) {
 			this.supervisingHostCerts = supervisingHostCerts;
 			return this;
 		}
 
+		/**
+		 * @see #supportEmailAddress()
+		 */
 		public ProfileBuilder setSupportEmailAddress(String supportEmailAddress) {
 			this.supportEmailAddress = supportEmailAddress;
 			return this;
 		}
 
+		/**
+		 * @see #supportPhoneNumber()
+		 */
 		public ProfileBuilder setSupportPhoneNumber(String supportPhoneNumber) {
 			this.supportPhoneNumber = supportPhoneNumber;
 			return this;
 		}
 
+		/**
+		 * @see #url()
+		 */
 		public ProfileBuilder setUrl(String url) {
 			this.url = url;
 			return this;

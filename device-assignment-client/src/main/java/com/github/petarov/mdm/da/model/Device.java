@@ -1,5 +1,9 @@
 package com.github.petarov.mdm.da.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
@@ -31,7 +35,20 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
  *                           {@code SUCCESS} or {@code NOT_FOUND}. Available after calling <i>>fetchDeviceDetails.</i> TODO: link client method
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record Device(String assetTag, String color, String description, String deviceAssignedBy,
-                     String deviceAssignedDate, String deviceFamily, String model, String opDate, String opType,
-                     String os, String profileAssignTime, String profilePushTime, String profileStatus,
-                     String profileUuid, String serialNumber, String responseStatus) {}
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public record Device(@JsonSetter(nulls = Nulls.AS_EMPTY) String assetTag,
+                     @JsonSetter(nulls = Nulls.AS_EMPTY) String color,
+                     @JsonSetter(nulls = Nulls.AS_EMPTY) String description,
+                     @JsonSetter(nulls = Nulls.AS_EMPTY) String deviceAssignedBy,
+                     @JsonSetter(nulls = Nulls.AS_EMPTY) String deviceAssignedDate,
+                     @JsonSetter(nulls = Nulls.AS_EMPTY) String deviceFamily,
+                     @JsonSetter(nulls = Nulls.AS_EMPTY) String model,
+                     @JsonSetter(nulls = Nulls.AS_EMPTY) String opDate,
+                     @JsonSetter(nulls = Nulls.AS_EMPTY) String opType, @JsonSetter(nulls = Nulls.AS_EMPTY) String os,
+                     @JsonSetter(nulls = Nulls.AS_EMPTY) String profileAssignTime,
+                     @JsonSetter(nulls = Nulls.AS_EMPTY) String profilePushTime,
+                     @JsonSetter(nulls = Nulls.AS_EMPTY) String profileStatus,
+                     @JsonSetter(nulls = Nulls.AS_EMPTY) String profileUuid,
+                     @JsonSetter(nulls = Nulls.AS_EMPTY) String serialNumber,
+                     @JsonSetter(nulls = Nulls.AS_EMPTY) String responseStatus) {}

@@ -1,5 +1,7 @@
 package com.github.petarov.mdm.da.model;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.annotation.Nonnull;
@@ -21,4 +23,4 @@ import java.util.Map;
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/devicelistresponse">DeviceListResponse</a>
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record DeviceStatusListResponse(@Nonnull Map<String, String> devices) {}
+public record DeviceStatusListResponse(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Map<String, String> devices) {}
