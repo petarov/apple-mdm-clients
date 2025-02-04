@@ -14,11 +14,16 @@ import javax.mail.MessagingException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.OffsetDateTime;
 
 public record DeviceAssignmentServerToken(String consumerKey, String consumerSecret, String accessToken,
                                           String accessSecret, String accessTokenExpiry) {
 
+	/**
+	 * Creates a server token wrapper from encrypted and signed MIME data.
+	 */
 	@Nonnull
 	public static DeviceAssignmentServerToken create(@Nonnull InputStream input,
 			@Nonnull DeviceAssignmentPrivateKey daPrivateKey) {
@@ -47,6 +52,17 @@ public record DeviceAssignmentServerToken(String consumerKey, String consumerSec
 			throw new RuntimeException("Error parsing json from S/MIME text content", e);
 		} catch (SMIMEException | CMSException | MessagingException | IOException e) {
 			throw new RuntimeException("Error reading server token from S/MIME content", e);
+		}
+	}
+
+	/**
+	 * @see #create(InputStream, DeviceAssignmentPrivateKey)
+	 */
+	@Nonnull
+	public static DeviceAssignmentServerToken create(@Nonnull Path path,
+			@Nonnull DeviceAssignmentPrivateKey daPrivateKey) throws IOException {
+		try (var input = Files.newInputStream(path)) {
+			return create(input, daPrivateKey);
 		}
 	}
 

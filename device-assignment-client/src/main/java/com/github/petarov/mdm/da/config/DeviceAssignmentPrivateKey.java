@@ -6,6 +6,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -31,6 +33,16 @@ public record DeviceAssignmentPrivateKey(@Nonnull PrivateKey privateKey) {
 	}
 
 	/**
+	 * @see #createFromDER(InputStream)
+	 */
+	@Nonnull
+	public static DeviceAssignmentPrivateKey createFromDER(@Nonnull Path path) throws IOException {
+		try (var input = Files.newInputStream(path)) {
+			return createFromDER(input);
+		}
+	}
+
+	/**
 	 * Creates a private key wrapper from PEM-formatted text input.
 	 */
 	@Nonnull
@@ -43,6 +55,16 @@ public record DeviceAssignmentPrivateKey(@Nonnull PrivateKey privateKey) {
 			}
 		} catch (IOException e) {
 			throw new RuntimeException("Error read PEM input stream", e);
+		}
+	}
+
+	/**
+	 * @see #createFromPEM(InputStream)
+	 */
+	@Nonnull
+	public static DeviceAssignmentPrivateKey createFromPEM(@Nonnull Path path) throws IOException {
+		try (var input = Files.newInputStream(path)) {
+			return createFromPEM(input);
 		}
 	}
 }
