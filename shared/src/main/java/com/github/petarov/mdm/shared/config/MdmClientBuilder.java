@@ -19,11 +19,14 @@ public abstract class MdmClientBuilder<CFG extends MdmClientBuilder<CFG, CLIENT>
 	                                @Nullable MdmClientProxyOptions proxyOptions) {}
 
 	@SuppressWarnings("unchecked")
-	public CFG setServiceUrl(@Nonnull String serviceUrl) {
+	protected CFG setServiceUrl(@Nonnull String serviceUrl) {
 		this.serviceUrl = serviceUrl;
 		return (CFG) this;
 	}
 
+	/**
+	 * Sets the user-agent to use when sending requests to Apple's servers. Setting a user-agent is recommended.
+	 */
 	@SuppressWarnings("unchecked")
 	public CFG setUserAgent(@Nonnull String userAgent) {
 		this.userAgent = userAgent;
@@ -31,7 +34,7 @@ public abstract class MdmClientBuilder<CFG extends MdmClientBuilder<CFG, CLIENT>
 	}
 
 	/**
-	 * @param skipSslVerify if {@code true}, it skips SSL certificate verification. Default is {@code false}
+	 * @param skipSslVerify if {@code true}, it skips SSL certificate verification. Default is {@code false}.
 	 */
 	@SuppressWarnings("unchecked")
 	public CFG setSkipSslVerify(boolean skipSslVerify) {

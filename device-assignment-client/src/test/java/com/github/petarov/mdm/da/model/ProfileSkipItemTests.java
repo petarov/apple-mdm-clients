@@ -1,5 +1,6 @@
 package com.github.petarov.mdm.da.model;
 
+import com.github.petarov.mdm.da.DeviceAssignmentClientBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -9,6 +10,8 @@ public class ProfileSkipItemTests {
 
 	@Test
 	void verify_os_types() {
+		DeviceAssignmentClientBuilder b = new DeviceAssignmentClientBuilder();
+
 		Assertions.assertTrue(ProfileSkipItem.ANDROID.isIos());
 		Assertions.assertFalse(ProfileSkipItem.ANDROID.isMacOS());
 		Assertions.assertFalse(ProfileSkipItem.ANDROID.isTvOS());

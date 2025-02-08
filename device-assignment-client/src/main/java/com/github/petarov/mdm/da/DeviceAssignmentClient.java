@@ -1,9 +1,16 @@
 package com.github.petarov.mdm.da;
 
-import java.net.http.HttpClient;
+import com.github.petarov.mdm.da.config.DeviceAssignmentServerToken;
+import com.github.petarov.mdm.shared.http.MdmHttpClient;
+import jakarta.annotation.Nonnull;
 
 public class DeviceAssignmentClient {
 
-	private HttpClient httpClient;
+	private final MdmHttpClient               client;
+	private final DeviceAssignmentServerToken serverToken;
 
+	public DeviceAssignmentClient(@Nonnull MdmHttpClient client, @Nonnull DeviceAssignmentServerToken serverToken) {
+		this.client = client;
+		this.serverToken = serverToken;
+	}
 }
