@@ -42,13 +42,17 @@ public class MdmHttpClient {
 		return code == 401 || code == 403;
 	}
 
-	public HttpClient.Builder createBuilder() throws Exception {
+	public HttpClient.Builder createBuilder() {
 		var builder = HttpClient.newBuilder();
 		builder.followRedirects(HttpClient.Redirect.NORMAL);
 		builder.connectTimeout(options.connectTimeout());
 
 		if (options.isSkipSslVerify()) {
-			builder.sslContext(SSLContextUtils.newTrustAllSSLContext(new SecureRandom()));
+			try {
+				builder.sslContext(SSLContextUtils.newTrustAllSSLContext(new SecureRandom()));
+			} catch (Exception e) {
+				throw new RuntimeException("Error creating SSL context", e);
+			}
 		}
 
 		if (options.proxyOptions() != null) {
@@ -71,6 +75,7 @@ public class MdmHttpClient {
 
 	public HttpRequest.Builder createRequestBuilder(String url) {
 		var builder = HttpRequest.newBuilder(URI.create(url));
+		builder.timeout(options.readTimeout());
 		builder.setHeader("user-agent", options.userAgent());
 		builder.setHeader("accept-encoding", "gzip, deflate");
 
