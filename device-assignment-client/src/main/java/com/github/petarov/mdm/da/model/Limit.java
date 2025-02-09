@@ -7,4 +7,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param maximum      maximum value of limit
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/limit">Limit</a>
  */
-public record Limit(@JsonProperty("default") int defaultLimit, int maximum) {}
+public record Limit(@JsonProperty("default") int defaultLimit, int maximum) {
+
+	public Limit() {
+		this(0, 0);
+	}
+}

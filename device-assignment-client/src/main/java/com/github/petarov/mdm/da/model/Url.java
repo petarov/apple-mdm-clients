@@ -11,8 +11,8 @@ import java.util.List;
  * @param uri        URI for the API
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/url">Url</a>
  */
-public record Url(@JsonSetter(nulls = Nulls.AS_EMPTY) String httpMethod,
-                  @JsonSetter(nulls = Nulls.AS_EMPTY) List<Limit> limit,
+public record Url(@JsonSetter(nulls = Nulls.AS_EMPTY) List<String> httpMethod,
+                  @JsonSetter(nulls = Nulls.AS_EMPTY) Limit limit,
                   @JsonSetter(nulls = Nulls.AS_EMPTY) String uri) {
 
 	public static final String URL_HTTP_METHOD_GET    = "GET";
