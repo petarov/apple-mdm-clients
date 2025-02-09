@@ -10,7 +10,7 @@ public class DeviceAssignmentExceptionTests {
 		try {
 			throw new DeviceAssignmentException("http error", 500, "EXHAUSTED_CURSOR");
 		} catch (DeviceAssignmentException e) {
-			Assertions.assertEquals("The cursor had returned all devices in previous calls.", e.getErrorMessage());
+			Assertions.assertEquals("The cursor had returned all devices in previous calls.", e.getErrorFromBody());
 		}
 	}
 
@@ -21,7 +21,7 @@ public class DeviceAssignmentExceptionTests {
 		} catch (DeviceAssignmentException e) {
 			Assertions.assertEquals(
 					"Indicates one of the following: Unsupported oauth parameters, Unsupported signature method, Missing required authorization parameter or Duplicated OAuth protocol parameter.",
-					e.getErrorMessage());
+					e.getErrorFromBody());
 		}
 
 		try {
@@ -29,7 +29,7 @@ public class DeviceAssignmentExceptionTests {
 		} catch (DeviceAssignmentException e) {
 			Assertions.assertEquals(
 					"Indicates one of the following: Unsupported oauth parameters, Unsupported signature method, Missing required authorization parameter or Duplicated OAuth protocol parameter.",
-					e.getErrorMessage());
+					e.getErrorFromBody());
 		}
 	}
 }
