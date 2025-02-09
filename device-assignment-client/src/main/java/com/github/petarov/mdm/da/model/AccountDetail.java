@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.annotation.Nonnull;
 
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -36,4 +35,4 @@ public record AccountDetail(@JsonSetter(nulls = Nulls.AS_EMPTY) String adminId,
                             @JsonSetter(nulls = Nulls.AS_EMPTY) String orgVersion,
                             @JsonSetter(nulls = Nulls.AS_EMPTY) String serverName,
                             @JsonSetter(nulls = Nulls.AS_EMPTY) String serverUuid,
-                            @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<URL> urls) {}
+                            @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<Url> urls) {}

@@ -34,6 +34,10 @@ public class MdmHttpClient {
 										.getPassword()).getBytes(StandardCharsets.UTF_8)));
 	}
 
+	public MdmClientBuilder.MdmBuilderOptions getOptions() {
+		return options;
+	}
+
 	public boolean isResponseOk(int code) {
 		return code / 100 == 2;
 	}
@@ -49,6 +53,7 @@ public class MdmHttpClient {
 
 		if (options.isSkipSslVerify()) {
 			try {
+				// TODO: externalize SecureRandom()
 				builder.sslContext(SSLContextUtils.newTrustAllSSLContext(new SecureRandom()));
 			} catch (Exception e) {
 				throw new RuntimeException("Error creating SSL context", e);
@@ -87,7 +92,7 @@ public class MdmHttpClient {
 	}
 
 	@Nonnull
-	protected InputStream getResponseBody(@Nonnull HttpResponse<InputStream> response) throws IOException {
+	public InputStream getResponseBody(@Nonnull HttpResponse<InputStream> response) throws IOException {
 		return switch (response.headers().firstValue("content-encoding").orElse("")) {
 			case "gzip" -> new GZIPInputStream(response.body());
 			case "deflate" -> new DeflaterInputStream(response.body());
