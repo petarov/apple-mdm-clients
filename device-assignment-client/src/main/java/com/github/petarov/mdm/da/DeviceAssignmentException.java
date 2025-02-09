@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-public class DeviceAssignmentException extends Exception {
+public class DeviceAssignmentException extends RuntimeException {
 
 	private final int    code;
 	private final String errorKey;
