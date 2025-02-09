@@ -5,6 +5,7 @@ import com.github.petarov.mdm.shared.config.MdmClientBuilder;
 import com.github.petarov.mdm.shared.http.MdmHttpClient;
 import jakarta.annotation.Nonnull;
 
+import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.Objects;
 
@@ -43,9 +44,10 @@ public class DeviceAssignmentClientBuilder
 		setUserAgent(Objects.requireNonNullElse(userAgent, DEFAULT_USER_AGENT));
 		setConnectTimeout(Objects.requireNonNullElse(connectTimeout, DEFAULT_CONNECT_TIMEOUT));
 		setReadTimeout(Objects.requireNonNullElse(readTimeout, DEFAULT_READ_TIMEOUT));
+		setRandom(Objects.requireNonNullElseGet(secureRandom, SecureRandom::new));
 
-		return new DeviceAssignmentClient(new MdmHttpClient(
-				new MdmBuilderOptions(serviceUrl, userAgent, skipSslVerify, connectTimeout, readTimeout, proxyOptions)),
-				serverToken);
+		return new DeviceAssignmentClientImpl(new MdmHttpClient(
+				new MdmBuilderOptions(serviceUrl, userAgent, skipSslVerify, connectTimeout, readTimeout, proxyOptions,
+						secureRandom)), serverToken);
 	}
 }

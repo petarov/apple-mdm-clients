@@ -1,0 +1,11 @@
+package com.github.petarov.mdm.shared.http;
+
+public final class HttpConsts {
+
+	public static final String HEADER_AUTHORIZATION = "authorization";
+	public static final String HEADER_CONTENT_TYPE = "content-type";
+	public static final String HEADER_CONTENT_ENCODING = "content-encoding";
+	public static final String HEADER_USER_AGENT = "user-agent";
+	public static final String HEADER_ACCEPT_ENCODING = "accept-encoding";
+	public static final String HEADER_PROXY_AUTHORIZATION = "proxy-authorization";
+}

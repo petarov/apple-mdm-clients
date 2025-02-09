@@ -3,6 +3,7 @@ package com.github.petarov.mdm.shared.config;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
+import java.security.SecureRandom;
 import java.time.Duration;
 
 public abstract class MdmClientBuilder<CFG extends MdmClientBuilder<CFG, CLIENT>, CLIENT> {
@@ -13,10 +14,11 @@ public abstract class MdmClientBuilder<CFG extends MdmClientBuilder<CFG, CLIENT>
 	protected Duration              connectTimeout;
 	protected Duration              readTimeout;
 	protected MdmClientProxyOptions proxyOptions;
+	protected SecureRandom          secureRandom;
 
 	public record MdmBuilderOptions(String serviceUrl, String userAgent, boolean isSkipSslVerify,
 	                                Duration connectTimeout, Duration readTimeout,
-	                                @Nullable MdmClientProxyOptions proxyOptions) {}
+	                                @Nullable MdmClientProxyOptions proxyOptions, SecureRandom random) {}
 
 	@SuppressWarnings("unchecked")
 	protected CFG setServiceUrl(@Nonnull String serviceUrl) {
@@ -66,6 +68,15 @@ public abstract class MdmClientBuilder<CFG extends MdmClientBuilder<CFG, CLIENT>
 	@SuppressWarnings("unchecked")
 	public CFG setProxyOptions(@Nonnull MdmClientProxyOptions proxyOptions) {
 		this.proxyOptions = proxyOptions;
+		return (CFG) this;
+	}
+
+	/**
+	 * @param random set a custom random generator, uses {@link SecureRandom} by default
+	 */
+	@SuppressWarnings("unchecked")
+	public CFG setRandom(@Nonnull SecureRandom random) {
+		this.secureRandom = random;
 		return (CFG) this;
 	}
 

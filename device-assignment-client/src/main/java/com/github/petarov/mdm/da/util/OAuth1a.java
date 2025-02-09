@@ -17,13 +17,18 @@ import java.util.*;
  */
 public final class OAuth1a {
 
+	private DeviceAssignmentServerToken serverToken;
+
+	public OAuth1a(@Nonnull DeviceAssignmentServerToken serverToken) {
+		this.serverToken = serverToken;
+	}
+
 	/**
+	 * @param random a {@code random} seed to generate the {@code oauth_nonce}
 	 * @return a map of OAuth keys, i.e. {@code oauth_consumer_key}, {@code oauth_nonce},
-	 * {@code oauth_signature_method}, {@code oauth_timestamp}, {@code oauth_token}, {@code oauth_version}. The nonce
-	 * is randomly generated using the {@code random} seed.
+	 * {@code oauth_signature_method}, {@code oauth_timestamp}, {@code oauth_token}, {@code oauth_version}
 	 */
-	public static Map<String, String> getAuthParams(@Nonnull DeviceAssignmentServerToken serverToken,
-			@Nonnull Random random) {
+	public Map<String, String> getAuthParams(@Nonnull Random random) {
 		byte[] randomBytes = new byte[16];
 		random.nextBytes(randomBytes);
 		String nonce = HexFormat.of().formatHex(randomBytes);
@@ -41,9 +46,7 @@ public final class OAuth1a {
 	 * @return Base64-encoded signature given the input parameters
 	 * @see <a href="https://oauth.net/core/1.0a/#signing_process">OAuth 1.0a - Signing Requests</a>
 	 */
-	public static String generateSignature(String method, String baseUrl, @Nonnull Map<String, String> params,
-			String consumerSecret, String tokenSecret) {
-
+	public String generateSignature(String method, String baseUrl, @Nonnull Map<String, String> params) {
 		var queryParams = new StringBuilder();
 		for (var entry : new TreeMap<>(params).entrySet()) {
 			queryParams.append(percentEncode(entry.getKey())).append("=").append(percentEncode(entry.getValue()))
@@ -53,7 +56,8 @@ public final class OAuth1a {
 
 		String baseString =
 				method.toUpperCase() + "&" + percentEncode(baseUrl) + "&" + percentEncode(queryParams.toString());
-		String signingKey = percentEncode(consumerSecret) + "&" + percentEncode(tokenSecret);
+		String signingKey =
+				percentEncode(serverToken.consumerSecret()) + "&" + percentEncode(serverToken.accessSecret());
 
 		return percentEncode(Base64.getEncoder().encodeToString(
 				signWithHMacSHA1(signingKey.getBytes(StandardCharsets.UTF_8),

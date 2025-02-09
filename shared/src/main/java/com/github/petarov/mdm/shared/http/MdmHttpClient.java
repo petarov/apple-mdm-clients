@@ -53,8 +53,7 @@ public class MdmHttpClient {
 
 		if (options.isSkipSslVerify()) {
 			try {
-				// TODO: externalize SecureRandom()
-				builder.sslContext(SSLContextUtils.newTrustAllSSLContext(new SecureRandom()));
+				builder.sslContext(SSLContextUtils.newTrustAllSSLContext(options.random()));
 			} catch (Exception e) {
 				throw new RuntimeException("Error creating SSL context", e);
 			}
@@ -81,11 +80,11 @@ public class MdmHttpClient {
 	public HttpRequest.Builder createRequestBuilder(String url) {
 		var builder = HttpRequest.newBuilder(URI.create(url));
 		builder.timeout(options.readTimeout());
-		builder.setHeader("user-agent", options.userAgent());
-		builder.setHeader("accept-encoding", "gzip, deflate");
+		builder.setHeader(HttpConsts.HEADER_USER_AGENT, options.userAgent());
+		builder.setHeader(HttpConsts.HEADER_ACCEPT_ENCODING, "gzip, deflate");
 
 		if (!proxyCredentials.isBlank()) {
-			builder.setHeader("proxy-authorization", proxyCredentials);
+			builder.setHeader(HttpConsts.HEADER_PROXY_AUTHORIZATION, proxyCredentials);
 		}
 
 		return builder;
@@ -93,7 +92,7 @@ public class MdmHttpClient {
 
 	@Nonnull
 	public InputStream getResponseBody(@Nonnull HttpResponse<InputStream> response) throws IOException {
-		return switch (response.headers().firstValue("content-encoding").orElse("")) {
+		return switch (response.headers().firstValue(HttpConsts.HEADER_CONTENT_ENCODING).orElse("")) {
 			case "gzip" -> new GZIPInputStream(response.body());
 			case "deflate" -> new DeflaterInputStream(response.body());
 			default -> Objects.requireNonNullElse(response.body(), InputStream.nullInputStream());
