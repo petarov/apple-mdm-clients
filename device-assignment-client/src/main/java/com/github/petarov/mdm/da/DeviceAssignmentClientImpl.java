@@ -126,8 +126,8 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	public DevicesResponse fetchDevices(String cursor, int limit) {
 		try {
 			var result = execute(client.createRequestBuilder(client.getOptions().serviceUrl() + "/server/devices")
-					.POST(HttpRequest.BodyPublishers.ofByteArray(
-							JsonUtils.createObjectMapper().writer().writeValueAsBytes(new FetchDeviceRequest()))));
+					.POST(HttpRequest.BodyPublishers.ofByteArray(JsonUtils.createObjectMapper().writer()
+							.writeValueAsBytes(new FetchDeviceRequest(cursor, limit)))));
 			return JsonUtils.createObjectMapper().reader().readValue(result, DevicesResponse.class);
 		} catch (IOException e) {
 			throw new RuntimeException("Error deserializing json response", e);
