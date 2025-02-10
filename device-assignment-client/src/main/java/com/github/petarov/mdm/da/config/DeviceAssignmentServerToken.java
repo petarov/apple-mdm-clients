@@ -1,7 +1,7 @@
 package com.github.petarov.mdm.da.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.petarov.mdm.shared.util.JsonUtils;
+import com.github.petarov.mdm.shared.util.JsonUtil;
 import jakarta.annotation.Nonnull;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.jcajce.JceKeyTransEnvelopedRecipient;
@@ -47,7 +47,7 @@ public record DeviceAssignmentServerToken(String consumerKey, String consumerSec
 			int idxEnd = content.indexOf("-----END MESSAGE-----");
 			var json = content.substring(idxBegin + 23, idxEnd);
 
-			return JsonUtils.createObjectMapper().readValue(json, DeviceAssignmentServerToken.class);
+			return JsonUtil.createObjectMapper().readValue(json, DeviceAssignmentServerToken.class);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException("Error parsing json from S/MIME text content", e);
 		} catch (SMIMEException | CMSException | MessagingException | IOException e) {

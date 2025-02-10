@@ -17,7 +17,7 @@ import java.util.*;
  */
 public final class OAuth1a {
 
-	private DeviceAssignmentServerToken serverToken;
+	private final DeviceAssignmentServerToken serverToken;
 
 	public OAuth1a(@Nonnull DeviceAssignmentServerToken serverToken) {
 		this.serverToken = serverToken;

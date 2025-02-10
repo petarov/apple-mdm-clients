@@ -4,6 +4,12 @@ import com.github.petarov.mdm.da.model.AccountDetail;
 import com.github.petarov.mdm.da.model.DevicesResponse;
 import jakarta.annotation.Nonnull;
 
+/**
+ * Device assignment client interface that abstracts the implementation.
+ * <p>
+ * The underlying implementation is not thread-safe. If multiple threads access the client concurrently, it <i>must</i>
+ * be synchronized externally. It is recommended to use a new client instance per thread.
+ */
 public interface DeviceAssignmentClient {
 
 	/**

@@ -2,7 +2,7 @@ package com.github.petarov.mdm.da;
 
 import com.github.petarov.mdm.da.config.DeviceAssignmentServerToken;
 import com.github.petarov.mdm.shared.config.MdmClientBuilder;
-import com.github.petarov.mdm.shared.http.MdmHttpClient;
+import com.github.petarov.mdm.shared.http.HttpClientWrapper;
 import jakarta.annotation.Nonnull;
 
 import java.security.SecureRandom;
@@ -46,7 +46,7 @@ public class DeviceAssignmentClientBuilder
 		setReadTimeout(Objects.requireNonNullElse(readTimeout, DEFAULT_READ_TIMEOUT));
 		setRandom(Objects.requireNonNullElseGet(secureRandom, SecureRandom::new));
 
-		return new DeviceAssignmentClientImpl(new MdmHttpClient(
+		return new DeviceAssignmentClientImpl(new HttpClientWrapper(
 				new MdmBuilderOptions(serviceUrl, userAgent, skipSslVerify, connectTimeout, readTimeout, proxyOptions,
 						secureRandom)), serverToken);
 	}

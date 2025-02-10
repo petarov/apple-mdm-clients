@@ -1,34 +1,34 @@
 package com.github.petarov.mdm.da;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.petarov.mdm.da.config.DeviceAssignmentServerToken;
 import com.github.petarov.mdm.da.model.AccountDetail;
 import com.github.petarov.mdm.da.model.DevicesResponse;
 import com.github.petarov.mdm.da.model.FetchDeviceRequest;
 import com.github.petarov.mdm.da.model.SessionResponse;
 import com.github.petarov.mdm.da.util.OAuth1a;
+import com.github.petarov.mdm.shared.http.HttpClientWrapper;
+import com.github.petarov.mdm.shared.http.HttpClientWrapperException;
 import com.github.petarov.mdm.shared.http.HttpConsts;
-import com.github.petarov.mdm.shared.http.MdmHttpClient;
-import com.github.petarov.mdm.shared.util.JsonUtils;
+import com.github.petarov.mdm.shared.util.JsonUtil;
 import jakarta.annotation.Nonnull;
 
-import java.io.IOException;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 
 class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 
-	private static final String DA_HTTP_X_SERVER_PROTOCOL_VERSION = "3";
-	private static final String DA_HTTP_CONTENT_TYPE_VALUE        = "application/json;charset=UTF8";
+	private static final String HEADER_X_ADM_AUTH_SESSION              = "X-ADM-Auth-Session";
+	private static final String HEADER_X_SERVER_PROTOCOL_VERSION       = "X-Server-Protocol-Version";
+	private static final String HEADER_X_SERVER_PROTOCOL_VERSION_VALUE = "3";
+	private static final String HEADER_CONTENT_TYPE_VALUE              = "application/json;charset=UTF8";
 
-	private final MdmHttpClient               client;
+	private final HttpClientWrapper           client;
 	private final DeviceAssignmentServerToken serverToken;
 
-	private HttpClient httpClient;
-	private String     sessionId = "";
+	private String sessionId;
 
-	public DeviceAssignmentClientImpl(@Nonnull MdmHttpClient client, @Nonnull DeviceAssignmentServerToken serverToken) {
+	public DeviceAssignmentClientImpl(@Nonnull HttpClientWrapper client,
+			@Nonnull DeviceAssignmentServerToken serverToken) {
 		this.client = client;
 		this.serverToken = serverToken;
 	}
@@ -40,97 +40,59 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 		var oauth = new OAuth1a(serverToken);
 		var authParams = oauth.getAuthParams(client.getOptions().random());
 		authParams.forEach((k, v) -> authHeaderBuilder.append(k).append("=").append("\"").append(v).append("\","));
-
 		authHeaderBuilder.append("oauth_signature=\"");
-		authHeaderBuilder.append(
-				oauth.generateSignature("GET", client.getOptions().serviceUrl() + "/session", authParams));
+		authHeaderBuilder.append(oauth.generateSignature("GET", client.createURI("/session").toString(), authParams));
 		authHeaderBuilder.append("\"");
 
-		try {
-			var request = client.createRequestBuilder(client.getOptions().serviceUrl() + "/session").GET()
-					.header(HttpConsts.HEADER_AUTHORIZATION, authHeaderBuilder.toString()).build();
-			traceReqHeaders(request);
-			var resp = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
+		var request = client.createRequestBuilder(client.createURI("/session")).GET()
+				.setHeader(HttpConsts.HEADER_AUTHORIZATION, authHeaderBuilder.toString()).build();
+		var sessionResponse = client.send(request, SessionResponse.class);
 
-			if (client.isResponseOk(resp.statusCode())) {
-				try (var body = client.getResponseBody(resp)) {
-					sessionId = JsonUtils.createObjectMapper().reader().readValue(body, SessionResponse.class)
-							.authSessionToken();
-				}
-			} else {
-				throw new DeviceAssignmentException(
-						"Error fetching OAuth session token (%d)".formatted(resp.statusCode()), resp.statusCode(),
-						new String(resp.body().readAllBytes(), StandardCharsets.UTF_8));
-			}
-		} catch (IOException e) {
-			throw new RuntimeException("Error read/write request", e);
-		} catch (InterruptedException e) {
-			throw new RuntimeException("Error request-send interrupted", e);
-		}
+		sessionId = sessionResponse.authSessionToken();
 	}
 
-	private String traceReqResp(HttpRequest req, HttpResponse<?> resp) {
-		return "%s %s - %d".formatted(req.method(), req.uri(), resp.statusCode());
-	}
-
-	private void traceReqHeaders(HttpRequest req) {
-		req.headers().map().forEach((k, v) -> System.out.println("HEADER key=" + k + " v=" + v));
-	}
-
-	private String execute(HttpRequest.Builder requestBuilder) {
-		if (httpClient == null) {
-			httpClient = client.createBuilder().build();
-		}
-
-		if (sessionId.isBlank()) {
+	private <T> T execute(HttpRequest.Builder requestBuilder, Class<T> clazz) {
+		if (sessionId == null) {
 			refreshSessionId();
 		}
 
-		requestBuilder.header(HttpConsts.HEADER_CONTENT_TYPE, DA_HTTP_CONTENT_TYPE_VALUE);
-		requestBuilder.header("X-Server-Protocol-Version", DA_HTTP_X_SERVER_PROTOCOL_VERSION);
-		requestBuilder.header("X-ADM-Auth-Session", sessionId);
+		requestBuilder.setHeader(HttpConsts.HEADER_CONTENT_TYPE, HEADER_CONTENT_TYPE_VALUE);
+		requestBuilder.setHeader(HEADER_X_SERVER_PROTOCOL_VERSION, HEADER_X_SERVER_PROTOCOL_VERSION_VALUE);
 
-		try {
-			var req = requestBuilder.build();
-			traceReqHeaders(req);
-
-			var resp = httpClient.send(req, HttpResponse.BodyHandlers.ofInputStream());
-			if (client.isResponseOk(resp.statusCode())) {
-				var body = new String(client.getResponseBody(resp).readAllBytes(), StandardCharsets.UTF_8);
-				System.out.println("RESPONSE: " + body);
-				return body;
-			} else {
-				throw new DeviceAssignmentException(traceReqResp(req, resp), resp.statusCode(),
-						new String(resp.body().readAllBytes(), StandardCharsets.UTF_8));
+		boolean retry = false;
+		for (; ; ) {
+			try {
+				requestBuilder.setHeader(HEADER_X_ADM_AUTH_SESSION, sessionId);
+				return client.send(requestBuilder.build(), clazz);
+			} catch (HttpClientWrapperException e) {
+				if (client.isResponseUnauthorized(e.getStatusCode()) && !retry) {
+					System.out.println("REFRESHING TOKEN ...");
+					// New session id may be needed
+					refreshSessionId();
+					// Retry only once
+					retry = true;
+				} else {
+					throw new DeviceAssignmentException(e);
+				}
 			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
 		}
 	}
 
 	@Nonnull
 	@Override
 	public AccountDetail fetchAccount() {
-		var result = execute(client.createRequestBuilder(client.getOptions().serviceUrl() + "/account").GET());
-		try {
-			return JsonUtils.createObjectMapper().reader().readValue(result, AccountDetail.class);
-		} catch (IOException e) {
-			throw new RuntimeException("Error deserializing json response", e);
-		}
+		return execute(client.createRequestBuilder(client.createURI("/account")).GET(), AccountDetail.class);
 	}
 
 	@Nonnull
 	@Override
 	public DevicesResponse fetchDevices(String cursor, int limit) {
 		try {
-			var result = execute(client.createRequestBuilder(client.getOptions().serviceUrl() + "/server/devices")
-					.POST(HttpRequest.BodyPublishers.ofByteArray(JsonUtils.createObjectMapper().writer()
-							.writeValueAsBytes(new FetchDeviceRequest(cursor, limit)))));
-			return JsonUtils.createObjectMapper().reader().readValue(result, DevicesResponse.class);
-		} catch (IOException e) {
-			throw new RuntimeException("Error deserializing json response", e);
+			return execute(client.createRequestBuilder(client.createURI("/server/devices"))
+					.POST(HttpRequest.BodyPublishers.ofByteArray(JsonUtil.createObjectMapper().writer()
+							.writeValueAsBytes(new FetchDeviceRequest(cursor, limit)))), DevicesResponse.class);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
 		}
 	}
 }

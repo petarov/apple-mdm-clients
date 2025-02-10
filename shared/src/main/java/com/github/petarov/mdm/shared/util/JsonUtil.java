@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.Nonnull;
 
-public final class JsonUtils {
+public final class JsonUtil {
 
 	/**
 	 * @return new Jackson {@link ObjectMapper} instance with default settings

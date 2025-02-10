@@ -1,6 +1,7 @@
 package com.github.petarov.mdm.da;
 
-import org.jetbrains.annotations.Nullable;
+import com.github.petarov.mdm.shared.http.HttpClientWrapperException;
+import jakarta.annotation.Nonnull;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -8,46 +9,41 @@ import java.util.ResourceBundle;
 public class DeviceAssignmentException extends RuntimeException {
 
 	private final int    code;
-	private final String body;
+	private final String statusLine;
 
-	/**
-	 * @param message the exception message
-	 * @param cause   the exception cause or {@code null}
-	 * @param code    HTTP error code
-	 * @param body    OAuth error key returned by the server
-	 */
-	public DeviceAssignmentException(String message, @Nullable Throwable cause, int code, String body) {
-		super(message, cause);
-		this.code = code;
-		this.body = body;
-	}
-
-	public DeviceAssignmentException(String message, int code, String body) {
-		this(message, null, code, body);
+	public DeviceAssignmentException(@Nonnull HttpClientWrapperException exception) {
+		super(exception.getMessage(), exception);
+		this.code = exception.getStatusCode();
+		this.statusLine = exception.getStatusLine();
 	}
 
 	public int getCode() {
 		return code;
 	}
 
-	public String getBody() {
-		return body;
+	public String getStatusLine() {
+		return statusLine;
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + ": " + getErrorFromStatus();
 	}
 
 	/**
 	 * @return the text representation of the OAuth error key
 	 */
-	public String getErrorFromBody() {
+	public String getErrorFromStatus() {
 		try {
-			return ResourceBundle.getBundle("messages").getString(switch (body) {
+			return ResourceBundle.getBundle("messages").getString(switch (statusLine) {
 				// --- OAuth specific
 				case "oauth_problem_adviceBad Request" -> "OAUTH_BAD_REQUEST";
 				case "oauth_problem_adviceUnauthorized" -> "OAUTH_UNAUTHORIZED";
 				case "token_expiredForbidden" -> "OAUTH_FORBIDDEN";
-				default -> body;
+				default -> statusLine;
 			});
 		} catch (MissingResourceException e) {
-			return body;
+			return statusLine;
 		}
 	}
 }
