@@ -66,7 +66,7 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 				return client.send(requestBuilder.build(), clazz);
 			} catch (HttpClientWrapperException e) {
 				if (client.isResponseUnauthorized(e.getStatusCode()) && !retry) {
-					System.out.println("REFRESHING TOKEN ...");
+					System.out.println("REFRESHING TOKEN ..."); // TODO
 					// New session id may be needed
 					refreshSessionId();
 					// Retry only once

@@ -1,6 +1,6 @@
 package com.github.petarov.mdm.shared.http;
 
-import org.jetbrains.annotations.Nullable;
+import jakarta.annotation.Nullable;
 
 public class HttpClientWrapperException extends RuntimeException {
 

@@ -152,7 +152,7 @@ public class HttpClientWrapper {
 			if (isResponseOk(response.statusCode())) {
 				try (var input = decodeResponseBody(response)) {
 					var body = new String(input.readAllBytes(), StandardCharsets.UTF_8);
-					System.out.println("RESPONSE: " + body); // TODO
+					System.out.println("RESPONSE: " + body); // TODO: log response and headers in debug mode
 					return getObjectMapper().reader().readValue(body, clazz);
 				}
 			} else {
