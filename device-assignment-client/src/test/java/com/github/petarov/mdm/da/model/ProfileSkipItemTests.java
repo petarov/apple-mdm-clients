@@ -1,27 +1,26 @@
 package com.github.petarov.mdm.da.model;
 
-import com.github.petarov.mdm.da.DeviceAssignmentClientBuilder;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ProfileSkipItemTests {
 
 	@Test
 	void verify_os_types() {
-		DeviceAssignmentClientBuilder b = new DeviceAssignmentClientBuilder();
+		assertTrue(ProfileSkipItem.ANDROID.isIos());
+		assertFalse(ProfileSkipItem.ANDROID.isMacOS());
+		assertFalse(ProfileSkipItem.ANDROID.isTvOS());
 
-		Assertions.assertTrue(ProfileSkipItem.ANDROID.isIos());
-		Assertions.assertFalse(ProfileSkipItem.ANDROID.isMacOS());
-		Assertions.assertFalse(ProfileSkipItem.ANDROID.isTvOS());
+		assertTrue(ProfileSkipItem.APPLE_ID.isIos());
+		assertTrue(ProfileSkipItem.APPLE_ID.isMacOS());
+		assertTrue(ProfileSkipItem.APPLE_ID.isTvOS());
 
-		Assertions.assertTrue(ProfileSkipItem.APPLE_ID.isIos());
-		Assertions.assertTrue(ProfileSkipItem.APPLE_ID.isMacOS());
-		Assertions.assertTrue(ProfileSkipItem.APPLE_ID.isTvOS());
-
-		Assertions.assertFalse(ProfileSkipItem.TV_ROOM.isIos());
-		Assertions.assertFalse(ProfileSkipItem.TV_ROOM.isMacOS());
-		Assertions.assertTrue(ProfileSkipItem.TV_ROOM.isTvOS());
+		assertFalse(ProfileSkipItem.TV_ROOM.isIos());
+		assertFalse(ProfileSkipItem.TV_ROOM.isMacOS());
+		assertTrue(ProfileSkipItem.TV_ROOM.isTvOS());
 	}
 }

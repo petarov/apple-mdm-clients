@@ -2,12 +2,13 @@ package com.github.petarov.mdm.da;
 
 import com.github.petarov.mdm.da.config.DeviceAssignmentPrivateKey;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.security.Security;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DeviceAssignmentPrivateKeyTests {
@@ -21,15 +22,15 @@ public class DeviceAssignmentPrivateKeyTests {
 	void load_private_key_from_DER() throws Exception {
 		var key = DeviceAssignmentPrivateKey.createFromDER(
 				this.getClass().getResource("/apple-mdm-client-tests-1.der").openStream());
-		Assertions.assertEquals("RSA", key.privateKey().getAlgorithm());
-		Assertions.assertEquals("PKCS#8", key.privateKey().getFormat());
+		assertEquals("RSA", key.privateKey().getAlgorithm());
+		assertEquals("PKCS#8", key.privateKey().getFormat());
 	}
 
 	@Test
 	void load_private_key_from_PEM() throws Exception {
 		var key = DeviceAssignmentPrivateKey.createFromPEM(
 				this.getClass().getResource("/apple-mdm-client-tests-1.pem").openStream());
-		Assertions.assertEquals("RSA", key.privateKey().getAlgorithm());
-		Assertions.assertEquals("PKCS#8", key.privateKey().getFormat());
+		assertEquals("RSA", key.privateKey().getAlgorithm());
+		assertEquals("PKCS#8", key.privateKey().getFormat());
 	}
 }
