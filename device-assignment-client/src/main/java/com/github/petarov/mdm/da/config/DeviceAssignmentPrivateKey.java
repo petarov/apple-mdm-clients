@@ -1,5 +1,7 @@
 package com.github.petarov.mdm.da.config;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.annotation.Nonnull;
 
 import java.io.ByteArrayInputStream;
@@ -15,6 +17,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record DeviceAssignmentPrivateKey(@Nonnull PrivateKey privateKey) {
 
 	/**

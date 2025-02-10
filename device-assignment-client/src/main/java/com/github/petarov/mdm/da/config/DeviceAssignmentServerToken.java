@@ -1,6 +1,8 @@
 package com.github.petarov.mdm.da.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.github.petarov.mdm.shared.util.JsonUtil;
 import jakarta.annotation.Nonnull;
 import org.bouncycastle.cms.CMSException;
@@ -18,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record DeviceAssignmentServerToken(String consumerKey, String consumerSecret, String accessToken,
                                           String accessSecret, String accessTokenExpiry) {
 
