@@ -1,8 +1,12 @@
 package com.github.petarov.mdm.da;
 
 import com.github.petarov.mdm.da.model.AccountDetail;
+import com.github.petarov.mdm.da.model.Device;
+import com.github.petarov.mdm.da.model.DeviceListResponse;
 import com.github.petarov.mdm.da.model.DevicesResponse;
 import jakarta.annotation.Nonnull;
+
+import java.util.Set;
 
 /**
  * Device assignment client interface that abstracts the implementation.
@@ -47,4 +51,18 @@ public interface DeviceAssignmentClient {
 	default DevicesResponse fetchDevices() {
 		return fetchDevices("", 0);
 	}
+
+	/**
+	 * @param serialNumbers the serial numbers of the devices that will be fetched
+	 * @return {@link DeviceListResponse} object with {@link Device#responseStatus()} with one of the following set:
+	 * <ul>
+	 *     <li>{@code SUCCESS} - Device was successfully disowned.</li>
+	 *     <li>{@code NOT_ACCESSIBLE} - A device with the specified ID was not accessible by this MDM server.</li>
+	 *     <li>{@code FAILED} - Disowning the device failed for an unexpected reason. If three retries fail, the user
+	 *     should contact Apple support.</li>
+	 * </ul>
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/device-details">Get Device Details</a>
+	 */
+	@Nonnull
+	DeviceListResponse fetchDeviceDetails(@Nonnull Set<String> serialNumbers);
 }

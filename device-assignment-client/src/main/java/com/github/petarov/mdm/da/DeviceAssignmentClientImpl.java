@@ -2,10 +2,7 @@ package com.github.petarov.mdm.da;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.petarov.mdm.da.config.DeviceAssignmentServerToken;
-import com.github.petarov.mdm.da.model.AccountDetail;
-import com.github.petarov.mdm.da.model.DevicesResponse;
-import com.github.petarov.mdm.da.model.FetchDeviceRequest;
-import com.github.petarov.mdm.da.model.SessionResponse;
+import com.github.petarov.mdm.da.model.*;
 import com.github.petarov.mdm.da.util.OAuth1a;
 import com.github.petarov.mdm.shared.http.HttpClientWrapper;
 import com.github.petarov.mdm.shared.http.HttpClientWrapperException;
@@ -14,6 +11,7 @@ import com.github.petarov.mdm.shared.util.JsonUtil;
 import jakarta.annotation.Nonnull;
 
 import java.net.http.HttpRequest;
+import java.util.Set;
 
 class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 
@@ -91,6 +89,18 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 			return execute(client.createRequestBuilder(client.createURI("/server/devices"))
 					.POST(HttpRequest.BodyPublishers.ofByteArray(JsonUtil.createObjectMapper().writer()
 							.writeValueAsBytes(new FetchDeviceRequest(cursor, limit)))), DevicesResponse.class);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Nonnull
+	@Override
+	public DeviceListResponse fetchDeviceDetails(@Nonnull Set<String> serialNumbers) {
+		try {
+			return execute(client.createRequestBuilder(client.createURI("/devices"))
+					.POST(HttpRequest.BodyPublishers.ofByteArray(JsonUtil.createObjectMapper().writer()
+							.writeValueAsBytes(new DeviceListRequest(serialNumbers)))), DeviceListResponse.class);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}

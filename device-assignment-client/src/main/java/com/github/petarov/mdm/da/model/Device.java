@@ -6,6 +6,9 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.github.petarov.mdm.da.DeviceAssignmentClient;
+
+import java.util.Set;
 
 /**
  * @param assetTag           the device's asset tag
@@ -32,7 +35,8 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
  * @param profileUuid        the unique ID of the assigned profile
  * @param serialNumber       the device's serial number
  * @param responseStatus     a string indicating whether a particular device's data could be retrieved, either
- *                           {@code SUCCESS} or {@code NOT_FOUND}. Available after calling <i>>fetchDeviceDetails.</i> TODO: link client method
+ *                           {@code SUCCESS}, {@code NOT_ACCESSIBLE} or {@code FAILED}. Available after calling
+ *                           {@link DeviceAssignmentClient#fetchDeviceDetails(Set)}.
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)

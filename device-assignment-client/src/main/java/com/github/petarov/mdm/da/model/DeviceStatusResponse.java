@@ -20,7 +20,7 @@ import java.util.Map;
  *                contact Apple support.
  *                </ul>
  *                If no devices were provided in the original request, this dictionary may be absent.
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/devicelistresponse">DeviceListResponse</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/devicestatusresponse">DeviceStatusResponse</a>
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record DeviceStatusListResponse(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Map<String, String> devices) {}
+public record DeviceStatusResponse(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Map<String, String> devices) {}

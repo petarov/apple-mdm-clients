@@ -9,7 +9,7 @@ import jakarta.annotation.Nonnull;
 import java.util.Map;
 
 /**
- * @param devices     a dictionary of devices. See {@link DeviceStatusListResponse#devices()}.
+ * @param devices     a dictionary of devices. See {@link DeviceStatusResponse#devices()}.
  * @param profileUuid the unique identifier for a profile
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/defineprofileresponse">DefineProfileResponse</a>
  */
