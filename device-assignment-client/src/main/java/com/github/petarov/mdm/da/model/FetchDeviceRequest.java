@@ -10,9 +10,4 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/fetchdevicerequest">FetchDeviceRequest</a>
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public record FetchDeviceRequest(String cursor, int limit) {
-
-	public FetchDeviceRequest() {
-		this("", 100); // default limit
-	}
-}
+public record FetchDeviceRequest(String cursor, int limit) {}

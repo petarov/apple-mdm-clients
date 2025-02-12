@@ -105,4 +105,16 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 			throw new RuntimeException(e);
 		}
 	}
+
+	@Nonnull
+	@Override
+	public DevicesResponse syncDevices(String cursor, int limit) {
+		try {
+			return execute(client.createRequestBuilder(client.createURI("/devices/sync"))
+					.POST(HttpRequest.BodyPublishers.ofByteArray(JsonUtil.createObjectMapper().writer()
+							.writeValueAsBytes(new FetchDeviceRequest(cursor, limit)))), DevicesResponse.class);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

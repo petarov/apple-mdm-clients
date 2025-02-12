@@ -34,11 +34,11 @@ public interface DeviceAssignmentClient {
 	/**
 	 * Fetches a list of all devices that are assigned to this MDM server at the time of the request.
 	 *
-	 * @param cursor optional maximum number of entries to return. Default is {@code 100} and max is {@code 1000}.
-	 * @param limit  optional hex string that represents the starting position for a request. Use this to retrieve
+	 * @param cursor optional hex string that represents the starting position for a request. Use this to retrieve
 	 *               the list of devices that have been added or removed since a previous request. The string can be up
 	 *               to {@code 1000} characters. On the initial request, this should be omitted.
-	 * @return {@link DevicesResponse}  object
+	 * @param limit  optional maximum number of entries to return. Default is {@code 100} and max is {@code 1000}.
+	 * @return {@link DevicesResponse} object
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/fetch-devices">Get a List of Devices</a>
 	 */
 	@Nonnull
@@ -49,7 +49,7 @@ public interface DeviceAssignmentClient {
 	 */
 	@Nonnull
 	default DevicesResponse fetchDevices() {
-		return fetchDevices("", 0);
+		return fetchDevices("", 100);
 	}
 
 	/**
@@ -65,4 +65,33 @@ public interface DeviceAssignmentClient {
 	 */
 	@Nonnull
 	DeviceListResponse fetchDeviceDetails(@Nonnull Set<String> serialNumbers);
+
+	/**
+	 * Fetch updates about the list of devices the server manages.
+	 * <p>
+	 * The sync service depends on a cursor returned by the fetch device service. It returns a list of all modifications
+	 * (additions or deletions) since the specified cursor. The cursor passed to this endpoint <i>should not</i> be
+	 * older than 7 days.
+	 * <p>
+	 * This service may return the same device more than once. You must resolve duplicates by matching on the device
+	 * serial number and the {@code op_type} and {@code op_date} fields. The record with the latest {@code op_date}
+	 * indicates the last known state of the device in DEP.
+	 *
+	 * @param cursor optional hex string that represents the starting position for a request. Use this to retrieve
+	 *               the list of devices that have been added or removed since a previous request. The string can be up
+	 *               to {@code 1000} characters. On the initial request, this should be omitted.
+	 * @param limit  optional maximum number of entries to return. Default is {@code 100} and max is {@code 1000}.
+	 * @return {@link DevicesResponse} object
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/sync-devices">Sync the List of Devices</a>
+	 */
+	@Nonnull
+	DevicesResponse syncDevices(String cursor, int limit);
+
+	/**
+	 * @see #syncDevices(String, int)
+	 */
+	@Nonnull
+	default DevicesResponse syncDevices(String cursor) {
+		return syncDevices(cursor, 100);
+	}
 }
