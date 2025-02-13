@@ -162,7 +162,7 @@ public class HttpClientWrapper {
 				}
 			}
 		} catch (IOException e) {
-			throw new RuntimeException("Error reading response");
+			throw new RuntimeException("Error reading response", e);
 		}
 	}
 }
