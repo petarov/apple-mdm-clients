@@ -11,6 +11,7 @@ import com.github.petarov.mdm.shared.util.JsonUtil;
 import jakarta.annotation.Nonnull;
 
 import java.net.http.HttpRequest;
+import java.util.Optional;
 import java.util.Set;
 
 class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
@@ -127,6 +128,34 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 							.writeValueAsBytes(new DeviceListRequest(serialNumbers)))), DeviceStatusResponse.class);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	@Nonnull
+	@Override
+	public DefineProfileResponse defineProfile(@Nonnull Profile profile) {
+		try {
+			return execute(client.createRequestBuilder(client.createURI("/profile"))
+							.POST(HttpRequest.BodyPublishers.ofByteArray(
+									JsonUtil.createObjectMapper().writer().writeValueAsBytes(profile))),
+					DefineProfileResponse.class);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Nonnull
+	@Override
+	public Optional<Profile> fetchProfile(String profileUuid) {
+		try {
+			return Optional.of(
+					execute(client.createRequestBuilder(client.createURI("/profile?profile_uuid=" + profileUuid)).GET(),
+							Profile.class));
+		} catch (DeviceAssignmentException e) {
+			if (e.getCode() == HttpConsts.STATUS_NOT_FOUND) {
+				return Optional.empty();
+			}
+			throw e;
 		}
 	}
 }

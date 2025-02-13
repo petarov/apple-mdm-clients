@@ -3,6 +3,7 @@ package com.github.petarov.mdm.da;
 import com.github.petarov.mdm.da.model.*;
 import jakarta.annotation.Nonnull;
 
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -101,4 +102,24 @@ public interface DeviceAssignmentClient {
 	 */
 	@Nonnull
 	DeviceStatusResponse disownDevices(@Nonnull Set<String> serialNumbers);
+
+	/**
+	 * Defines a profile that can be distributed to the devices in your organization.
+	 *
+	 * @param profile a profile servers that can then be assigned to specific devices
+	 * @return {@link DefineProfileResponse} object
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/define-profile">Define a Profile</a>
+	 */
+	@Nonnull
+	DefineProfileResponse defineProfile(@Nonnull Profile profile);
+
+	/**
+	 * Fetches details about a profile.
+	 *
+	 * @param profileUuid the unique identifier for a profile
+	 * @return optional-wrapped {@link Profile} or empty optional if the profile was not found
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/fetch-profile">Get a Profile</a>
+	 */
+	@Nonnull
+	Optional<Profile> fetchProfile(String profileUuid);
 }
