@@ -117,4 +117,16 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 			throw new RuntimeException(e);
 		}
 	}
+
+	@Nonnull
+	@Override
+	public DeviceStatusResponse disownDevices(@Nonnull Set<String> serialNumbers) {
+		try {
+			return execute(client.createRequestBuilder(client.createURI("/devices/disown"))
+					.POST(HttpRequest.BodyPublishers.ofByteArray(JsonUtil.createObjectMapper().writer()
+							.writeValueAsBytes(new DeviceListRequest(serialNumbers)))), DeviceStatusResponse.class);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

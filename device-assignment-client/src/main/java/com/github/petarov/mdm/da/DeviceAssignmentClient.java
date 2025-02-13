@@ -1,9 +1,6 @@
 package com.github.petarov.mdm.da;
 
-import com.github.petarov.mdm.da.model.AccountDetail;
-import com.github.petarov.mdm.da.model.Device;
-import com.github.petarov.mdm.da.model.DeviceListResponse;
-import com.github.petarov.mdm.da.model.DevicesResponse;
+import com.github.petarov.mdm.da.model.*;
 import jakarta.annotation.Nonnull;
 
 import java.util.Set;
@@ -94,4 +91,14 @@ public interface DeviceAssignmentClient {
 	default DevicesResponse syncDevices(String cursor) {
 		return syncDevices(cursor, 100);
 	}
+
+	/**
+	 * Notifies Apple’s servers that your organization no longer owns the specified devices.
+	 *
+	 * @param serialNumbers the serial numbers of the devices that will be disowned
+	 * @return {@link DeviceStatusResponse} object
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/disown-devices">Disown Devices</a>
+	 */
+	@Nonnull
+	DeviceStatusResponse disownDevices(@Nonnull Set<String> serialNumbers);
 }
