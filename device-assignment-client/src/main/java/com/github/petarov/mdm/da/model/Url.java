@@ -2,6 +2,8 @@ package com.github.petarov.mdm.da.model;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import java.util.List;
 
@@ -11,9 +13,9 @@ import java.util.List;
  * @param uri        URI for the API
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/url">Url</a>
  */
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record Url(@JsonSetter(nulls = Nulls.AS_EMPTY) List<String> httpMethod,
-                  @JsonSetter(nulls = Nulls.AS_EMPTY) Limit limit,
-                  @JsonSetter(nulls = Nulls.AS_EMPTY) String uri) {
+                  @JsonSetter(nulls = Nulls.AS_EMPTY) Limit limit, @JsonSetter(nulls = Nulls.AS_EMPTY) String uri) {
 
 	public static final String URL_HTTP_METHOD_GET    = "GET";
 	public static final String URL_HTTP_METHOD_POST   = "POST";
