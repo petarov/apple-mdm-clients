@@ -1,6 +1,7 @@
 package com.github.petarov.mdm.da;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.petarov.mdm.da.config.DeviceAssignmentServerToken;
 import com.github.petarov.mdm.da.model.*;
 import com.github.petarov.mdm.da.util.OAuth1a;
@@ -23,6 +24,7 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 
 	private final HttpClientWrapper           client;
 	private final DeviceAssignmentServerToken serverToken;
+	private final ObjectMapper                objectMapper;
 
 	private String sessionId;
 
@@ -30,6 +32,7 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 			@Nonnull DeviceAssignmentServerToken serverToken) {
 		this.client = client;
 		this.serverToken = serverToken;
+		this.objectMapper = JsonUtil.createObjectMapper();
 	}
 
 	private void refreshSessionId() {
@@ -88,8 +91,9 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	public DevicesResponse fetchDevices(String cursor, int limit) {
 		try {
 			return execute(client.createRequestBuilder(client.createURI("/server/devices"))
-					.POST(HttpRequest.BodyPublishers.ofByteArray(JsonUtil.createObjectMapper().writer()
-							.writeValueAsBytes(new FetchDeviceRequest(cursor, limit)))), DevicesResponse.class);
+							.POST(HttpRequest.BodyPublishers.ofByteArray(
+									objectMapper.writer().writeValueAsBytes(new FetchDeviceRequest(cursor, limit)))),
+					DevicesResponse.class);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
@@ -100,8 +104,9 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	public DeviceListResponse fetchDeviceDetails(@Nonnull Set<String> serialNumbers) {
 		try {
 			return execute(client.createRequestBuilder(client.createURI("/devices"))
-					.POST(HttpRequest.BodyPublishers.ofByteArray(JsonUtil.createObjectMapper().writer()
-							.writeValueAsBytes(new DeviceListRequest(serialNumbers)))), DeviceListResponse.class);
+							.POST(HttpRequest.BodyPublishers.ofByteArray(
+									objectMapper.writer().writeValueAsBytes(new DeviceListRequest(serialNumbers)))),
+					DeviceListResponse.class);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
@@ -112,8 +117,9 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	public DevicesResponse syncDevices(String cursor, int limit) {
 		try {
 			return execute(client.createRequestBuilder(client.createURI("/devices/sync"))
-					.POST(HttpRequest.BodyPublishers.ofByteArray(JsonUtil.createObjectMapper().writer()
-							.writeValueAsBytes(new FetchDeviceRequest(cursor, limit)))), DevicesResponse.class);
+							.POST(HttpRequest.BodyPublishers.ofByteArray(
+									objectMapper.writer().writeValueAsBytes(new FetchDeviceRequest(cursor, limit)))),
+					DevicesResponse.class);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
@@ -124,8 +130,9 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	public DeviceStatusResponse disownDevices(@Nonnull Set<String> serialNumbers) {
 		try {
 			return execute(client.createRequestBuilder(client.createURI("/devices/disown"))
-					.POST(HttpRequest.BodyPublishers.ofByteArray(JsonUtil.createObjectMapper().writer()
-							.writeValueAsBytes(new DeviceListRequest(serialNumbers)))), DeviceStatusResponse.class);
+							.POST(HttpRequest.BodyPublishers.ofByteArray(
+									objectMapper.writer().writeValueAsBytes(new DeviceListRequest(serialNumbers)))),
+					DeviceStatusResponse.class);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
@@ -133,12 +140,11 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 
 	@Nonnull
 	@Override
-	public DefineProfileResponse defineProfile(@Nonnull Profile profile) {
+	public ProfileDevicesResponse createProfile(@Nonnull Profile profile) {
 		try {
 			return execute(client.createRequestBuilder(client.createURI("/profile"))
-							.POST(HttpRequest.BodyPublishers.ofByteArray(
-									JsonUtil.createObjectMapper().writer().writeValueAsBytes(profile))),
-					DefineProfileResponse.class);
+							.POST(HttpRequest.BodyPublishers.ofByteArray(objectMapper.writer().writeValueAsBytes(profile))),
+					ProfileDevicesResponse.class);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
@@ -156,6 +162,32 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 				return Optional.empty();
 			}
 			throw e;
+		}
+	}
+
+	@Nonnull
+	@Override
+	public ProfileDevicesResponse assignProfile(String profileUuid, @Nonnull Set<String> serialNumbers) {
+		try {
+			return execute(client.createRequestBuilder(client.createURI("/profile/devices"))
+							.POST(HttpRequest.BodyPublishers.ofByteArray(objectMapper.writer()
+									.writeValueAsBytes(new ProfileDevicesRequest(profileUuid, serialNumbers)))),
+					ProfileDevicesResponse.class);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Nonnull
+	@Override
+	public ProfileDevicesResponse unassignProfile(String profileUuid, @Nonnull Set<String> serialNumbers) {
+		try {
+			return execute(client.createRequestBuilder(client.createURI("/profile/devices")).method("DELETE",
+							HttpRequest.BodyPublishers.ofByteArray(objectMapper.writer()
+									.writeValueAsBytes(new ProfileDevicesRequest(profileUuid, serialNumbers)))),
+					ProfileDevicesResponse.class);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
 		}
 	}
 }

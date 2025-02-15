@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.annotation.Nonnull;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Device Assignment Profile.
@@ -59,7 +59,8 @@ import java.util.List;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public record Profile(@Nonnull List<String> anchorCerts, @JsonProperty("auto_advance_setup") boolean isAutoAdvanceSetup,
+public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<String> anchorCerts,
+                      @JsonProperty("auto_advance_setup") boolean isAutoAdvanceSetup,
                       @JsonProperty("await_device_configured") boolean isAwaitDeviceConfigured,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String configurationWebUrl,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String department,
@@ -67,7 +68,7 @@ public record Profile(@Nonnull List<String> anchorCerts, @JsonProperty("auto_adv
                       boolean isMultiUser, @JsonSetter(nulls = Nulls.AS_EMPTY) String language,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String orgMagic,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String profileName,
-                      @JsonSetter(nulls = Nulls.AS_EMPTY) String region, @Nonnull List<ProfileSkipItem> skipSetupItems,
+                      @JsonSetter(nulls = Nulls.AS_EMPTY) String region, @Nonnull Set<ProfileSkipItem> skipSetupItems,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<String> supervisingHostCerts,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String supportEmailAddress,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String supportPhoneNumber,
@@ -78,29 +79,30 @@ public record Profile(@Nonnull List<String> anchorCerts, @JsonProperty("auto_adv
 	 */
 	public static class ProfileBuilder {
 
-		private List<String>          anchorCerts             = List.of();
-		private boolean               isAutoAdvanceSetup      = false;
-		private boolean               isAwaitDeviceConfigured = false;
-		private String                configurationWebUrl     = "";
-		private String                department              = "";
-		private List<String>          devices                 = List.of();
-		private boolean               isMdmRemovable          = true;
-		private boolean               isMultiUser             = false;
-		private String                language                = "";
-		private String                orgMagic                = "";
-		private String                profileName             = "";
-		private String                region                  = "";
-		private List<ProfileSkipItem> skipSetupItems          = List.of();
-		private List<String>          supervisingHostCerts    = List.of();
-		private String                supportEmailAddress     = "";
-		private String                supportPhoneNumber      = "";
-		private String                url                     = "";
+		private final List<String>         anchorCerts             = new ArrayList<>();
+		private       boolean              isAutoAdvanceSetup      = false;
+		private       boolean              isAwaitDeviceConfigured = false;
+		private       String               configurationWebUrl     = "";
+		private       String               department              = "";
+		private final List<String>         devices                 = new ArrayList<>();
+		private       boolean              isMdmRemovable          = true;
+		private       boolean              isMultiUser             = false;
+		private       String               language                = "";
+		private       String               orgMagic                = "";
+		private       String               profileName             = "";
+		private       String               region                  = "";
+		private final Set<ProfileSkipItem> skipSetupItems          = new HashSet<>();
+		private final List<String>         supervisingHostCerts    = new ArrayList<>();
+		private       String               supportEmailAddress     = "";
+		private       String               supportPhoneNumber      = "";
+		private       String               url                     = "";
 
 		/**
 		 * @see #anchorCerts()
 		 */
-		public ProfileBuilder setAnchorCerts(List<String> anchorCerts) {
-			this.anchorCerts = anchorCerts;
+		public ProfileBuilder setAnchorCerts(@Nonnull List<String> anchorCerts) {
+			this.anchorCerts.clear();
+			this.anchorCerts.addAll(anchorCerts);
 			return this;
 		}
 
@@ -139,8 +141,9 @@ public record Profile(@Nonnull List<String> anchorCerts, @JsonProperty("auto_adv
 		/**
 		 * @see #devices()
 		 */
-		public ProfileBuilder setDevices(List<String> devices) {
-			this.devices = devices;
+		public ProfileBuilder setDevices(@Nonnull List<String> devices) {
+			this.devices.clear();
+			this.devices.addAll(devices);
 			return this;
 		}
 
@@ -195,16 +198,18 @@ public record Profile(@Nonnull List<String> anchorCerts, @JsonProperty("auto_adv
 		/**
 		 * @see #skipSetupItems()
 		 */
-		public ProfileBuilder setSkipSetupItems(List<ProfileSkipItem> skipSetupItems) {
-			this.skipSetupItems = skipSetupItems;
+		public ProfileBuilder setSkipSetupItems(@Nonnull EnumSet<ProfileSkipItem> skipSetupItems) {
+			this.skipSetupItems.clear();
+			this.skipSetupItems.addAll(skipSetupItems);
 			return this;
 		}
 
 		/**
 		 * @see #supervisingHostCerts()
 		 */
-		public ProfileBuilder setSupervisingHostCerts(List<String> supervisingHostCerts) {
-			this.supervisingHostCerts = supervisingHostCerts;
+		public ProfileBuilder setSupervisingHostCerts(@Nonnull List<String> supervisingHostCerts) {
+			this.supervisingHostCerts.clear();
+			this.supervisingHostCerts.addAll(supervisingHostCerts);
 			return this;
 		}
 

@@ -1,5 +1,6 @@
 package com.github.petarov.mdm.da.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.annotation.Nonnull;
 
 import java.util.Arrays;
@@ -254,6 +255,7 @@ public enum ProfileSkipItem {
 		this(key, false, os);
 	}
 
+	@JsonValue
 	public String getKey() {
 		return key;
 	}

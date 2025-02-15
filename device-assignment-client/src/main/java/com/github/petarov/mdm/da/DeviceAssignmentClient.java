@@ -107,11 +107,11 @@ public interface DeviceAssignmentClient {
 	 * Defines a profile that can be distributed to the devices in your organization.
 	 *
 	 * @param profile a profile servers that can then be assigned to specific devices
-	 * @return {@link DefineProfileResponse} object
+	 * @return {@link ProfileDevicesResponse} object
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/define-profile">Define a Profile</a>
 	 */
 	@Nonnull
-	DefineProfileResponse defineProfile(@Nonnull Profile profile);
+	ProfileDevicesResponse createProfile(@Nonnull Profile profile);
 
 	/**
 	 * Fetches details about a profile.
@@ -122,4 +122,31 @@ public interface DeviceAssignmentClient {
 	 */
 	@Nonnull
 	Optional<Profile> fetchProfile(String profileUuid);
+
+	/**
+	 * Assigns a profile to a list of devices.
+	 * <p>
+	 * To avoid performance issues, limit requests to <i>1000</i> devices at a time.
+	 *
+	 * @param profileUuid   the unique identifier for a profile
+	 * @param serialNumbers the serial numbers of the devices that will be assigned
+	 * @return {@link ProfileDevicesResponse} object
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/assign-profile">Assign a Profile</a>
+	 */
+	@Nonnull
+	ProfileDevicesResponse assignProfile(String profileUuid, @Nonnull Set<String> serialNumbers);
+
+	/**
+	 * Removes a profile from a list of devices.
+	 * <p>
+	 * After this call, the devices in the list will have no profiles associated with them. However, if those devices
+	 * have already obtained the profile, this has no effect until the device is wiped and activated again.
+	 *
+	 * @param profileUuid   the unique identifier for a profile
+	 * @param serialNumbers the serial numbers of the devices that will be assigned
+	 * @return {@link ProfileDevicesResponse} object
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/clear-device-profile">Remove a Profile</a>
+	 */
+	@Nonnull
+	ProfileDevicesResponse unassignProfile(String profileUuid, @Nonnull Set<String> serialNumbers);
 }
