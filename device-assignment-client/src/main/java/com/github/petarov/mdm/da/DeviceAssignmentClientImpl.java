@@ -190,4 +190,18 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 			throw new RuntimeException(e);
 		}
 	}
+
+	@Nonnull
+	@Override
+	public ActivationLockStatusResponse enableActivationLock(String serialNumber, String escrowKey,
+			String lostMessage) {
+		try {
+			return execute(client.createRequestBuilder(client.createURI("/device/activationlock"))
+							.POST(HttpRequest.BodyPublishers.ofByteArray(objectMapper.writer()
+									.writeValueAsBytes(new ActivationLockRequest(serialNumber, escrowKey, lostMessage)))),
+					ActivationLockStatusResponse.class);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

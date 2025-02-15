@@ -149,4 +149,34 @@ public interface DeviceAssignmentClient {
 	 */
 	@Nonnull
 	ProfileDevicesResponse unassignProfile(String profileUuid, @Nonnull Set<String> serialNumbers);
+
+	/**
+	 * Enables activation lock on a remote device.
+	 * <p>
+	 * Find My iPhone Activation Lock is a feature of iCloud and Automated Device Enrollment that makes it harder for
+	 * anyone to use or resell a lost or stolen iOS device. Activation Lock is a feature of iCloud, and MDM has the
+	 * ability to allow users to enable the feature on Supervised devices.
+	 * <p>
+	 * There are two ways to manage Activation Lock: the Activation Lock request is available for devices that appear
+	 * in the Apple School Manager portal or Apple Business Manager portal, or the Find My approach. Whichever method
+	 * is the first to enable Activation Lock takes precedence.
+	 *
+	 * @param serialNumber serial number of the device, always required
+	 * @param escrowKey    optional escrow key. If the escrow key is not provided, the device will be locked to the person who
+	 *                     created the MDM server in the portal. For information about creating an escrow key see.
+	 * @param lostMessage  optional lost message to be displayed on the device
+	 * @return {@link ActivationLockStatusResponse} object
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/activationlockrequest">ActivationLockRequest</a>
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/creating-and-using-bypass-codes">Creating and Using Bypass Codes</a>
+	 */
+	@Nonnull
+	ActivationLockStatusResponse enableActivationLock(String serialNumber, String escrowKey, String lostMessage);
+
+	/**
+	 * @see #enableActivationLock(String, String, String)
+	 */
+	@Nonnull
+	default ActivationLockStatusResponse enableActivationLock(String serialNumber) {
+		return enableActivationLock(serialNumber, "", "");
+	}
 }
