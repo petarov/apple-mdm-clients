@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.annotation.Nonnull;
 
-import java.util.*;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Device Assignment Profile.
@@ -59,17 +61,17 @@ import java.util.*;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<String> anchorCerts,
+public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> anchorCerts,
                       @JsonProperty("auto_advance_setup") boolean isAutoAdvanceSetup,
                       @JsonProperty("await_device_configured") boolean isAwaitDeviceConfigured,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String configurationWebUrl,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String department,
-                      @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<String> devices, boolean isMdmRemovable,
+                      @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> devices, boolean isMdmRemovable,
                       boolean isMultiUser, @JsonSetter(nulls = Nulls.AS_EMPTY) String language,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String orgMagic,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String profileName,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String region, @Nonnull Set<ProfileSkipItem> skipSetupItems,
-                      @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<String> supervisingHostCerts,
+                      @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> supervisingHostCerts,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String supportEmailAddress,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String supportPhoneNumber,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String url) {
@@ -79,12 +81,12 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<String> 
 	 */
 	public static class ProfileBuilder {
 
-		private final List<String>         anchorCerts             = new ArrayList<>();
+		private final Set<String>          anchorCerts             = new HashSet<>();
 		private       boolean              isAutoAdvanceSetup      = false;
 		private       boolean              isAwaitDeviceConfigured = false;
 		private       String               configurationWebUrl     = "";
 		private       String               department              = "";
-		private final List<String>         devices                 = new ArrayList<>();
+		private final Set<String>          devices                 = new HashSet<>();
 		private       boolean              isMdmRemovable          = true;
 		private       boolean              isMultiUser             = false;
 		private       String               language                = "";
@@ -92,7 +94,7 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<String> 
 		private       String               profileName             = "";
 		private       String               region                  = "";
 		private final Set<ProfileSkipItem> skipSetupItems          = new HashSet<>();
-		private final List<String>         supervisingHostCerts    = new ArrayList<>();
+		private final Set<String>          supervisingHostCerts    = new HashSet<>();
 		private       String               supportEmailAddress     = "";
 		private       String               supportPhoneNumber      = "";
 		private       String               url                     = "";
@@ -100,7 +102,7 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<String> 
 		/**
 		 * @see #anchorCerts()
 		 */
-		public ProfileBuilder setAnchorCerts(@Nonnull List<String> anchorCerts) {
+		public ProfileBuilder setAnchorCerts(@Nonnull Set<String> anchorCerts) {
 			this.anchorCerts.clear();
 			this.anchorCerts.addAll(anchorCerts);
 			return this;
@@ -141,7 +143,7 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<String> 
 		/**
 		 * @see #devices()
 		 */
-		public ProfileBuilder setDevices(@Nonnull List<String> devices) {
+		public ProfileBuilder setDevices(@Nonnull Set<String> devices) {
 			this.devices.clear();
 			this.devices.addAll(devices);
 			return this;
@@ -207,7 +209,7 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<String> 
 		/**
 		 * @see #supervisingHostCerts()
 		 */
-		public ProfileBuilder setSupervisingHostCerts(@Nonnull List<String> supervisingHostCerts) {
+		public ProfileBuilder setSupervisingHostCerts(@Nonnull Set<String> supervisingHostCerts) {
 			this.supervisingHostCerts.clear();
 			this.supervisingHostCerts.addAll(supervisingHostCerts);
 			return this;
