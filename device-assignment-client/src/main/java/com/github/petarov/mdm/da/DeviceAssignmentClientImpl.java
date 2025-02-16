@@ -80,6 +80,14 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 		}
 	}
 
+	private <T> HttpRequest.BodyPublisher ofBody(T obj) {
+		try {
+			return HttpRequest.BodyPublishers.ofByteArray(objectMapper.writeValueAsBytes(obj));
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("Error serializing to json: " + obj.getClass().getName(), e);
+		}
+	}
+
 	@Nonnull
 	@Override
 	public AccountDetail fetchAccount() {
@@ -89,65 +97,36 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	@Nonnull
 	@Override
 	public DevicesResponse fetchDevices(String cursor, int limit) {
-		try {
-			return execute(client.createRequestBuilder(client.createURI("/server/devices"))
-							.POST(HttpRequest.BodyPublishers.ofByteArray(
-									objectMapper.writer().writeValueAsBytes(new FetchDeviceRequest(cursor, limit)))),
-					DevicesResponse.class);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
+		return execute(client.createRequestBuilder(client.createURI("/server/devices"))
+				.POST(ofBody(new FetchDeviceRequest(cursor, limit))), DevicesResponse.class);
 	}
 
 	@Nonnull
 	@Override
 	public DeviceListResponse fetchDeviceDetails(@Nonnull Set<String> serialNumbers) {
-		try {
-			return execute(client.createRequestBuilder(client.createURI("/devices"))
-							.POST(HttpRequest.BodyPublishers.ofByteArray(
-									objectMapper.writer().writeValueAsBytes(new DeviceListRequest(serialNumbers)))),
-					DeviceListResponse.class);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
+		return execute(client.createRequestBuilder(client.createURI("/devices"))
+				.POST(ofBody(new DeviceListRequest(serialNumbers))), DeviceListResponse.class);
 	}
 
 	@Nonnull
 	@Override
 	public DevicesResponse syncDevices(String cursor, int limit) {
-		try {
-			return execute(client.createRequestBuilder(client.createURI("/devices/sync"))
-							.POST(HttpRequest.BodyPublishers.ofByteArray(
-									objectMapper.writer().writeValueAsBytes(new FetchDeviceRequest(cursor, limit)))),
-					DevicesResponse.class);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
+		return execute(client.createRequestBuilder(client.createURI("/devices/sync"))
+				.POST(ofBody(new FetchDeviceRequest(cursor, limit))), DevicesResponse.class);
 	}
 
 	@Nonnull
 	@Override
 	public DeviceStatusResponse disownDevices(@Nonnull Set<String> serialNumbers) {
-		try {
-			return execute(client.createRequestBuilder(client.createURI("/devices/disown"))
-							.POST(HttpRequest.BodyPublishers.ofByteArray(
-									objectMapper.writer().writeValueAsBytes(new DeviceListRequest(serialNumbers)))),
-					DeviceStatusResponse.class);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
+		return execute(client.createRequestBuilder(client.createURI("/devices/disown"))
+				.POST(ofBody(new DeviceListRequest(serialNumbers))), DeviceStatusResponse.class);
 	}
 
 	@Nonnull
 	@Override
 	public ProfileDevicesResponse createProfile(@Nonnull Profile profile) {
-		try {
-			return execute(client.createRequestBuilder(client.createURI("/profile"))
-							.POST(HttpRequest.BodyPublishers.ofByteArray(objectMapper.writer().writeValueAsBytes(profile))),
-					ProfileDevicesResponse.class);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
+		return execute(client.createRequestBuilder(client.createURI("/profile")).POST(ofBody(profile)),
+				ProfileDevicesResponse.class);
 	}
 
 	@Nonnull
@@ -168,41 +147,25 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	@Nonnull
 	@Override
 	public ProfileDevicesResponse assignProfile(String profileUuid, @Nonnull Set<String> serialNumbers) {
-		try {
-			return execute(client.createRequestBuilder(client.createURI("/profile/devices"))
-							.POST(HttpRequest.BodyPublishers.ofByteArray(objectMapper.writer()
-									.writeValueAsBytes(new ProfileDevicesRequest(profileUuid, serialNumbers)))),
-					ProfileDevicesResponse.class);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
+		return execute(client.createRequestBuilder(client.createURI("/profile/devices"))
+				.POST(ofBody(new ProfileDevicesRequest(profileUuid, serialNumbers))), ProfileDevicesResponse.class);
 	}
 
 	@Nonnull
 	@Override
 	public ProfileDevicesResponse unassignProfile(String profileUuid, @Nonnull Set<String> serialNumbers) {
-		try {
-			return execute(client.createRequestBuilder(client.createURI("/profile/devices")).method("DELETE",
-							HttpRequest.BodyPublishers.ofByteArray(objectMapper.writer()
-									.writeValueAsBytes(new ProfileDevicesRequest(profileUuid, serialNumbers)))),
-					ProfileDevicesResponse.class);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
+		return execute(client.createRequestBuilder(client.createURI("/profile/devices"))
+						.method("DELETE", ofBody(new ProfileDevicesRequest(profileUuid, serialNumbers))),
+				ProfileDevicesResponse.class);
 	}
 
 	@Nonnull
 	@Override
 	public ActivationLockStatusResponse enableActivationLock(String serialNumber, String escrowKey,
 			String lostMessage) {
-		try {
-			return execute(client.createRequestBuilder(client.createURI("/device/activationlock"))
-							.POST(HttpRequest.BodyPublishers.ofByteArray(objectMapper.writer()
-									.writeValueAsBytes(new ActivationLockRequest(serialNumber, escrowKey, lostMessage)))),
-					ActivationLockStatusResponse.class);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
+		return execute(client.createRequestBuilder(client.createURI("/device/activationlock"))
+						.POST(ofBody(new ActivationLockRequest(serialNumber, escrowKey, lostMessage))),
+				ActivationLockStatusResponse.class);
 	}
 
 	@Nonnull
