@@ -204,4 +204,11 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 			throw new RuntimeException(e);
 		}
 	}
+
+	@Nonnull
+	@Override
+	public SeedBuildTokenResponse fetchBetaEnrollmentTokens() {
+		return execute(client.createRequestBuilder(client.createURI("/os-beta-enrollment/tokens")).GET(),
+				SeedBuildTokenResponse.class);
+	}
 }

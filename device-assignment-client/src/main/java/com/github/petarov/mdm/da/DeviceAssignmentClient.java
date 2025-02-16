@@ -179,4 +179,12 @@ public interface DeviceAssignmentClient {
 	default ActivationLockStatusResponse enableActivationLock(String serialNumber) {
 		return enableActivationLock(serialNumber, "", "");
 	}
+
+	/**
+	 * Retrieves the beta enrollment tokens available for the organization.
+	 *
+	 * @return {@link SeedBuildTokenResponse} object
+	 */
+	@Nonnull
+	SeedBuildTokenResponse fetchBetaEnrollmentTokens();
 }
