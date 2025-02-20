@@ -23,6 +23,9 @@ builder.setServerToken(DeviceAssignmentServerToken.create(
 		Path.of("<path-to-token>/token_file_smime.p7m"), 
 		DeviceAssignmentPrivateKey.createFromDER(
 				Path.of("<path-to-private-key>/private.der"))
+// HTTP CONNECT proxy tunnel is supported
+builder.setProxyOptions(MdmClientProxyOptions.ofHttp("proxy-server", 3128, "user", "pass"));
+
 var client = builder.build();
 		
 // Display account information
