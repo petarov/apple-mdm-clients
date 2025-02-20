@@ -52,7 +52,7 @@ See the complete list of service API calls on Apple's [Device Assignment](https:
 
 # Build
 
-Requires [Java 17](https://adoptium.net/temurin/releases/) or later
+Requires [Java 21](https://adoptium.net/temurin/releases/) or later
 
     ./gradlew clean build
 
