@@ -4,11 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.petarov.mdm.shared.config.MdmClientBuilder;
 import com.github.petarov.mdm.shared.util.JsonUtil;
 import jakarta.annotation.Nonnull;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -22,13 +21,15 @@ import java.util.zip.GZIPInputStream;
 public class HttpClientWrapper {
 
 	private final MdmClientBuilder.MdmBuilderOptions options;
+	private final Logger                             logger;
 	private final String                             proxyCredentials;
 
 	private HttpClient   _client;
 	private ObjectMapper _objectMapper;
 
-	public HttpClientWrapper(@Nonnull MdmClientBuilder.MdmBuilderOptions options) {
+	public HttpClientWrapper(@Nonnull MdmClientBuilder.MdmBuilderOptions options, @Nonnull Logger logger) {
 		this.options = options;
+		this.logger = logger;
 		this.proxyCredentials = options.proxyOptions() == null ?
 				"" :
 				(options.proxyOptions().getUsername().isBlank() ?
@@ -67,16 +68,16 @@ public class HttpClientWrapper {
 		if (options.proxyOptions() != null) {
 			builder.proxy(new ProxyOptionsProxySelectorAdapter(options.proxyOptions()));
 
-//			if (!options.proxyOptions().getUsername().isBlank()) {
-//				builder.authenticator(new Authenticator() {
-//
-//					@Override
-//					protected PasswordAuthentication getPasswordAuthentication() {
-//						return new PasswordAuthentication(options.proxyOptions().getUsername(),
-//								options.proxyOptions().getPassword().toCharArray());
-//					}
-//				});
-//			}
+			//			if (!options.proxyOptions().getUsername().isBlank()) {
+			//				builder.authenticator(new Authenticator() {
+			//
+			//					@Override
+			//					protected PasswordAuthentication getPasswordAuthentication() {
+			//						return new PasswordAuthentication(options.proxyOptions().getUsername(),
+			//								options.proxyOptions().getPassword().toCharArray());
+			//					}
+			//				});
+			//			}
 		}
 
 		return builder;
@@ -124,8 +125,10 @@ public class HttpClientWrapper {
 		return "%s %s - %d".formatted(req.method(), req.uri(), resp.statusCode());
 	}
 
-	private void traceReqHeaders(HttpRequest req) {
-		req.headers().map().forEach((k, v) -> System.out.println("HEADER key=" + k + " v=" + v));
+	private void debugReqHeaders(HttpRequest req) {
+		var sb = new StringBuilder();
+		req.headers().map().forEach((k, v) -> sb.append(k).append("=").append(v).append(" "));
+		logger.debug("req: {} {} headers: {}", req.method(), req.uri(), sb);
 	}
 
 	private InputStream decodeResponseBody(@Nonnull HttpResponse<InputStream> response) throws IOException {
@@ -140,7 +143,9 @@ public class HttpClientWrapper {
 	public <RESPONSE> RESPONSE send(@Nonnull HttpRequest request, @Nonnull Class<RESPONSE> clazz) {
 		HttpResponse<InputStream> response;
 		try {
-			traceReqHeaders(request);
+			if (logger.isDebugEnabled()) {
+				debugReqHeaders(request);
+			}
 			response = getClient().send(request, HttpResponse.BodyHandlers.ofInputStream());
 		} catch (IOException e) {
 			throw new RuntimeException("I/O error while sending request", e);
@@ -152,10 +157,17 @@ public class HttpClientWrapper {
 			if (isResponseOk(response.statusCode())) {
 				try (var input = decodeResponseBody(response)) {
 					var body = new String(input.readAllBytes(), StandardCharsets.UTF_8);
-					System.out.println("RESPONSE: " + body); // TODO: log response and headers in debug mode
+					if (logger.isTraceEnabled()) {
+						logger.trace("resp: {} status={} body={}", response.uri(), response.statusCode(), body);
+					} else if (logger.isDebugEnabled()) {
+						logger.debug("resp: {} status={}", response.uri(), response.statusCode());
+					}
 					return getObjectMapper().reader().readValue(body, clazz);
 				}
 			} else {
+				if (logger.isDebugEnabled()) {
+					logger.trace("resp: {} status={}", response.uri(), response.statusCode());
+				}
 				try (var input = decodeResponseBody(response)) {
 					throw new HttpClientWrapperException(getRequestResponseLine(request, response),
 							response.statusCode(), new String(input.readAllBytes(), StandardCharsets.UTF_8));

@@ -10,12 +10,16 @@ import com.github.petarov.mdm.shared.http.HttpClientWrapperException;
 import com.github.petarov.mdm.shared.http.HttpConsts;
 import com.github.petarov.mdm.shared.util.JsonUtil;
 import jakarta.annotation.Nonnull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.http.HttpRequest;
 import java.util.Optional;
 import java.util.Set;
 
 class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
+
+	static final Logger logger = LoggerFactory.getLogger(DeviceAssignmentClientImpl.class);
 
 	private static final String HEADER_X_ADM_AUTH_SESSION              = "X-ADM-Auth-Session";
 	private static final String HEADER_X_SERVER_PROTOCOL_VERSION       = "X-Server-Protocol-Version";
@@ -68,7 +72,7 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 				return client.send(requestBuilder.build(), clazz);
 			} catch (HttpClientWrapperException e) {
 				if (client.isResponseUnauthorized(e.getStatusCode()) && !retry) {
-					System.out.println("REFRESHING TOKEN ..."); // TODO
+					logger.info("Refreshing expired auth token ...");
 					// New session id may be needed
 					refreshSessionId();
 					// Retry only once

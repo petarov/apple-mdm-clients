@@ -48,6 +48,6 @@ public class DeviceAssignmentClientBuilder
 
 		return new DeviceAssignmentClientImpl(new HttpClientWrapper(
 				new MdmBuilderOptions(serviceUrl, userAgent, skipSslVerify, connectTimeout, readTimeout, proxyOptions,
-						secureRandom)), serverToken);
+						secureRandom), DeviceAssignmentClientImpl.logger), serverToken);
 	}
 }

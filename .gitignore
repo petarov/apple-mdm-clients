@@ -15,7 +15,7 @@ replay_pid*
 
 # Test sources
 Main.java
-**/src/main/resources/apple-mdm-client-tests*
+examples
 
 # Ignore Gradle project-specific cache directory
 .gradle
