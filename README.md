@@ -6,7 +6,7 @@ Among other technical goals, this library aims to use as few external dependenci
 
 ## Device Assignment Client
 
-    Status: Work in progress ...
+    Status: Testing ...
 
 Manage your organization's Apple Business Manager (`ABM`) devices. Device assignment, previously known as "The Device Enrollment
 Program `(DEP)`" allows for creating device enrollment profiles and assigning them to your organization's devices.
@@ -23,7 +23,7 @@ builder.setServerToken(DeviceAssignmentServerToken.create(
 		Path.of("<path-to-token>/token_file_smime.p7m"), 
 		DeviceAssignmentPrivateKey.createFromDER(
 				Path.of("<path-to-private-key>/private.der"))
-// HTTP CONNECT proxy tunnel is supported
+// Use tunneling (HTTP CONNECT) proxy
 builder.setProxyOptions(MdmClientProxyOptions.ofHttp("proxy-server", 3128, "user", "pass"));
 
 var client = builder.build();
@@ -52,6 +52,16 @@ See the complete list of service API calls on Apple's [Device Assignment](https:
 ## App and Book Management Client
 
     Status: Planing
+
+# Logging
+
+The libraries utilize SLF4J, so you can plug the lib to your own logger in order to output debug and trace log messages. For example:
+
+```xml
+<logger name="com.github.petarov.mdm" level="debug" additivity="false">
+    <AppenderRef ref="console"/>
+</logger>
+```  
 
 # Build
 
