@@ -113,16 +113,14 @@ public class HttpClientWrapper {
 		builder.timeout(options.readTimeout());
 		builder.setHeader(HttpConsts.HEADER_USER_AGENT, options.userAgent());
 		builder.setHeader(HttpConsts.HEADER_ACCEPT_ENCODING, "gzip, deflate");
-
 		if (!proxyCredentials.isBlank()) {
 			builder.setHeader(HttpConsts.HEADER_PROXY_AUTHORIZATION, proxyCredentials);
 		}
-
 		return builder;
 	}
 
 	private String getRequestResponseLine(HttpRequest req, HttpResponse<?> resp) {
-		return "%s %s - %d".formatted(req.method(), req.uri(), resp.statusCode());
+		return "%s %s status=%d".formatted(req.method(), req.uri(), resp.statusCode());
 	}
 
 	private void debugReqHeaders(HttpRequest req) {
@@ -131,7 +129,19 @@ public class HttpClientWrapper {
 		logger.debug("req: {} {} headers: {}", req.method(), req.uri(), sb);
 	}
 
-	private InputStream decodeResponseBody(@Nonnull HttpResponse<InputStream> response) throws IOException {
+	private void debugRespHeaders(HttpResponse<?> resp, String body) {
+		var sb = new StringBuilder();
+		resp.headers().map().forEach((k, v) -> sb.append(k).append("=").append(v).append(" "));
+
+		if (logger.isTraceEnabled()) {
+			logger.trace("resp: {} ({}) headers: {} body: {}", resp.uri(), resp.statusCode(), sb,
+					body.isBlank() ? "<blank>" : body);
+		} else if (logger.isDebugEnabled()) {
+			logger.debug("resp: {} ({}) headers: {}", resp.uri(), resp.statusCode(), sb);
+		}
+	}
+
+	private InputStream decodeResponseBody(HttpResponse<InputStream> response) throws IOException {
 		return switch (response.headers().firstValue(HttpConsts.HEADER_CONTENT_ENCODING).orElse("")) {
 			case "gzip" -> new GZIPInputStream(response.body());
 			case "deflate" -> new DeflaterInputStream(response.body());
@@ -157,16 +167,14 @@ public class HttpClientWrapper {
 			if (isResponseOk(response.statusCode())) {
 				try (var input = decodeResponseBody(response)) {
 					var body = new String(input.readAllBytes(), StandardCharsets.UTF_8);
-					if (logger.isTraceEnabled()) {
-						logger.trace("resp: {} status={} body={}", response.uri(), response.statusCode(), body);
-					} else if (logger.isDebugEnabled()) {
-						logger.debug("resp: {} status={}", response.uri(), response.statusCode());
+					if (logger.isDebugEnabled() || logger.isTraceEnabled()) {
+						debugRespHeaders(response, body);
 					}
 					return getObjectMapper().reader().readValue(body, clazz);
 				}
 			} else {
-				if (logger.isDebugEnabled()) {
-					logger.trace("resp: {} status={}", response.uri(), response.statusCode());
+				if (logger.isDebugEnabled() || logger.isTraceEnabled()) {
+					debugRespHeaders(response, "");
 				}
 				try (var input = decodeResponseBody(response)) {
 					throw new HttpClientWrapperException(getRequestResponseLine(request, response),
