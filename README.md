@@ -4,11 +4,11 @@ Java clients for Apple Mobile Device Management (MDM) services.
 
 Among other technical goals, this library aims to use as few external dependencies as possible.
 
-## Device Assignment Client
+## Device Assignment Client (Automated Device Enrollment)
 
     Status: Testing ...
 
-Manage your organization's Apple Business Manager (`ABM`) devices. Device assignment, previously known as "The Device Enrollment
+Manage your organization's Apple Business Manager (`ABM`) devices. ADE, previously known as "The Device Enrollment
 Program `(DEP)`" allows for creating device enrollment profiles and assigning them to your organization's devices.
 
 In order to use the Java client it is required that you already have created a valid device assignment token on ABM.
@@ -51,11 +51,11 @@ See the complete list of service API calls on Apple's [Device Assignment](https:
 
 ## App and Book Management Client
 
-    Status: Planing
+    Status: Planing ...
 
 # Logging
 
-The libraries utilize SLF4J, so you can plug the lib to your own logger in order to output debug and trace log messages. For example:
+The libraries utilize SLF4J, so you can plug debug and trace logs into your own logger. Here is a simple `log4j2.xml` example:
 
 ```xml
 <logger name="com.github.petarov.mdm" level="debug" additivity="false">
