@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.security.Security;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -21,7 +22,7 @@ public class DeviceAssignmentPrivateKeyTests {
 	@Test
 	void load_private_key_from_DER() throws Exception {
 		var key = DeviceAssignmentPrivateKey.createFromDER(
-				this.getClass().getResource("/apple-mdm-client-tests-1.der").openStream());
+				Objects.requireNonNull(this.getClass().getResourceAsStream("/apple-mdm-client-tests-1.der")));
 		assertEquals("RSA", key.privateKey().getAlgorithm());
 		assertEquals("PKCS#8", key.privateKey().getFormat());
 	}
@@ -29,7 +30,7 @@ public class DeviceAssignmentPrivateKeyTests {
 	@Test
 	void load_private_key_from_PEM() throws Exception {
 		var key = DeviceAssignmentPrivateKey.createFromPEM(
-				this.getClass().getResource("/apple-mdm-client-tests-1.pem").openStream());
+				Objects.requireNonNull(this.getClass().getResourceAsStream("/apple-mdm-client-tests-1.pem")));
 		assertEquals("RSA", key.privateKey().getAlgorithm());
 		assertEquals("PKCS#8", key.privateKey().getFormat());
 	}

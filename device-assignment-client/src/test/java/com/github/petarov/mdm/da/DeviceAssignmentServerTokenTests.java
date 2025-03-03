@@ -23,8 +23,8 @@ public class DeviceAssignmentServerTokenTests {
 	@BeforeAll
 	void init() throws Exception {
 		Security.addProvider(new BouncyCastleProvider());
-		serverTokenInput = this.getClass().getResource("/apple-mdm-client-tests-1-server-token.p7m").openStream();
-		privateKeyInput = this.getClass().getResource("/apple-mdm-client-tests-1.der").openStream();
+		serverTokenInput = this.getClass().getResourceAsStream("/apple-mdm-client-tests-1-server-token.p7m");
+		privateKeyInput = this.getClass().getResourceAsStream("/apple-mdm-client-tests-1.der");
 	}
 
 	@Test
