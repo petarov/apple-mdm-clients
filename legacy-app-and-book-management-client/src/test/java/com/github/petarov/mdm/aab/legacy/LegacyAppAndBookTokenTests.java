@@ -1,6 +1,5 @@
 package com.github.petarov.mdm.aab.legacy;
 
-import com.github.petarov.mdm.aab.legacy.config.AppAndBookToken;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -12,7 +11,7 @@ import java.security.Security;
 import java.time.OffsetDateTime;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AppAndBookTokenTests {
+public class LegacyAppAndBookTokenTests {
 
 	private InputStream sTokenInput;
 
@@ -24,7 +23,7 @@ public class AppAndBookTokenTests {
 
 	@Test
 	void load_stoken_from_file() throws Exception {
-		var serverToken = AppAndBookToken.create(sTokenInput);
+		var serverToken = LegacyAppAndBookToken.create(sTokenInput);
 
 		Assertions.assertEquals(
 				"eyJ0b2tlbiI6IlZHaHBjeUJwY3lCaElITmhiWEJzWlNCMFpYaDBJSGRvYVdOb0lIZGhjeUIxYzJWa0lIUnZJR055WldGMFpTQjBhR1VnYzJsdGRXeGhkRzl5SUhSdmEyVnVDZz09IiwiZXhwRGF0ZSI6IjIwMjAtMTItMzFUMTM6NTc6MTkrMDI6MDAiLCJvcmdOYW1lIjoiYmxhYmxhIEdtYkgifQ==",

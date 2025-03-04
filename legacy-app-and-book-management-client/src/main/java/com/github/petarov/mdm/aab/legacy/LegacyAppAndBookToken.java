@@ -1,4 +1,4 @@
-package com.github.petarov.mdm.aab.legacy.config;
+package com.github.petarov.mdm.aab.legacy;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
@@ -14,16 +14,16 @@ import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.util.Base64;
 
-public record AppAndBookToken(String sToken, @Nonnull AppAndBookTokenDetails details) {
+public record LegacyAppAndBookToken(String sToken, @Nonnull AppAndBookTokenDetails details) {
 
 	/**
 	 * Create an sToken wrapper byte data input.
 	 */
 	@Nonnull
-	public static AppAndBookToken create(@Nonnull InputStream input) {
+	public static LegacyAppAndBookToken create(@Nonnull InputStream input) {
 		try {
 			String sToken = new String(input.readAllBytes(), StandardCharsets.UTF_8).stripTrailing();
-			return new AppAndBookToken(sToken, JsonUtil.createObjectMapper()
+			return new LegacyAppAndBookToken(sToken, JsonUtil.createObjectMapper()
 					.readValue(Base64.getDecoder().decode(sToken), AppAndBookTokenDetails.class));
 		} catch (IOException e) {
 			throw new RuntimeException("Error read sToken input stream", e);
@@ -34,7 +34,7 @@ public record AppAndBookToken(String sToken, @Nonnull AppAndBookTokenDetails det
 	 * @see #create(InputStream)
 	 */
 	@Nonnull
-	public static AppAndBookToken create(@Nonnull Path path) throws IOException {
+	public static LegacyAppAndBookToken create(@Nonnull Path path) throws IOException {
 		try (var input = Files.newInputStream(path)) {
 			return create(input);
 		}
