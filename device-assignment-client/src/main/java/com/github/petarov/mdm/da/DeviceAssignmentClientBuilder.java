@@ -1,6 +1,5 @@
 package com.github.petarov.mdm.da;
 
-import com.github.petarov.mdm.da.config.DeviceAssignmentServerToken;
 import com.github.petarov.mdm.shared.config.MdmClientBuilder;
 import com.github.petarov.mdm.shared.http.HttpClientWrapper;
 import jakarta.annotation.Nonnull;

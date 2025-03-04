@@ -1,6 +1,5 @@
 package com.github.petarov.mdm.da;
 
-import com.github.petarov.mdm.da.config.DeviceAssignmentPrivateKey;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

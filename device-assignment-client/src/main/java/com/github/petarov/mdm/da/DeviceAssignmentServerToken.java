@@ -1,4 +1,4 @@
-package com.github.petarov.mdm.da.config;
+package com.github.petarov.mdm.da;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;

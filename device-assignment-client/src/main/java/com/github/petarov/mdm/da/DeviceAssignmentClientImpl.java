@@ -2,7 +2,6 @@ package com.github.petarov.mdm.da;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.petarov.mdm.da.config.DeviceAssignmentServerToken;
 import com.github.petarov.mdm.da.model.*;
 import com.github.petarov.mdm.da.util.OAuth1a;
 import com.github.petarov.mdm.shared.http.HttpClientWrapper;

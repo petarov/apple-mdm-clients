@@ -1,6 +1,6 @@
 package com.github.petarov.mdm.da.util;
 
-import com.github.petarov.mdm.da.config.DeviceAssignmentServerToken;
+import com.github.petarov.mdm.da.DeviceAssignmentServerToken;
 import jakarta.annotation.Nonnull;
 import org.bouncycastle.crypto.digests.SHA1Digest;
 import org.bouncycastle.crypto.macs.HMac;
