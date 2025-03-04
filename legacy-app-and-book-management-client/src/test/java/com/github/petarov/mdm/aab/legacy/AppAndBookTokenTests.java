@@ -9,6 +9,7 @@ import org.junit.jupiter.api.TestInstance;
 
 import java.io.InputStream;
 import java.security.Security;
+import java.time.OffsetDateTime;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AppAndBookTokenTests {
@@ -28,5 +29,12 @@ public class AppAndBookTokenTests {
 		Assertions.assertEquals(
 				"eyJ0b2tlbiI6IlZHaHBjeUJwY3lCaElITmhiWEJzWlNCMFpYaDBJSGRvYVdOb0lIZGhjeUIxYzJWa0lIUnZJR055WldGMFpTQjBhR1VnYzJsdGRXeGhkRzl5SUhSdmEyVnVDZz09IiwiZXhwRGF0ZSI6IjIwMjAtMTItMzFUMTM6NTc6MTkrMDI6MDAiLCJvcmdOYW1lIjoiYmxhYmxhIEdtYkgifQ==",
 				serverToken.sToken());
+
+		Assertions.assertEquals(
+				"VGhpcyBpcyBhIHNhbXBsZSB0ZXh0IHdoaWNoIHdhcyB1c2VkIHRvIGNyZWF0ZSB0aGUgc2ltdWxhdG9yIHRva2VuCg==",
+				serverToken.details().token());
+		Assertions.assertEquals(OffsetDateTime.parse("2020-12-31T13:57:19+02:00"),
+				serverToken.details().expiryDateTime());
+		Assertions.assertEquals("blabla GmbH", serverToken.details().orgName());
 	}
 }
