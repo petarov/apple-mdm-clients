@@ -19,6 +19,9 @@ public class DeviceAssignmentClientBuilder
 	private String                      appleHost;
 	private DeviceAssignmentServerToken serverToken;
 
+	DeviceAssignmentClientBuilder() {
+	}
+
 	/**
 	 * Sets an Apple host other than the default {@link DeviceAssignmentClientBuilder#DEFAULT_APPLE_PRODUCTION_HOST}.
 	 */

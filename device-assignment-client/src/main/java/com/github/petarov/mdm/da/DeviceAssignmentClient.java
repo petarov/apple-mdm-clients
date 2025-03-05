@@ -15,6 +15,14 @@ import java.util.Set;
 public interface DeviceAssignmentClient {
 
 	/**
+	 * @return new {@link DeviceAssignmentClientBuilder} instance
+	 */
+	@Nonnull
+	static DeviceAssignmentClientBuilder newBuilder() {
+		return new DeviceAssignmentClientBuilder();
+	}
+
+	/**
 	 * Obtain the details for your account.
 	 * <p>
 	 * Each Mobile Device Management server must be registered with Apple. This endpoint provides details about the

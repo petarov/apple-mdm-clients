@@ -17,7 +17,7 @@ The private key with which the token must be decrypted is also required.
 ### Client Example 
 
 ```java
-var builder = new DeviceAssignmentClientBuilder();
+var builder = DeviceAssignmentClient.newBuilder();
 builder.setUserAgent("apple-mdm-device-assignment-v1");
 builder.setServerToken(DeviceAssignmentServerToken.create(
 		Path.of("<path-to-token>/token_file_smime.p7m"), 
