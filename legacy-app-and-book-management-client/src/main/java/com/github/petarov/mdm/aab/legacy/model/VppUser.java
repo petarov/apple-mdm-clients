@@ -1,6 +1,5 @@
 package com.github.petarov.mdm.aab.legacy.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -38,7 +37,6 @@ import java.util.List;
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/vppuser">VppUser</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
-@JsonIgnoreProperties(ignoreUnknown = true)
 public record VppUser(@JsonSetter(nulls = Nulls.AS_EMPTY) String clientUserIdStr,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String email,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String itsIdHash,
