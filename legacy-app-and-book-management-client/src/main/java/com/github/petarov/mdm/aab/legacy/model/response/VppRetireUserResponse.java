@@ -17,4 +17,4 @@ import jakarta.annotation.Nonnull;
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/retirevppuserresponse">RetireVppUserResponse</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
-public record RetireVppUserResponse(@JsonUnwrapped VppResponse response, @Nonnull VppUser user) {}
+public record VppRetireUserResponse(@JsonUnwrapped VppResponse response, @Nonnull VppUser user) {}
