@@ -38,20 +38,13 @@ public interface LegacyAppAndBookClient {
 	/**
 	 * Fetches information about a particular user.
 	 *
-	 * @param sToken          required authentication token. See <a href="https://developer.apple.com/documentation/devicemanagement/managing-apps-and-books-through-web-services-legacy#Authentication">Authentication</a>.
-	 * @param clientUserIdStr the identifier supplied by the client when registering a user.
-	 *                        Either {@code clientUserIdStr} or {@code userId} is required.
-	 *                        If both {@code clientUserIdStr} and {@code userId} are supplied, {@code userId} takes precedence.
-	 * @param userId          the unique identifier assigned by the VPP when registering the user.
-	 *                        Either {@code clientUserIdStr} or {@code userId} is required.
-	 *                        If both {@code clientUserIdStr} and {@code userId} are supplied, {@code userId} takes precedence.
-	 * @param itsIdHash       (optional) the hash of the user's iTunes Store ID
+	 * @param sToken      required authentication token. See <a href="https://developer.apple.com/documentation/devicemanagement/managing-apps-and-books-through-web-services-legacy#Authentication">Authentication</a>.
+	 * @param userIdParam the user id. See {@link UserIdParam}.
 	 * @return {@link VppGetUserResponse} object
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/get-a-user">Get a User</a>
 	 */
 	@Nonnull
-	VppGetUserResponse fetchUser(String sToken, String clientUserIdStr, long userId,
-			String itsIdHash);  // TODO: record for user ids
+	VppGetUserResponse fetchUser(String sToken, @Nonnull UserIdParam userIdParam);
 
 	/**
 	 * Registers a user with the volume-purchase program.
@@ -81,21 +74,15 @@ public interface LegacyAppAndBookClient {
 	 * Modifies details about a user.
 	 *
 	 * @param sToken            required authentication token. See <a href="https://developer.apple.com/documentation/devicemanagement/managing-apps-and-books-through-web-services-legacy#Authentication">Authentication</a>.
+	 * @param userIdParam       the user id. See {@link UserIdParam}.
 	 * @param email             the user's email address i.e. the email field is updated only if the value is provided in the request
 	 * @param managedAppleIDStr the Apple ID associated with the user. This ID's organization must match that of the provided sToken.
-	 * @param clientUserIdStr   the identifier supplied by the client when registering a user.
-	 *                          Either {@code clientUserIdStr} or {@code userId} is required.
-	 *                          If both {@code clientUserIdStr} and {@code userId} are supplied, {@code userId} takes precedence.
-	 * @param userId            the unique identifier assigned by the VPP when registering the user.
-	 *                          Either {@code clientUserIdStr} or {@code userId} is required.
-	 *                          If both {@code clientUserIdStr} and {@code userId} are supplied, {@code userId} takes precedence.
-	 * @param itsIdHash         (optional) the hash of the user's iTunes Store ID
 	 * @return {@link VppEditUserResponse} object
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/edit-a-user">Edit a User</a>
 	 */
 	@Nonnull
-	VppEditUserResponse editUser(String sToken, String email, String managedAppleIDStr, String clientUserIdStr,
-			long userId, String itsIdHash); // TODO: record for user ids
+	VppEditUserResponse editUser(String sToken, @Nonnull UserIdParam userIdParam, String email,
+			String managedAppleIDStr);
 
 	/**
 	 * Retires a user account.
@@ -108,17 +95,48 @@ public interface LegacyAppAndBookClient {
 	 * <a href="https://developer.apple.com/documentation/devicemanagement/register-a-user">Register a User</a>
 	 * endpoint.
 	 *
-	 * @param sToken          required the authentication token.
-	 *                        For more information, see <a href="https://developer.apple.com/documentation/devicemanagement/managing-apps-and-books-through-web-services-legacy#Authentication">Authentication</a>.
+	 * @param sToken      required the authentication token.
+	 *                    For more information, see <a href="https://developer.apple.com/documentation/devicemanagement/managing-apps-and-books-through-web-services-legacy#Authentication">Authentication</a>.
+	 * @param userIdParam the user id. See {@link UserIdParam}.
+	 * @return {@link VppRetireUserResponse} object
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/retire-a-user">Retire a User</a>
+	 */
+	@Nonnull
+	VppRetireUserResponse retireUser(String sToken, @Nonnull UserIdParam userIdParam);
+
+
+	/**
+	 * Union of user id parameters. Only one of the two parameters must be set.
+	 * <p>
+	 * Either {@code clientUserIdStr} or {@code userId} is required. If {@code clientUserIdStr} is used, an
+	 * {@code itsIdHash} (iTunes Store ID hash) value may be included, but it is optional. If {@code userId} has a
+	 * value, only that value is used, and {@code clientUserIdStr} and {@code itsIdHash} are ignored.
+	 * <p>
+	 * To obtain a retired user record previously associated with an iTunes Store account, your MDM server can pass
+	 * either the {@code userId} for that record or the {@code clientUserIdStr} and {@code itsIdHash}  for that record.
+	 *
 	 * @param clientUserIdStr the identifier supplied by the client when registering a user.
 	 *                        Either {@code clientUserIdStr} or {@code userId} is required.
 	 *                        If both {@code clientUserIdStr} and {@code userId} are supplied, {@code userId} takes precedence.
 	 * @param userId          the unique identifier assigned by the VPP when registering the user.
 	 *                        Either {@code clientUserIdStr} or {@code userId} is required.
-	 *                        If both {@code clientUserIdStr} and {@code userId} are supplied, {@code userId} takes precedence.
-	 * @return {@link VppRetireUserResponse} object
-	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/retire-a-user">Retire a User</a>
+	 * @param itsIdHash       (optional) the hash of the user's iTunes Store ID
 	 */
-	@Nonnull
-	VppRetireUserResponse retireUser(String sToken, String clientUserIdStr, long userId);
+	record UserIdParam(String clientUserIdStr, long userId, String itsIdHash) {
+
+		@Nonnull
+		static UserIdParam of(String clientUserIdStr, String itsIdHash) {
+			return new UserIdParam(clientUserIdStr, 0, itsIdHash);
+		}
+
+		@Nonnull
+		static UserIdParam of(String clientUserIdStr) {
+			return of(clientUserIdStr, "");
+		}
+
+		@Nonnull
+		static UserIdParam of(long userId) {
+			return new UserIdParam("", userId, "");
+		}
+	}
 }
