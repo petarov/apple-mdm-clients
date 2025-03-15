@@ -36,6 +36,24 @@ public interface LegacyAppAndBookClient {
 	VppClientConfigResponse updateClientConfiguration(String sToken, String clientContext, String notificationToken);
 
 	/**
+	 * Fetches information about a particular user.
+	 *
+	 * @param sToken          required authentication token. See <a href="https://developer.apple.com/documentation/devicemanagement/managing-apps-and-books-through-web-services-legacy#Authentication">Authentication</a>.
+	 * @param clientUserIdStr the identifier supplied by the client when registering a user.
+	 *                        Either {@code clientUserIdStr} or {@code userId} is required.
+	 *                        If both {@code clientUserIdStr} and {@code userId} are supplied, {@code userId} takes precedence.
+	 * @param userId          the unique identifier assigned by the VPP when registering the user.
+	 *                        Either {@code clientUserIdStr} or {@code userId} is required.
+	 *                        If both {@code clientUserIdStr} and {@code userId} are supplied, {@code userId} takes precedence.
+	 * @param itsIdHash       (optional) the hash of the user's iTunes Store ID
+	 * @return {@link VppGetUserResponse} object
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/get-a-user">Get a User</a>
+	 */
+	@Nonnull
+	VppGetUserResponse fetchUser(String sToken, String clientUserIdStr, long userId,
+			String itsIdHash);  // TODO: record for user ids
+
+	/**
 	 * Registers a user with the volume-purchase program.
 	 * <p>
 	 * The {@code clientUserIdStr} must be unique within the organization and may not be changed once a user is
@@ -64,7 +82,6 @@ public interface LegacyAppAndBookClient {
 	 *
 	 * @param sToken            required authentication token. See <a href="https://developer.apple.com/documentation/devicemanagement/managing-apps-and-books-through-web-services-legacy#Authentication">Authentication</a>.
 	 * @param email             the user's email address i.e. the email field is updated only if the value is provided in the request
-	 * @param itsIdHash         the hash of the user's iTunes Store ID
 	 * @param managedAppleIDStr the Apple ID associated with the user. This ID's organization must match that of the provided sToken.
 	 * @param clientUserIdStr   the identifier supplied by the client when registering a user.
 	 *                          Either {@code clientUserIdStr} or {@code userId} is required.
@@ -72,12 +89,13 @@ public interface LegacyAppAndBookClient {
 	 * @param userId            the unique identifier assigned by the VPP when registering the user.
 	 *                          Either {@code clientUserIdStr} or {@code userId} is required.
 	 *                          If both {@code clientUserIdStr} and {@code userId} are supplied, {@code userId} takes precedence.
+	 * @param itsIdHash         (optional) the hash of the user's iTunes Store ID
 	 * @return {@link VppEditUserResponse} object
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/edit-a-user">Edit a User</a>
 	 */
 	@Nonnull
-	VppEditUserResponse editUser(String sToken, String email, String itsIdHash, String managedAppleIDStr,
-			String clientUserIdStr, long userId); // TODO: record for user ids
+	VppEditUserResponse editUser(String sToken, String email, String managedAppleIDStr, String clientUserIdStr,
+			long userId, String itsIdHash); // TODO: record for user ids
 
 	/**
 	 * Retires a user account.
