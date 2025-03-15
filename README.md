@@ -51,7 +51,7 @@ See the complete list of service API calls on Apple's [Device Assignment](https:
 
 ## App and Book Management Client
 
-    Status: Planing ...
+    Status: Work in progress ...
 
 # Logging
 
