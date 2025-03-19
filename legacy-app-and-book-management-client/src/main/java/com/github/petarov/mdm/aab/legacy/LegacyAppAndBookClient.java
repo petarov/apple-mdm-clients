@@ -47,6 +47,33 @@ public interface LegacyAppAndBookClient {
 	VppGetUserResponse fetchUser(String sToken, @Nonnull UserIdParam userIdParam);
 
 	/**
+	 * Fetches information about a set of users.
+	 * <p>
+	 * For an initial request that doesn't include {@code batchToken} or {@code sinceModifiedToken},
+	 * a batchToken value is returned if the number of results exceeds a server-controlled limit. Subsequent requests
+	 * must include batchToken. As long as additional batches remain, the server returns a new batchToken value in
+	 * its response.
+	 * <p>
+	 * See <a href="https://developer.apple.com/documentation/devicemanagement/retrieving-a-large-record-set#Batched-Responses">Batched Responses</a>
+	 *
+	 * @param sToken     required authentication token. See <a href="https://developer.apple.com/documentation/devicemanagement/managing-apps-and-books-through-web-services-legacy#Authentication">Authentication</a>.
+	 * @param batchToken a token that signifies which batch is being returned
+	 * @param options    additional non-mandatory options
+	 * @return {@link VppGetUsersResponse} object
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/get-users-5boi1">Get Users</a>
+	 */
+	@Nonnull
+	VppGetUsersResponse fetchUsers(String sToken, String batchToken, @Nonnull UsersRequestOptions options);
+
+	/**
+	 * @see #fetchUsers(String, String, UsersRequestOptions)
+	 */
+	@Nonnull
+	default VppGetUsersResponse fetchUsers(String sToken, String batchToken) {
+		return fetchUsers(sToken, batchToken, new UsersRequestOptions("", false, false));
+	}
+
+	/**
 	 * Registers a user with the volume-purchase program.
 	 * <p>
 	 * The {@code clientUserIdStr} must be unique within the organization and may not be changed once a user is
@@ -137,6 +164,24 @@ public interface LegacyAppAndBookClient {
 		@Nonnull
 		static UserIdParam of(long userId) {
 			return new UserIdParam("", userId, "");
+		}
+	}
+
+	/**
+	 * The request for the users' details service.
+	 *
+	 * @param sinceModifiedToken a token that marks a place in time or empty string {@code ""} to skip this parameter.
+	 *                           After all records have been returned for a request, the server includes a
+	 *                           {@code sinceModifiedToken} value in the response. Use it in
+	 *                           subsequent requests to get licenses that have been modified since the token was
+	 *                           generated.
+	 * @param includeRetired     if {@code true}, returns retired users in the results
+	 * @param includeRetiredOnly if {@code true}, returns only retired users in the results
+	 */
+	record UsersRequestOptions(String sinceModifiedToken, boolean includeRetired, boolean includeRetiredOnly) {
+
+		public UsersRequestOptions(String sinceModifiedToken, boolean includeRetired) {
+			this(sinceModifiedToken, includeRetired, false);
 		}
 	}
 }
