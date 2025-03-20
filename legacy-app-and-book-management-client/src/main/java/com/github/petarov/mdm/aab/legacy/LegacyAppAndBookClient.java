@@ -60,6 +60,43 @@ public interface LegacyAppAndBookClient {
 	}
 
 	/**
+	 * Fetches a list of assignments currently assigned to a user or device.
+	 *
+	 * @param adamIdStr         the unique identifier for a product in the iTunes Store
+	 * @param assignmentOptions see {@link FetchAssignmentsOptions}
+	 * @param requestId         a unique ID that is used when making paginated requests
+	 * @param pageIndex         the index of the page to lookup. To page through the assignments, use the
+	 *                          {@code nextPageIndex} value returned in the previous {@link VppGetAssignmentsResponse}.
+	 *                          This must be used in combination with a {@code requestId}, also from the previous
+	 *                          response.
+	 * @return {@link VppGetAssignmentsResponse} object
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/get-assignments-158kc">Get Assignments</a>
+	 */
+	@Nonnull
+	VppGetAssignmentsResponse fetchAssignments(String adamIdStr, @Nonnull FetchAssignmentsOptions assignmentOptions,
+			String requestId, int pageIndex);
+
+	/**
+	 * Fetches all user and device assignments for specified product {@code adamIdStr}.
+	 *
+	 * @see #fetchAssignments(String, FetchAssignmentsOptions, String, int)
+	 */
+	@Nonnull
+	default VppGetAssignmentsResponse fetchAssignments(String adamIdStr) {
+		return fetchAssignments(adamIdStr, new FetchAssignmentsOptions("", ""), "", 0);
+	}
+
+	/**
+	 * Fetches next page of assignments given a {@code requestId} and {@code pageIndex}.
+	 *
+	 * @see #fetchAssignments(String, FetchAssignmentsOptions, String, int)
+	 */
+	@Nonnull
+	default VppGetAssignmentsResponse fetchAssignments(String requestId, int pageIndex) {
+		return fetchAssignments("", new FetchAssignmentsOptions("", ""), requestId, pageIndex);
+	}
+
+	/**
 	 * Fetches information about a particular user.
 	 *
 	 * @param sToken      required authentication token. See <a href="https://developer.apple.com/documentation/devicemanagement/managing-apps-and-books-through-web-services-legacy#Authentication">Authentication</a>.
@@ -87,14 +124,14 @@ public interface LegacyAppAndBookClient {
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/get-users-5boi1">Get Users</a>
 	 */
 	@Nonnull
-	VppGetUsersResponse fetchUsers(String sToken, String batchToken, @Nonnull UsersRequestOptions options);
+	VppGetUsersResponse fetchUsers(String sToken, String batchToken, @Nonnull FetchUsersOptions options);
 
 	/**
-	 * @see #fetchUsers(String, String, UsersRequestOptions)
+	 * @see #fetchUsers(String, String, FetchUsersOptions)
 	 */
 	@Nonnull
 	default VppGetUsersResponse fetchUsers(String sToken, String batchToken) {
-		return fetchUsers(sToken, batchToken, new UsersRequestOptions("", false, false));
+		return fetchUsers(sToken, batchToken, new FetchUsersOptions("", false, false));
 	}
 
 	/**
@@ -155,9 +192,27 @@ public interface LegacyAppAndBookClient {
 	@Nonnull
 	VppRetireUserResponse retireUser(String sToken, @Nonnull UserIdParam userIdParam);
 
+	/**
+	 * Union of fetch assignments parameters. Only one of the two parameters must be set.
+	 *
+	 * @param clientUserIdStr if specified, returns only assignments assigned to the given client user ID
+	 * @param serialNumber    if specified, returns only assignments assigned to the given device serial number
+	 */
+	record FetchAssignmentsOptions(String clientUserIdStr, String serialNumber) {
+
+		@Nonnull
+		static FetchAssignmentsOptions ofClientUserIdStr(String clientUserIdStr) {
+			return new FetchAssignmentsOptions(clientUserIdStr, "");
+		}
+
+		@Nonnull
+		static FetchAssignmentsOptions ofSerialNumber(String serialNumber) {
+			return new FetchAssignmentsOptions("", serialNumber);
+		}
+	}
 
 	/**
-	 * Union of user id parameters. Only one of the two parameters must be set.
+	 * Union of user id parameters.
 	 * <p>
 	 * Either {@code clientUserIdStr} or {@code userId} is required. If {@code clientUserIdStr} is used, an
 	 * {@code itsIdHash} (iTunes Store ID hash) value may be included, but it is optional. If {@code userId} has a
@@ -202,9 +257,9 @@ public interface LegacyAppAndBookClient {
 	 * @param includeRetired     if {@code true}, returns retired users in the results
 	 * @param includeRetiredOnly if {@code true}, returns only retired users in the results
 	 */
-	record UsersRequestOptions(String sinceModifiedToken, boolean includeRetired, boolean includeRetiredOnly) {
+	record FetchUsersOptions(String sinceModifiedToken, boolean includeRetired, boolean includeRetiredOnly) {
 
-		public UsersRequestOptions(String sinceModifiedToken, boolean includeRetired) {
+		public FetchUsersOptions(String sinceModifiedToken, boolean includeRetired) {
 			this(sinceModifiedToken, includeRetired, false);
 		}
 	}
