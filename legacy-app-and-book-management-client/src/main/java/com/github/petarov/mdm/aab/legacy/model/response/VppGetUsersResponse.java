@@ -27,6 +27,7 @@ import java.util.List;
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/retrieving-a-large-record-set#Batched-Responses">Batched Responses</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
-public record VppGetUsersResponse(@JsonUnwrapped VppResponse response, int batchCount, String batchToken,
-                                  String totalBatchCount, int totalCount,
+public record VppGetUsersResponse(@JsonUnwrapped VppResponse response, int batchCount,
+                                  @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull String batchToken,
+                                  @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull String totalBatchCount, int totalCount,
                                   @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<VppUser> users) {}

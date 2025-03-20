@@ -25,7 +25,8 @@ import java.util.List;
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public record VppGetAssignmentsResponse(@JsonUnwrapped VppResponse response, int totalPages, int currentPageIndex,
-                                        int nextPageIndex, String requestId, int totalAssignments,
-                                        int assignmentsInCurrentPage,
+                                        int nextPageIndex,
+                                        @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull String requestId,
+                                        int totalAssignments, int assignmentsInCurrentPage,
                                         @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<VppAssignment> assignments) {}
 
