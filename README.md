@@ -6,7 +6,7 @@ Among other technical goals, this library aims to use as few external dependenci
 
 ## Device Assignment Client (Automated Device Enrollment)
 
-    Status: Testing ...
+> Status: Testing ...
 
 Manage your organization's Apple Business Manager (`ABM`) devices. ADE, previously known as "The Device Enrollment
 Program `(DEP)`" allows for creating device enrollment profiles and assigning them to your organization's devices.
@@ -49,9 +49,12 @@ System.out.println(response.profileUuid());
 
 See the complete list of service API calls on Apple's [Device Assignment](https://developer.apple.com/documentation/devicemanagement/device-assignment) web page.
 
-## App and Book Management Client
+## Legacy App and Book Management Client
 
-    Status: Work in progress ...
+Manage apps and books for students and employees. This Apple API is still perfectly functional, however it has been
+deprecated and it's no longer maintained.
+
+> Status: Work in progress ...
 
 # Logging
 
