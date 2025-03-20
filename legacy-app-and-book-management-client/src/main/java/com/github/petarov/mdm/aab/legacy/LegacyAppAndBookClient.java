@@ -36,6 +36,30 @@ public interface LegacyAppAndBookClient {
 	VppClientConfigResponse updateClientConfiguration(String sToken, String clientContext, String notificationToken);
 
 	/**
+	 * Fetches the set of assets managed by your organization.
+	 *
+	 * @param includeLicenseCounts if {@code true}, returns the total number of licenses, the number of assigned
+	 *                             licenses, and the number of unassigned licenses in the response for each asset.
+	 * @param pricingParam         the quality of a product in the iTunes Store. If a pricing parameter is specified,
+	 *                             only records with that parameter are included in the results. Possible values are:
+	 *                             <ul>
+	 *                             <li>{@code STDQ}: Standard quality
+	 *                             <li>{@code PLUS}: High quality
+	 * @return {@link VppGetAssetResponse} object
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/get-assets-44p83">Get Assets</a>
+	 */
+	@Nonnull
+	VppGetAssetResponse fetchAssets(boolean includeLicenseCounts, String pricingParam);
+
+	/**
+	 * @see #fetchAssets(boolean, String)
+	 */
+	@Nonnull
+	default VppGetAssetResponse fetchAssets(boolean includeLicenseCounts) {
+		return fetchAssets(includeLicenseCounts, "");
+	}
+
+	/**
 	 * Fetches information about a particular user.
 	 *
 	 * @param sToken      required authentication token. See <a href="https://developer.apple.com/documentation/devicemanagement/managing-apps-and-books-through-web-services-legacy#Authentication">Authentication</a>.

@@ -1,6 +1,8 @@
 package com.github.petarov.mdm.aab.legacy.model.response;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.github.petarov.mdm.aab.legacy.model.VppUser;
@@ -26,4 +28,5 @@ import java.util.List;
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public record VppGetUsersResponse(@JsonUnwrapped VppResponse response, int batchCount, String batchToken,
-                                  String totalBatchCount, int totalCount, @Nonnull List<VppUser> users) {}
+                                  String totalBatchCount, int totalCount,
+                                  @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<VppUser> users) {}
