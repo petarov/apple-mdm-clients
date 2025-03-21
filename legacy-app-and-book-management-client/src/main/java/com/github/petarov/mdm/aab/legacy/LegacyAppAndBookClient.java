@@ -3,6 +3,8 @@ package com.github.petarov.mdm.aab.legacy;
 import com.github.petarov.mdm.aab.legacy.model.response.*;
 import jakarta.annotation.Nonnull;
 
+import java.util.Set;
+
 public interface LegacyAppAndBookClient {
 
 	/**
@@ -95,6 +97,48 @@ public interface LegacyAppAndBookClient {
 	default VppGetAssignmentsResponse fetchAssignments(String requestId, int pageIndex) {
 		return fetchAssignments("", new FetchAssignmentsOptions("", ""), requestId, pageIndex);
 	}
+
+	/**
+	 * Associates and disassociates licenses with users.
+	 *
+	 * @param adamIdStr                    the unique identifier for a product in the iTunes Store
+	 * @param associateClientUserIdStrs    a list of client-user IDs to associate licenses with
+	 * @param disassociateClientUserIdStrs a list of client-user IDs to disassociate licenses from
+	 * @param notifyDisassociation         if {@code true}, sends notifications when licenses are disassociated
+	 * @return {@link VppManageLicensesByAdamIdResponse} object
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/manage-licenses">Manage Licenses</a>
+	 */
+	@Nonnull
+	VppManageLicensesByAdamIdResponse manageUserLicenses(String adamIdStr,
+			@Nonnull Set<String> associateClientUserIdStrs, @Nonnull Set<String> disassociateClientUserIdStrs,
+			boolean notifyDisassociation);
+
+	/**
+	 * Associates and disassociates licenses with devices.
+	 *
+	 * @param adamIdStr                 the unique identifier for a product in the iTunes Store
+	 * @param associateSerialNumbers    a list of device serial numbers to associate licenses with.
+	 * @param disassociateSerialNumbers a list of device serial numbers to disassociate licenses from
+	 * @param notifyDisassociation      if {@code true}, sends notifications when licenses are disassociated
+	 * @return {@link VppManageLicensesByAdamIdResponse} object
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/manage-licenses">Manage Licenses</a>
+	 */
+	@Nonnull
+	VppManageLicensesByAdamIdResponse manageDeviceLicenses(String adamIdStr,
+			@Nonnull Set<String> associateSerialNumbers, @Nonnull Set<String> disassociateSerialNumbers,
+			boolean notifyDisassociation);
+
+	/**
+	 * Disassociate licenses by their ids.
+	 *
+	 * @param adamIdStr                 the unique identifier for a product in the iTunes Store
+	 * @param disassociateLicenseIdStrs a list of license IDs to disassociate from the user ID or device
+	 * @param notifyDisassociation      if {@code true}, sends notifications when licenses are disassociated
+	 * @return {@link VppManageLicensesByAdamIdResponse} object
+	 */
+	@Nonnull
+	VppManageLicensesByAdamIdResponse disassociateLicenses(String adamIdStr,
+			@Nonnull Set<String> disassociateLicenseIdStrs, boolean notifyDisassociation);
 
 	/**
 	 * Fetches information about a particular user.
