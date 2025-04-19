@@ -17,7 +17,7 @@ import java.util.Base64;
 public record LegacyAppAndBookToken(String sToken, @Nonnull AppAndBookTokenDetails details) {
 
 	/**
-	 * Create an sToken wrapper byte data input.
+	 * Create a sToken wrapper byte data input.
 	 */
 	@Nonnull
 	public static LegacyAppAndBookToken create(@Nonnull InputStream input) {

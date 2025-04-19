@@ -8,6 +8,10 @@ import java.time.Duration;
 
 public abstract class MdmClientBuilder<CFG extends MdmClientBuilder<CFG, CLIENT>, CLIENT> {
 
+	protected final Duration DEFAULT_CONNECT_TIMEOUT = Duration.ofSeconds(10);
+	protected final Duration DEFAULT_READ_TIMEOUT    = Duration.ofSeconds(20);
+	protected final String   DEFAULT_USER_AGENT      = "apple-mdm-clients-v1";
+
 	protected String                serviceUrl;
 	protected String                userAgent;
 	protected boolean               skipSslVerify = false;
