@@ -8,11 +8,16 @@ import com.github.petarov.mdm.shared.http.HttpClientWrapperException;
 import com.github.petarov.mdm.shared.http.HttpConsts;
 import com.github.petarov.mdm.shared.util.JsonUtil;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URI;
 import java.net.http.HttpRequest;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 
@@ -21,14 +26,55 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	private static final String HEADER_X_ADM_AUTH_SESSION = "X-ADM-Auth-Session";
 	private static final String HEADER_CONTENT_TYPE_VALUE = "application/json;charset=UTF8";
 
-	private final HttpClientWrapper     client;
-	private final LegacyAppAndBookToken serverToken;
-	private final ObjectMapper          objectMapper;
+	private final HttpClientWrapper                  client;
+	private final LegacyAppAndBookToken              serverToken;
+	private final ObjectMapper                       objectMapper;
+	private final Supplier<VppServiceConfigResponse> serviceConfigSupplier;
 
 	public LegacyAppAndBookClientImpl(@Nonnull HttpClientWrapper client, @Nonnull LegacyAppAndBookToken serverToken) {
 		this.client = client;
 		this.serverToken = serverToken;
 		this.objectMapper = JsonUtil.createObjectMapper();
+		this.serviceConfigSupplier = new Supplier<>() {
+
+			private VppServiceConfigResponse resp;
+
+			@Override
+			public VppServiceConfigResponse get() {
+				if (resp == null) {
+					resp = fetchServiceConfiguration();
+				}
+				return resp;
+			}
+		};
+	}
+
+	private <K, V> Map<K, V> params(@Nonnull K k1, @Nonnull V v1, @Nullable K k2, @Nullable V v2, @Nullable K k3,
+			@Nullable V v3, @Nullable K k4, @Nullable V v4) {
+		var result = new HashMap<K, V>();
+		if (k4 != null) {
+			result.put(k4, v4);
+		}
+		if (k3 != null) {
+			result.put(k3, v3);
+		}
+		if (k2 != null) {
+			result.put(k2, v2);
+		}
+		result.put(k1, v1);
+		return result;
+	}
+
+	private <K, V> Map<K, V> params(K k1, V v1, K k2, V v2, K k3, V v3) {
+		return params(k1, v1, k2, v2, k3, v3, null, null);
+	}
+
+	private <K, V> Map<K, V> params(K k1, V v1, K k2, V v2) {
+		return params(k1, v1, k2, v2, null, null);
+	}
+
+	private <K, V> Map<K, V> params(K k, V v) {
+		return params(k, v, null, null);
 	}
 
 	private <T> T execute(HttpRequest.Builder requestBuilder, Class<T> clazz) {
@@ -53,7 +99,8 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Nonnull
 	@Override
 	public VppServiceConfigResponse fetchServiceConfiguration() {
-		return null;
+		return execute(client.createRequestBuilder(client.createURI("/VPPServiceConfigSrv")).GET(),
+				VppServiceConfigResponse.class);
 	}
 
 	@Nonnull
@@ -66,7 +113,12 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Nonnull
 	@Override
 	public VppGetAssetResponse fetchAssets(boolean includeLicenseCounts, String pricingParam) {
-		return null;
+		var params = params("sToken", serverToken.sToken(), "includeLicenseCounts", includeLicenseCounts);
+		if (!pricingParam.isBlank()) {
+			params.put("pricingParam", pricingParam);
+		}
+		return execute(client.createRequestBuilder(URI.create(fetchServiceConfiguration().getVPPAssetsSrvUrl()))
+				.POST(ofBody(params)), VppGetAssetResponse.class);
 	}
 
 	@Nonnull

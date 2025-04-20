@@ -8,17 +8,65 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.github.petarov.mdm.aab.legacy.model.VppAsset;
 import jakarta.annotation.Nonnull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * The response with the asset.
  *
- * @param response   {@link VppResponse}
- * @param totalCount the total number of assets that will be returned
- * @param assets     the list of assets managed by the provided sToken
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/getvppassetresponse">GetVppAssetResponse</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
-public record VppGetAssetResponse(@JsonUnwrapped VppResponse response, int totalCount,
-                                  @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<VppAsset> assets) {}
+public class VppGetAssetResponse {
 
+	@JsonUnwrapped
+	private VppResponse response;
+
+	private int totalCount;
+
+	@JsonSetter(nulls = Nulls.AS_EMPTY)
+	private List<VppAsset> assets = new ArrayList<>();
+
+	public VppGetAssetResponse() {
+	}
+
+	/**
+	 * @return {@link VppResponse}
+	 */
+	public VppResponse response() {
+		return response;
+	}
+
+	public void setResponse(VppResponse response) {
+		this.response = response;
+	}
+
+	/**
+	 * @return the total number of assets that will be returned
+	 */
+	public int totalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
+	}
+
+	/**
+	 * @return the list of assets managed by the provided sToken
+	 */
+	@Nonnull
+	public List<VppAsset> assets() {
+		return assets;
+	}
+
+	public void setAssets(@Nonnull List<VppAsset> assets) {
+		this.assets = assets;
+	}
+
+	@Override
+	public String toString() {
+		return "VppGetAssetResponse{" + "response=" + response + ", totalCount=" + totalCount + ", assets=" + assets
+				+ '}';
+	}
+}
