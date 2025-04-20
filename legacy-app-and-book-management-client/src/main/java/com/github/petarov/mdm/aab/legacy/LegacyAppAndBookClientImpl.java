@@ -117,7 +117,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 		if (!pricingParam.isBlank()) {
 			params.put("pricingParam", pricingParam);
 		}
-		return execute(client.createRequestBuilder(URI.create(fetchServiceConfiguration().getVPPAssetsSrvUrl()))
+		return execute(client.createRequestBuilder(URI.create(serviceConfigSupplier.get().getVPPAssetsSrvUrl()))
 				.POST(ofBody(params)), VppGetAssetResponse.class);
 	}
 
@@ -125,7 +125,51 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Override
 	public VppGetAssignmentsResponse fetchAssignments(String adamIdStr,
 			@Nonnull FetchAssignmentsOptions assignmentOptions, String requestId, int pageIndex) {
-		return null;
+		Map<String, Object> params = params("sToken", serverToken.sToken());
+		if (!adamIdStr.isBlank()) {
+			params.put("adamIdStr", adamIdStr);
+		}
+
+		if (!assignmentOptions.clientUserIdStr().isBlank()) {
+			params.put("clientUserIdStr", assignmentOptions.clientUserIdStr());
+		} else if (!assignmentOptions.serialNumber().isBlank()) {
+			params.put("serialNumber", assignmentOptions.serialNumber());
+		}
+
+		if (!requestId.isBlank()) {
+			params.put("requestId", requestId);
+		}
+
+		if (pageIndex > 0) {
+			params.put("pageIndex", pageIndex);
+		}
+
+		return execute(client.createRequestBuilder(URI.create(serviceConfigSupplier.get().getAssignmentsSrvUrl()))
+				.POST(ofBody(params)), VppGetAssignmentsResponse.class);
+
+		//		Request(
+		//				Method.POST,
+		//				serviceConfig.getAssignmentsSrvUrl
+		//		).body(
+		//				with(StringBuilder()) {
+		//			append("""{ "sToken": "${token.sToken}"""")
+		//			if (adamIdStr.isNotBlank()) {
+		//				append(""", "adamIdStr": "$adamIdStr"""")
+		//			}
+		//			if (clientUserIdStr.isNotBlank()) {
+		//				append(""", "clientUserIdStr": $clientUserIdStr""")
+		//			}
+		//			if (serialNumber.isNotBlank()) {
+		//				append(""", "serialNumber": "$serialNumber"""")
+		//			}
+		//			if (requestId.isNotBlank()) {
+		//				append(""", "requestId": "$requestId"""")
+		//			}
+		//			if (pageIndex > 0) {
+		//				append(""", "pageIndex": $pageIndex""")
+		//			}
+		//			append(" }")
+		//		}.toString()
 	}
 
 	@Nonnull

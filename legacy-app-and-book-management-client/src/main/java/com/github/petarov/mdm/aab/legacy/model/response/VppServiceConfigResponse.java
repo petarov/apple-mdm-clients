@@ -49,6 +49,7 @@ public record VppServiceConfigResponse(@JsonSetter(nulls = Nulls.AS_EMPTY) Strin
                                        @JsonSetter(nulls = Nulls.AS_EMPTY) String contentMetadataLookupUrl,
                                        @JsonSetter(nulls = Nulls.AS_EMPTY) String disassociateLicenseSrvUrl,
                                        @JsonSetter(nulls = Nulls.AS_EMPTY) String editUserSrvUrl,
+                                       @JsonSetter(nulls = Nulls.AS_EMPTY) String getAssignmentsSrvUrl,
                                        @JsonSetter(nulls = Nulls.AS_EMPTY) List<VppErrorCode> errorCodes,
                                        @JsonSetter(nulls = Nulls.AS_EMPTY) String errorMessage, int errorNumber,
                                        @JsonSetter(nulls = Nulls.AS_EMPTY) String getLicensesSrvUrl,
