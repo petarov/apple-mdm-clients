@@ -33,7 +33,6 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public record VppAsset(@JsonSetter(nulls = Nulls.AS_EMPTY) String adamIdStr, int assignedCount, int availableCount,
-                       @JsonProperty("deviceAssignable") boolean isDeviceAssignable,
-                       @JsonProperty("irrevocable") boolean isIrrevocable,
+                       @JsonProperty("deviceAssignable") boolean isDeviceAssignable, boolean isIrrevocable,
                        @JsonSetter(nulls = Nulls.AS_EMPTY) String pricingParam, int productTypeId,
                        @JsonSetter(nulls = Nulls.AS_EMPTY) String productTypeName, int retiredCount, int totalCount) {}
