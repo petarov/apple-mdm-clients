@@ -49,9 +49,9 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 		};
 	}
 
-	private <K, V> Map<K, V> params(@Nonnull K k1, @Nonnull V v1, @Nullable K k2, @Nullable V v2, @Nullable K k3,
-			@Nullable V v3, @Nullable K k4, @Nullable V v4) {
-		var result = new HashMap<K, V>();
+	private Map<String, Object> params(@Nullable String k1, @Nullable Object v1, @Nullable String k2,
+			@Nullable Object v2, @Nullable String k3, @Nullable Object v3, @Nullable String k4, @Nullable Object v4) {
+		var result = new HashMap<String, Object>();
 		if (k4 != null) {
 			result.put(k4, v4);
 		}
@@ -61,20 +61,27 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 		if (k2 != null) {
 			result.put(k2, v2);
 		}
-		result.put(k1, v1);
+		if (k1 != null) {
+			result.put(k1, v1);
+		}
+		result.put("sToken", serverToken.sToken());
 		return result;
 	}
 
-	private <K, V> Map<K, V> params(K k1, V v1, K k2, V v2, K k3, V v3) {
+	private Map<String, Object> params(String k1, Object v1, String k2, Object v2, String k3, Object v3) {
 		return params(k1, v1, k2, v2, k3, v3, null, null);
 	}
 
-	private <K, V> Map<K, V> params(K k1, V v1, K k2, V v2) {
+	private Map<String, Object> params(String k1, Object v1, String k2, Object v2) {
 		return params(k1, v1, k2, v2, null, null);
 	}
 
-	private <K, V> Map<K, V> params(K k, V v) {
+	private Map<String, Object> params(String k, Object v) {
 		return params(k, v, null, null);
+	}
+
+	private Map<String, Object> params() {
+		return params(null, null);
 	}
 
 	private <T> T execute(HttpRequest.Builder requestBuilder, Class<T> clazz) {
@@ -113,7 +120,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Nonnull
 	@Override
 	public VppGetAssetResponse fetchAssets(boolean includeLicenseCounts, String pricingParam) {
-		var params = params("sToken", serverToken.sToken(), "includeLicenseCounts", includeLicenseCounts);
+		var params = params("includeLicenseCounts", includeLicenseCounts);
 		if (!pricingParam.isBlank()) {
 			params.put("pricingParam", pricingParam);
 		}
@@ -125,7 +132,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Override
 	public VppGetAssignmentsResponse fetchAssignments(String adamIdStr,
 			@Nonnull FetchAssignmentsOptions assignmentOptions, String requestId, int pageIndex) {
-		Map<String, Object> params = params("sToken", serverToken.sToken());
+		var params = params();
 		if (!adamIdStr.isBlank()) {
 			params.put("adamIdStr", adamIdStr);
 		}
@@ -146,30 +153,6 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 
 		return execute(client.createRequestBuilder(URI.create(serviceConfigSupplier.get().getAssignmentsSrvUrl()))
 				.POST(ofBody(params)), VppGetAssignmentsResponse.class);
-
-		//		Request(
-		//				Method.POST,
-		//				serviceConfig.getAssignmentsSrvUrl
-		//		).body(
-		//				with(StringBuilder()) {
-		//			append("""{ "sToken": "${token.sToken}"""")
-		//			if (adamIdStr.isNotBlank()) {
-		//				append(""", "adamIdStr": "$adamIdStr"""")
-		//			}
-		//			if (clientUserIdStr.isNotBlank()) {
-		//				append(""", "clientUserIdStr": $clientUserIdStr""")
-		//			}
-		//			if (serialNumber.isNotBlank()) {
-		//				append(""", "serialNumber": "$serialNumber"""")
-		//			}
-		//			if (requestId.isNotBlank()) {
-		//				append(""", "requestId": "$requestId"""")
-		//			}
-		//			if (pageIndex > 0) {
-		//				append(""", "pageIndex": $pageIndex""")
-		//			}
-		//			append(" }")
-		//		}.toString()
 	}
 
 	@Nonnull
