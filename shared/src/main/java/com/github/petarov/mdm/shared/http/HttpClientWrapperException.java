@@ -1,6 +1,9 @@
 package com.github.petarov.mdm.shared.http;
 
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+
+import java.util.Objects;
 
 public class HttpClientWrapperException extends RuntimeException {
 
@@ -16,7 +19,7 @@ public class HttpClientWrapperException extends RuntimeException {
 	public HttpClientWrapperException(String message, @Nullable Throwable cause, int statusCode, String statusLine) {
 		super(message, cause);
 		this.statusCode = statusCode;
-		this.statusLine = statusLine;
+		this.statusLine = Objects.toString(statusLine, "");
 	}
 
 	public HttpClientWrapperException(String message, int statusCode, String statusLine) {
@@ -27,6 +30,7 @@ public class HttpClientWrapperException extends RuntimeException {
 		return statusCode;
 	}
 
+	@Nonnull
 	public String getStatusLine() {
 		return statusLine;
 	}

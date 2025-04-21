@@ -21,6 +21,7 @@ public class DeviceAssignmentException extends RuntimeException {
 		return code;
 	}
 
+	@Nonnull
 	public String getStatusLine() {
 		return statusLine;
 	}
@@ -33,6 +34,7 @@ public class DeviceAssignmentException extends RuntimeException {
 	/**
 	 * @return the text representation of the OAuth error key
 	 */
+	@Nonnull
 	public String getErrorFromStatus() {
 		try {
 			return ResourceBundle.getBundle("messages").getString(switch (statusLine) {
