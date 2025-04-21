@@ -23,7 +23,6 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	private static final String HEADER_X_ADM_AUTH_SESSION              = "X-ADM-Auth-Session";
 	private static final String HEADER_X_SERVER_PROTOCOL_VERSION       = "X-Server-Protocol-Version";
 	private static final String HEADER_X_SERVER_PROTOCOL_VERSION_VALUE = "3";
-	private static final String HEADER_CONTENT_TYPE_VALUE              = "application/json;charset=UTF8";
 
 	private final HttpClientWrapper           client;
 	private final DeviceAssignmentServerToken serverToken;
@@ -61,7 +60,7 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 			refreshSessionId();
 		}
 
-		requestBuilder.setHeader(HttpConsts.HEADER_CONTENT_TYPE, HEADER_CONTENT_TYPE_VALUE);
+		requestBuilder.setHeader(HttpConsts.HEADER_CONTENT_TYPE, HttpConsts.HEADER_VALUE_APPLICATION_JSON_UTF8);
 		requestBuilder.setHeader(HEADER_X_SERVER_PROTOCOL_VERSION, HEADER_X_SERVER_PROTOCOL_VERSION_VALUE);
 
 		boolean retry = false;
