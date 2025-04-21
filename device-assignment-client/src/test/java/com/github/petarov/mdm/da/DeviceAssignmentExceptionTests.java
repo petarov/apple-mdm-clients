@@ -3,6 +3,8 @@ package com.github.petarov.mdm.da;
 import com.github.petarov.mdm.shared.http.HttpClientWrapperException;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DeviceAssignmentExceptionTests {
@@ -10,7 +12,8 @@ public class DeviceAssignmentExceptionTests {
 	@Test
 	void test_errors() throws Exception {
 		try {
-			throw new DeviceAssignmentException(new HttpClientWrapperException("http error", 500, "EXHAUSTED_CURSOR"));
+			throw new DeviceAssignmentException(
+					new HttpClientWrapperException("http error", 500, "EXHAUSTED_CURSOR", Map.of()));
 		} catch (DeviceAssignmentException e) {
 			assertEquals("http error", e.getMessage());
 			assertEquals(500, e.getCode());
@@ -25,7 +28,8 @@ public class DeviceAssignmentExceptionTests {
 	@Test
 	void test_oauth_errors() throws Exception {
 		try {
-			throw new DeviceAssignmentException(new HttpClientWrapperException("http error", 500, "OAUTH_BAD_REQUEST"));
+			throw new DeviceAssignmentException(
+					new HttpClientWrapperException("http error", 500, "OAUTH_BAD_REQUEST", Map.of()));
 		} catch (DeviceAssignmentException e) {
 			assertEquals("OAUTH_BAD_REQUEST", e.getStatusLine());
 			assertEquals(
@@ -35,7 +39,7 @@ public class DeviceAssignmentExceptionTests {
 
 		try {
 			throw new DeviceAssignmentException(
-					new HttpClientWrapperException("http error", 500, "oauth_problem_adviceBad Request"));
+					new HttpClientWrapperException("http error", 500, "oauth_problem_adviceBad Request", Map.of()));
 		} catch (DeviceAssignmentException e) {
 			assertEquals("oauth_problem_adviceBad Request", e.getStatusLine());
 			assertEquals(

@@ -13,8 +13,11 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.GZIPInputStream;
 
@@ -178,7 +181,9 @@ public class HttpClientWrapper {
 				}
 				try (var input = decodeResponseBody(response)) {
 					throw new HttpClientWrapperException(getRequestResponseLine(request, response),
-							response.statusCode(), new String(input.readAllBytes(), StandardCharsets.UTF_8));
+							response.statusCode(), new String(input.readAllBytes(), StandardCharsets.UTF_8),
+							response.headers().map().entrySet().stream().collect(
+									Collectors.toMap(Map.Entry::getKey, entry -> new ArrayList<>(entry.getValue()))));
 				}
 			}
 		} catch (IOException e) {
