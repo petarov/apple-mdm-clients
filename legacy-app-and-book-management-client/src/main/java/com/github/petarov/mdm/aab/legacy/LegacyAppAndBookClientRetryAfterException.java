@@ -19,7 +19,7 @@ public class LegacyAppAndBookClientRetryAfterException extends RuntimeException 
 		this.code = exception.getStatusCode();
 		this.statusLine = exception.getStatusLine();
 
-		if (exception.getStatusCode() == 503) {
+		if (exception.getStatusCode() != 503) {
 			throw new RuntimeException("503 Service Unavailable response code required: got %d instead".formatted(
 					exception.getStatusCode()), exception);
 		}
