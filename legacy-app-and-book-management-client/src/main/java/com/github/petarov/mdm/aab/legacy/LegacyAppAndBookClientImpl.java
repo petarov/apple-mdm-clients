@@ -23,9 +23,6 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 
 	static final Logger logger = LoggerFactory.getLogger(LegacyAppAndBookClientImpl.class);
 
-	private static final String HEADER_X_ADM_AUTH_SESSION = "X-ADM-Auth-Session";
-	private static final String HEADER_CONTENT_TYPE_VALUE = "application/json;charset=UTF8";
-
 	private final HttpClientWrapper                  client;
 	private final LegacyAppAndBookToken              serverToken;
 	private final ObjectMapper                       objectMapper;
@@ -85,13 +82,18 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	}
 
 	private <T> T execute(HttpRequest.Builder requestBuilder, Class<T> clazz) {
-		requestBuilder.setHeader(HttpConsts.HEADER_CONTENT_TYPE, HEADER_CONTENT_TYPE_VALUE);
+		requestBuilder.setHeader(HttpConsts.HEADER_CONTENT_TYPE, HttpConsts.HEADER_VALUE_APPLICATION_JSON_UTF8);
 
 		try {
 			return client.send(requestBuilder.build(), clazz);
 		} catch (HttpClientWrapperException e) {
-			// TODO:
-			throw e;
+			// Retry-After behavior
+			// See - https://developer.apple.com/documentation/devicemanagement/app_and_book_management/managing_apps_and_books_through_web_services#3230015
+			if (e.getStatusCode() == HttpConsts.STATUS_SERVICE_UNAVAILABLE) {
+				throw new LegacyAppAndBookClientRetryAfterException(e);
+			}
+
+			throw new LegacyAppAndBookClientException(e);
 		}
 	}
 

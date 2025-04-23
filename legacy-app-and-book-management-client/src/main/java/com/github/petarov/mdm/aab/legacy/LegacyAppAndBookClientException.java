@@ -14,10 +14,10 @@ public class LegacyAppAndBookClientException extends RuntimeException {
 	public LegacyAppAndBookClientException(@Nonnull HttpClientWrapperException exception) {
 		super(exception.getMessage(), exception);
 		/*
-		 * Catch VPP service errors. In case of errors, the HTTP service (much to our misfortune) returns 200 OK with a
-		 * VppError JSON payload. Scanning every successful response may cost CPU time, so to counter scanning large
-		 * responses, this just checks the first 100 characters for an error occurrence. A better solution should really
-		 * be implemented here.
+		 * Translate VPP service errors. In case of errors, the HTTP service (much to our misfortune) returns 200 OK
+		 * with a VppError JSON payload. Scanning every successful response may cost CPU time, so to counter scanning
+		 * large responses, this just checks the first 100 characters for an error occurrence. A better solution may
+		 * be needed here.
 		 */
 		if (exception.getStatusLine().substring(0, Math.min(100, exception.getStatusLine().length()))
 				.contains("errorNumber")) {
