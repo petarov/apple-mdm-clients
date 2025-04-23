@@ -114,8 +114,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 
 	@Nonnull
 	@Override
-	public VppClientConfigResponse updateClientConfiguration(String sToken, String clientContext,
-			String notificationToken) {
+	public VppClientConfigResponse updateClientConfiguration(String clientContext, String notificationToken) {
 		return null;
 	}
 
@@ -182,33 +181,59 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 
 	@Nonnull
 	@Override
-	public VppGetUserResponse fetchUser(String sToken, @Nonnull UserIdParam userIdParam) {
+	public VppGetUserResponse fetchUser(@Nonnull UserIdParam userIdParam) {
+		var params = params();
+		if (!userIdParam.clientUserIdStr().isBlank()) {
+			params.put("clientUserIdStr", userIdParam.clientUserIdStr());
+		} else {
+			params.put("userId", userIdParam.userId());
+		}
+
+		if (!userIdParam.itsIdHash().isBlank()) {
+			params.put("itsIdHash", userIdParam.itsIdHash());
+		}
+
+		return execute(client.createRequestBuilder(URI.create(serviceConfigSupplier.get().getUserSrvUrl()))
+				.POST(ofBody(params)), VppGetUserResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public VppGetUsersResponse fetchUsers(String batchToken, @Nonnull FetchUsersOptions options) {
+		var params = params();
+		if (!batchToken.isBlank()) {
+			params.put("batchToken", batchToken);
+		}
+
+		if (!options.sinceModifiedToken().isBlank()) {
+			params.put("sinceModifiedToken", options.sinceModifiedToken());
+		}
+
+		if (options.includeRetiredOnly()) {
+			params.put("includeRetiredOnly", true);
+		} else if (options.includeRetired()) {
+			params.put("includeRetired", true);
+		}
+
+		return execute(client.createRequestBuilder(URI.create(serviceConfigSupplier.get().getUsersSrvUrl()))
+				.POST(ofBody(params)), VppGetUsersResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public VppRegisterUserResponse registerUser(String clientUserIdStr, String email, String managedAppleIDStr) {
 		return null;
 	}
 
 	@Nonnull
 	@Override
-	public VppGetUsersResponse fetchUsers(String sToken, String batchToken, @Nonnull FetchUsersOptions options) {
+	public VppEditUserResponse editUser(@Nonnull UserIdParam userIdParam, String email, String managedAppleIDStr) {
 		return null;
 	}
 
 	@Nonnull
 	@Override
-	public VppRegisterUserResponse registerUser(String sToken, String clientUserIdStr, String email,
-			String managedAppleIDStr) {
-		return null;
-	}
-
-	@Nonnull
-	@Override
-	public VppEditUserResponse editUser(String sToken, @Nonnull UserIdParam userIdParam, String email,
-			String managedAppleIDStr) {
-		return null;
-	}
-
-	@Nonnull
-	@Override
-	public VppRetireUserResponse retireUser(String sToken, @Nonnull UserIdParam userIdParam) {
+	public VppRetireUserResponse retireUser(@Nonnull UserIdParam userIdParam) {
 		return null;
 	}
 }

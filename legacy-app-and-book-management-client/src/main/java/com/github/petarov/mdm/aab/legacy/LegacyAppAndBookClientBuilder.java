@@ -28,6 +28,8 @@ public class LegacyAppAndBookClientBuilder
 
 	/**
 	 * Sets the server token issued by Apple Business Manager for an MDM server.
+	 * <p>
+	 * See <a href="https://developer.apple.com/documentation/devicemanagement/managing-apps-and-books-through-web-services-legacy#Authentication">Authentication</a>.
 	 */
 	@Nonnull
 	public LegacyAppAndBookClientBuilder setServerToken(@Nonnull LegacyAppAndBookToken serverToken) {

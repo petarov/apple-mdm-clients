@@ -9,9 +9,47 @@ import jakarta.annotation.Nonnull;
 /**
  * The response from the user details service.
  *
- * @param response {@link VppResponse}
- * @param user     the requested user
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/getvppuserresponse">GetVppUserResponse</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
-public record VppGetUserResponse(@JsonUnwrapped VppResponse response, @Nonnull VppUser user) {}
+public class VppGetUserResponse {
+
+	@JsonUnwrapped
+	private VppResponse response;
+
+	private VppUser user;
+
+	/**
+	 * Creates an empty VppGetUserResponse.
+	 */
+	public VppGetUserResponse() {
+	}
+
+	/**
+	 * @return {@link VppResponse}
+	 */
+	public VppResponse getResponse() {
+		return response;
+	}
+
+	public void setResponse(VppResponse response) {
+		this.response = response;
+	}
+
+	/**
+	 * @return the requested user
+	 */
+	@Nonnull
+	public VppUser getUser() {
+		return user;
+	}
+
+	public void setUser(@Nonnull VppUser user) {
+		this.user = user;
+	}
+
+	@Override
+	public String toString() {
+		return "VppGetUserResponse{" + "response=" + response + ", user=" + user + '}';
+	}
+}
