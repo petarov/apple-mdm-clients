@@ -26,7 +26,6 @@ public interface LegacyAppAndBookClient {
 	/**
 	 * Stores client-specific information on the server.
 	 *
-	 * @param sToken            required authentication token. See <a href="https://developer.apple.com/documentation/devicemanagement/managing-apps-and-books-through-web-services-legacy#Authentication">Authentication</a>.
 	 * @param clientContext     any JSON string under 256 bytes. The server stores the value of this field, and this value
 	 *                          is returned in all responses. To clear the field’s value, provide an empty string as the
 	 *                          input value {@code ""}.
@@ -35,7 +34,7 @@ public interface LegacyAppAndBookClient {
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/client-configuration">Client Configuration</a>
 	 */
 	@Nonnull
-	VppClientConfigResponse updateClientConfiguration(String sToken, String clientContext, String notificationToken);
+	VppClientConfigResponse updateClientConfiguration(String clientContext, String notificationToken);
 
 	/**
 	 * Fetches the set of assets managed by your organization.
@@ -143,13 +142,12 @@ public interface LegacyAppAndBookClient {
 	/**
 	 * Fetches information about a particular user.
 	 *
-	 * @param sToken      required authentication token. See <a href="https://developer.apple.com/documentation/devicemanagement/managing-apps-and-books-through-web-services-legacy#Authentication">Authentication</a>.
 	 * @param userIdParam the user id. See {@link UserIdParam}.
 	 * @return {@link VppGetUserResponse} object
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/get-a-user">Get a User</a>
 	 */
 	@Nonnull
-	VppGetUserResponse fetchUser(String sToken, @Nonnull UserIdParam userIdParam);
+	VppGetUserResponse fetchUser(@Nonnull UserIdParam userIdParam);
 
 	/**
 	 * Fetches information about a set of users.
@@ -161,21 +159,20 @@ public interface LegacyAppAndBookClient {
 	 * <p>
 	 * See <a href="https://developer.apple.com/documentation/devicemanagement/retrieving-a-large-record-set#Batched-Responses">Batched Responses</a>
 	 *
-	 * @param sToken     required authentication token. See <a href="https://developer.apple.com/documentation/devicemanagement/managing-apps-and-books-through-web-services-legacy#Authentication">Authentication</a>.
 	 * @param batchToken a token that signifies which batch is being returned
 	 * @param options    additional non-mandatory options
 	 * @return {@link VppGetUsersResponse} object
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/get-users-5boi1">Get Users</a>
 	 */
 	@Nonnull
-	VppGetUsersResponse fetchUsers(String sToken, String batchToken, @Nonnull FetchUsersOptions options);
+	VppGetUsersResponse fetchUsers(String batchToken, @Nonnull FetchUsersOptions options);
 
 	/**
-	 * @see #fetchUsers(String, String, FetchUsersOptions)
+	 * @see #fetchUsers(String, FetchUsersOptions)
 	 */
 	@Nonnull
-	default VppGetUsersResponse fetchUsers(String sToken, String batchToken) {
-		return fetchUsers(sToken, batchToken, new FetchUsersOptions("", false, false));
+	default VppGetUsersResponse fetchUsers(String batchToken) {
+		return fetchUsers(batchToken, new FetchUsersOptions("", false, false));
 	}
 
 	/**
@@ -192,7 +189,6 @@ public interface LegacyAppAndBookClient {
 	 * <li>If the user's status is <i>Retired</i> and the user has never been assigned to an iTunes account, the account's status is changed to <i>Registered</i> and the existing user is returned.
 	 * <li>If the user's status is <i>Retired</i> and the user has previously been assigned to an iTunes account, a new account is created.
 	 *
-	 * @param sToken            required authentication token. See <a href="https://developer.apple.com/documentation/devicemanagement/managing-apps-and-books-through-web-services-legacy#Authentication">Authentication</a>.
 	 * @param clientUserIdStr   required identifier supplied by the client when registering a user: the identifier must be unique within the organization
 	 * @param email             the user’s email address
 	 * @param managedAppleIDStr the Apple ID associated with the user. This ID's organization must match that of the provided sToken.
@@ -200,12 +196,11 @@ public interface LegacyAppAndBookClient {
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/register-a-user">Register a User</a>
 	 */
 	@Nonnull
-	VppRegisterUserResponse registerUser(String sToken, String clientUserIdStr, String email, String managedAppleIDStr);
+	VppRegisterUserResponse registerUser(String clientUserIdStr, String email, String managedAppleIDStr);
 
 	/**
 	 * Modifies details about a user.
 	 *
-	 * @param sToken            required authentication token. See <a href="https://developer.apple.com/documentation/devicemanagement/managing-apps-and-books-through-web-services-legacy#Authentication">Authentication</a>.
 	 * @param userIdParam       the user id. See {@link UserIdParam}.
 	 * @param email             the user's email address i.e. the email field is updated only if the value is provided in the request
 	 * @param managedAppleIDStr the Apple ID associated with the user. This ID's organization must match that of the provided sToken.
@@ -213,8 +208,7 @@ public interface LegacyAppAndBookClient {
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/edit-a-user">Edit a User</a>
 	 */
 	@Nonnull
-	VppEditUserResponse editUser(String sToken, @Nonnull UserIdParam userIdParam, String email,
-			String managedAppleIDStr);
+	VppEditUserResponse editUser(@Nonnull UserIdParam userIdParam, String email, String managedAppleIDStr);
 
 	/**
 	 * Retires a user account.
@@ -227,14 +221,12 @@ public interface LegacyAppAndBookClient {
 	 * <a href="https://developer.apple.com/documentation/devicemanagement/register-a-user">Register a User</a>
 	 * endpoint.
 	 *
-	 * @param sToken      required the authentication token.
-	 *                    For more information, see <a href="https://developer.apple.com/documentation/devicemanagement/managing-apps-and-books-through-web-services-legacy#Authentication">Authentication</a>.
 	 * @param userIdParam the user id. See {@link UserIdParam}.
 	 * @return {@link VppRetireUserResponse} object
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/retire-a-user">Retire a User</a>
 	 */
 	@Nonnull
-	VppRetireUserResponse retireUser(String sToken, @Nonnull UserIdParam userIdParam);
+	VppRetireUserResponse retireUser(@Nonnull UserIdParam userIdParam);
 
 	/**
 	 * Union of fetch assignments parameters. Only one of the two parameters must be set.
@@ -245,12 +237,12 @@ public interface LegacyAppAndBookClient {
 	record FetchAssignmentsOptions(String clientUserIdStr, String serialNumber) {
 
 		@Nonnull
-		static FetchAssignmentsOptions ofClientUserIdStr(String clientUserIdStr) {
+		public static FetchAssignmentsOptions ofClientUserIdStr(String clientUserIdStr) {
 			return new FetchAssignmentsOptions(clientUserIdStr, "");
 		}
 
 		@Nonnull
-		static FetchAssignmentsOptions ofSerialNumber(String serialNumber) {
+		public static FetchAssignmentsOptions ofSerialNumber(String serialNumber) {
 			return new FetchAssignmentsOptions("", serialNumber);
 		}
 	}
@@ -275,17 +267,17 @@ public interface LegacyAppAndBookClient {
 	record UserIdParam(String clientUserIdStr, long userId, String itsIdHash) {
 
 		@Nonnull
-		static UserIdParam of(String clientUserIdStr, String itsIdHash) {
+		public static UserIdParam of(String clientUserIdStr, String itsIdHash) {
 			return new UserIdParam(clientUserIdStr, 0, itsIdHash);
 		}
 
 		@Nonnull
-		static UserIdParam of(String clientUserIdStr) {
+		public static UserIdParam of(String clientUserIdStr) {
 			return of(clientUserIdStr, "");
 		}
 
 		@Nonnull
-		static UserIdParam of(long userId) {
+		public static UserIdParam of(long userId) {
 			return new UserIdParam("", userId, "");
 		}
 	}
