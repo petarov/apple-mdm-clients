@@ -103,6 +103,7 @@ public class HttpClientWrapper {
 	/**
 	 * @param uri junction uri starting with slash, e.g. <i>/session</i>
 	 */
+	@Nonnull
 	public URI createURI(String uri) {
 		if (!uri.startsWith("/")) {
 			throw new IllegalArgumentException("uri must start with slash");
