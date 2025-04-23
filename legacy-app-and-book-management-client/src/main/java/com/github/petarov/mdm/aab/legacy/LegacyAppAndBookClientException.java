@@ -11,6 +11,11 @@ public class LegacyAppAndBookClientException extends RuntimeException {
 	private final int    code;
 	private final String errorMessage;
 
+	public LegacyAppAndBookClientException(int code, @Nonnull String errorMessage) {
+		this.code = code;
+		this.errorMessage = errorMessage;
+	}
+
 	public LegacyAppAndBookClientException(@Nonnull HttpClientWrapperException exception) {
 		super(exception.getMessage(), exception);
 		/*
