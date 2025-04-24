@@ -85,7 +85,14 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 		requestBuilder.setHeader(HttpConsts.HEADER_CONTENT_TYPE, HttpConsts.HEADER_VALUE_APPLICATION_JSON_UTF8);
 
 		try {
-			return client.send(requestBuilder.build(), clazz);
+			var resp = client.send(requestBuilder.build(), clazz);
+			// TODO:
+			if (resp instanceof VppResponse r) {
+				if (r.status() != 0) {
+					throw new LegacyAppAndBookClientException(r.errorNumber(), r.errorMessage());
+				}
+			}
+			return resp;
 		} catch (HttpClientWrapperException e) {
 			// Retry-After behavior
 			// See - https://developer.apple.com/documentation/devicemanagement/app_and_book_management/managing_apps_and_books_through_web_services#3230015
@@ -183,10 +190,11 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Override
 	public VppGetUserResponse fetchUser(@Nonnull UserIdParam userIdParam) {
 		var params = params();
-		if (!userIdParam.clientUserIdStr().isBlank()) {
-			params.put("clientUserIdStr", userIdParam.clientUserIdStr());
-		} else {
+
+		if (userIdParam.userId() > 0) {
 			params.put("userId", userIdParam.userId());
+		} else if (!userIdParam.clientUserIdStr().isBlank()) {
+			params.put("clientUserIdStr", userIdParam.clientUserIdStr());
 		}
 
 		if (!userIdParam.itsIdHash().isBlank()) {
@@ -234,6 +242,15 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Nonnull
 	@Override
 	public VppRetireUserResponse retireUser(@Nonnull UserIdParam userIdParam) {
-		return null;
+		var params = params();
+
+		if (userIdParam.userId() > 0) {
+			params.put("userId", userIdParam.userId());
+		} else if (!userIdParam.clientUserIdStr().isBlank()) {
+			params.put("clientUserIdStr", userIdParam.clientUserIdStr());
+		}
+
+		return execute(client.createRequestBuilder(URI.create(serviceConfigSupplier.get().retireUserSrvUrl()))
+				.POST(ofBody(params)), VppRetireUserResponse.class);
 	}
 }
