@@ -199,6 +199,14 @@ public interface LegacyAppAndBookClient {
 	VppRegisterUserResponse registerUser(String clientUserIdStr, String email, String managedAppleIDStr);
 
 	/**
+	 * @see #registerUser(String, String, String)
+	 */
+	@Nonnull
+	default VppRegisterUserResponse registerUser(String clientUserIdStr, String email) {
+		return registerUser(clientUserIdStr, email, "");
+	}
+
+	/**
 	 * Modifies details about a user.
 	 *
 	 * @param userIdParam       the user id. See {@link UserIdParam}.

@@ -228,7 +228,14 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Nonnull
 	@Override
 	public VppRegisterUserResponse registerUser(String clientUserIdStr, String email, String managedAppleIDStr) {
-		return null;
+		var params = params("clientUserIdStr", clientUserIdStr, "email", email);
+
+		if (!managedAppleIDStr.isBlank()) {
+			params("managedAppleIDStr", managedAppleIDStr);
+		}
+
+		return execute(client.createRequestBuilder(URI.create(serviceConfigSupplier.get().registerUserSrvUrl()))
+				.POST(ofBody(params)), VppRegisterUserResponse.class);
 	}
 
 	@Nonnull
