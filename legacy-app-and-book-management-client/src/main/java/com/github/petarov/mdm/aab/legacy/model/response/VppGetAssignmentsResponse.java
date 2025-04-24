@@ -17,7 +17,7 @@ import java.util.List;
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/vppassignmentsresponse">VppAssignmentsResponse</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
-public class VppGetAssignmentsResponse {
+public class VppGetAssignmentsResponse implements VppHasResponse {
 
 	@JsonUnwrapped
 	private VppResponse response;
@@ -40,7 +40,9 @@ public class VppGetAssignmentsResponse {
 	/**
 	 * @return {@link VppResponse}
 	 */
-	public VppResponse response() {
+	@Nonnull
+	@Override
+	public VppResponse getResponse() {
 		return response;
 	}
 

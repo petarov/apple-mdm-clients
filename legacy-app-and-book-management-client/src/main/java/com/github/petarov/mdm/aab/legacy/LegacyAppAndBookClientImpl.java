@@ -86,11 +86,9 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 
 		try {
 			var resp = client.send(requestBuilder.build(), clazz);
-			// TODO:
-			if (resp instanceof VppResponse r) {
-				if (r.status() != 0) {
-					throw new LegacyAppAndBookClientException(r.errorNumber(), r.errorMessage());
-				}
+			if (resp instanceof VppHasResponse hasResp && hasResp.getResponse().status() != 0) {
+				throw new LegacyAppAndBookClientException(hasResp.getResponse().errorNumber(),
+						hasResp.getResponse().errorMessage());
 			}
 			return resp;
 		} catch (HttpClientWrapperException e) {

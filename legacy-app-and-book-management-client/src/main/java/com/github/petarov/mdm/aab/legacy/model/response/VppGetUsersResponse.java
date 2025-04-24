@@ -17,7 +17,7 @@ import java.util.List;
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/retrieving-a-large-record-set#Batched-Responses">Batched Responses</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
-public class VppGetUsersResponse {
+public class VppGetUsersResponse implements VppHasResponse {
 
 	@JsonUnwrapped
 	private VppResponse response;
@@ -41,6 +41,8 @@ public class VppGetUsersResponse {
 	/**
 	 * @return {@link VppResponse}
 	 */
+	@Nonnull
+	@Override
 	public VppResponse getResponse() {
 		return response;
 	}

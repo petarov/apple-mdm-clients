@@ -12,7 +12,7 @@ import jakarta.annotation.Nonnull;
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/getvppuserresponse">GetVppUserResponse</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
-public class VppGetUserResponse {
+public class VppGetUserResponse implements VppHasResponse {
 
 	@JsonUnwrapped
 	private VppResponse response;
@@ -28,6 +28,8 @@ public class VppGetUserResponse {
 	/**
 	 * @return {@link VppResponse}
 	 */
+	@Nonnull
+	@Override
 	public VppResponse getResponse() {
 		return response;
 	}
