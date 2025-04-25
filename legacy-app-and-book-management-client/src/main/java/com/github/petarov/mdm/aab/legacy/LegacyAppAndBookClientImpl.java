@@ -241,7 +241,22 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Nonnull
 	@Override
 	public VppEditUserResponse editUser(@Nonnull UserIdParam userIdParam, String email, String managedAppleIDStr) {
-		return null;
+		var params = params();
+
+		if (userIdParam.userId() > 0) {
+			params.put("userId", userIdParam.userId());
+		} else if (!userIdParam.clientUserIdStr().isBlank()) {
+			params.put("clientUserIdStr", userIdParam.clientUserIdStr());
+		}
+
+		if (!managedAppleIDStr.isBlank()) {
+			params("managedAppleIDStr", managedAppleIDStr);
+		}
+
+		params.put("email", email);
+
+		return execute(client.createRequestBuilder(URI.create(serviceConfigSupplier.get().editUserSrvUrl()))
+				.POST(ofBody(params)), VppEditUserResponse.class);
 	}
 
 	@Nonnull
