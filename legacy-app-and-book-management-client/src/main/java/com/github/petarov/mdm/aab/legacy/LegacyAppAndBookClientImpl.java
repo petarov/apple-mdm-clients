@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.http.HttpRequest;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -119,16 +120,26 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Nonnull
 	@Override
 	public VppClientConfigResponse updateClientConfiguration(String clientContext, String notificationToken) {
-		return null;
+		if (clientContext.getBytes(StandardCharsets.UTF_8).length > 256) {
+			throw new IllegalArgumentException("clientContext size must be 256 bytes or less");
+		}
+
+		var params = params("clientContext", clientContext, "notificationToken", notificationToken);
+
+		return execute(
+				client.createRequestBuilder(serviceConfigSupplier.get().clientConfigSrvUrl()).POST(ofBody(params)),
+				VppClientConfigResponse.class);
 	}
 
 	@Nonnull
 	@Override
 	public VppGetAssetResponse fetchAssets(boolean includeLicenseCounts, String pricingParam) {
 		var params = params("includeLicenseCounts", includeLicenseCounts);
+
 		if (!pricingParam.isBlank()) {
 			params.put("pricingParam", pricingParam);
 		}
+
 		return execute(
 				client.createRequestBuilder(serviceConfigSupplier.get().getVPPAssetsSrvUrl()).POST(ofBody(params)),
 				VppGetAssetResponse.class);
@@ -139,6 +150,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	public VppGetAssignmentsResponse fetchAssignments(String adamIdStr,
 			@Nonnull FetchAssignmentsOptions assignmentOptions, String requestId, int pageIndex) {
 		var params = params();
+
 		if (!adamIdStr.isBlank()) {
 			params.put("adamIdStr", adamIdStr);
 		}
@@ -208,6 +220,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Override
 	public VppGetUsersResponse fetchUsers(String batchToken, @Nonnull FetchUsersOptions options) {
 		var params = params();
+
 		if (!batchToken.isBlank()) {
 			params.put("batchToken", batchToken);
 		}
