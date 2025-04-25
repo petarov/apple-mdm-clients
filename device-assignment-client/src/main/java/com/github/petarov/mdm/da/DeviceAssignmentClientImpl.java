@@ -45,10 +45,10 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 		var authParams = oauth.getAuthParams(client.getOptions().random());
 		authParams.forEach((k, v) -> authHeaderBuilder.append(k).append("=").append("\"").append(v).append("\","));
 		authHeaderBuilder.append("oauth_signature=\"");
-		authHeaderBuilder.append(oauth.generateSignature("GET", client.createURI("/session").toString(), authParams));
+		authHeaderBuilder.append(oauth.generateSignature("GET", client.complementURI("/session").toString(), authParams));
 		authHeaderBuilder.append("\"");
 
-		var request = client.createRequestBuilder(client.createURI("/session")).GET()
+		var request = client.createRequestBuilder(client.complementURI("/session")).GET()
 				.setHeader(HttpConsts.HEADER_AUTHORIZATION, authHeaderBuilder.toString()).build();
 		var sessionResponse = client.send(request, SessionResponse.class);
 
@@ -93,41 +93,41 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	@Nonnull
 	@Override
 	public AccountDetail fetchAccount() {
-		return execute(client.createRequestBuilder(client.createURI("/account")).GET(), AccountDetail.class);
+		return execute(client.createRequestBuilder(client.complementURI("/account")).GET(), AccountDetail.class);
 	}
 
 	@Nonnull
 	@Override
 	public DevicesResponse fetchDevices(String cursor, int limit) {
-		return execute(client.createRequestBuilder(client.createURI("/server/devices"))
+		return execute(client.createRequestBuilder(client.complementURI("/server/devices"))
 				.POST(ofBody(new FetchDeviceRequest(cursor, limit))), DevicesResponse.class);
 	}
 
 	@Nonnull
 	@Override
 	public DeviceListResponse fetchDeviceDetails(@Nonnull Set<String> serialNumbers) {
-		return execute(client.createRequestBuilder(client.createURI("/devices"))
+		return execute(client.createRequestBuilder(client.complementURI("/devices"))
 				.POST(ofBody(new DeviceListRequest(serialNumbers))), DeviceListResponse.class);
 	}
 
 	@Nonnull
 	@Override
 	public DevicesResponse syncDevices(String cursor, int limit) {
-		return execute(client.createRequestBuilder(client.createURI("/devices/sync"))
+		return execute(client.createRequestBuilder(client.complementURI("/devices/sync"))
 				.POST(ofBody(new FetchDeviceRequest(cursor, limit))), DevicesResponse.class);
 	}
 
 	@Nonnull
 	@Override
 	public DeviceStatusResponse disownDevices(@Nonnull Set<String> serialNumbers) {
-		return execute(client.createRequestBuilder(client.createURI("/devices/disown"))
+		return execute(client.createRequestBuilder(client.complementURI("/devices/disown"))
 				.POST(ofBody(new DeviceListRequest(serialNumbers))), DeviceStatusResponse.class);
 	}
 
 	@Nonnull
 	@Override
 	public ProfileDevicesResponse createProfile(@Nonnull Profile profile) {
-		return execute(client.createRequestBuilder(client.createURI("/profile")).POST(ofBody(profile)),
+		return execute(client.createRequestBuilder(client.complementURI("/profile")).POST(ofBody(profile)),
 				ProfileDevicesResponse.class);
 	}
 
@@ -136,7 +136,7 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	public Optional<Profile> fetchProfile(String profileUuid) {
 		try {
 			return Optional.of(
-					execute(client.createRequestBuilder(client.createURI("/profile?profile_uuid=" + profileUuid)).GET(),
+					execute(client.createRequestBuilder(client.complementURI("/profile?profile_uuid=" + profileUuid)).GET(),
 							Profile.class));
 		} catch (DeviceAssignmentException e) {
 			if (e.getCode() == HttpConsts.STATUS_NOT_FOUND) {
@@ -149,14 +149,14 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	@Nonnull
 	@Override
 	public ProfileDevicesResponse assignProfile(String profileUuid, @Nonnull Set<String> serialNumbers) {
-		return execute(client.createRequestBuilder(client.createURI("/profile/devices"))
+		return execute(client.createRequestBuilder(client.complementURI("/profile/devices"))
 				.POST(ofBody(new ProfileDevicesRequest(profileUuid, serialNumbers))), ProfileDevicesResponse.class);
 	}
 
 	@Nonnull
 	@Override
 	public ProfileDevicesResponse unassignProfile(String profileUuid, @Nonnull Set<String> serialNumbers) {
-		return execute(client.createRequestBuilder(client.createURI("/profile/devices"))
+		return execute(client.createRequestBuilder(client.complementURI("/profile/devices"))
 						.method("DELETE", ofBody(new ProfileDevicesRequest(profileUuid, serialNumbers))),
 				ProfileDevicesResponse.class);
 	}
@@ -165,7 +165,7 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	@Override
 	public ActivationLockStatusResponse enableActivationLock(String serialNumber, String escrowKey,
 			String lostMessage) {
-		return execute(client.createRequestBuilder(client.createURI("/device/activationlock"))
+		return execute(client.createRequestBuilder(client.complementURI("/device/activationlock"))
 						.POST(ofBody(new ActivationLockRequest(serialNumber, escrowKey, lostMessage))),
 				ActivationLockStatusResponse.class);
 	}
@@ -173,7 +173,7 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	@Nonnull
 	@Override
 	public SeedBuildTokenResponse fetchBetaEnrollmentTokens() {
-		return execute(client.createRequestBuilder(client.createURI("/os-beta-enrollment/tokens")).GET(),
+		return execute(client.createRequestBuilder(client.complementURI("/os-beta-enrollment/tokens")).GET(),
 				SeedBuildTokenResponse.class);
 	}
 }

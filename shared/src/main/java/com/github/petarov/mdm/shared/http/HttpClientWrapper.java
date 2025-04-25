@@ -101,14 +101,15 @@ public class HttpClientWrapper {
 	}
 
 	/**
-	 * @param uri junction uri starting with slash, e.g. <i>/session</i>
+	 * @param resourceUri junction uri starting with slash, e.g. <i>/session</i>
+	 * @return the complete url, i.e., the {@code resourceUri} prefixed with the configured service url
 	 */
 	@Nonnull
-	public URI createURI(String uri) {
-		if (!uri.startsWith("/")) {
+	public URI complementURI(String resourceUri) {
+		if (!resourceUri.startsWith("/")) {
 			throw new IllegalArgumentException("uri must start with slash");
 		}
-		return URI.create(options.serviceUrl() + uri);
+		return URI.create(options.serviceUrl() + resourceUri);
 	}
 
 	@Nonnull
@@ -117,10 +118,20 @@ public class HttpClientWrapper {
 		builder.timeout(options.readTimeout());
 		builder.setHeader(HttpConsts.HEADER_USER_AGENT, options.userAgent());
 		builder.setHeader(HttpConsts.HEADER_ACCEPT_ENCODING, "gzip, deflate");
+
 		if (!proxyCredentials.isBlank()) {
 			builder.setHeader(HttpConsts.HEADER_PROXY_AUTHORIZATION, proxyCredentials);
 		}
+
 		return builder;
+	}
+
+	/**
+	 * @param resourceUrl complete url to the resource
+	 */
+	@Nonnull
+	public HttpRequest.Builder createRequestBuilder(String resourceUrl) {
+		return createRequestBuilder(URI.create(resourceUrl));
 	}
 
 	private String getRequestResponseLine(HttpRequest req, HttpResponse<?> resp) {
@@ -130,6 +141,7 @@ public class HttpClientWrapper {
 	private void debugReqHeaders(HttpRequest req) {
 		var sb = new StringBuilder();
 		req.headers().map().forEach((k, v) -> sb.append(k).append("=").append(v).append(" "));
+
 		logger.debug("req: {} {} headers: {}", req.method(), req.uri(), sb);
 	}
 

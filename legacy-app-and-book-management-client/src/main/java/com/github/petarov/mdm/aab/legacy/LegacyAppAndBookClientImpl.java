@@ -12,7 +12,6 @@ import jakarta.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
 import java.net.http.HttpRequest;
 import java.util.HashMap;
 import java.util.Map;
@@ -113,7 +112,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Nonnull
 	@Override
 	public VppServiceConfigResponse fetchServiceConfiguration() {
-		return execute(client.createRequestBuilder(client.createURI("/VPPServiceConfigSrv")).GET(),
+		return execute(client.createRequestBuilder(client.complementURI("/VPPServiceConfigSrv")).GET(),
 				VppServiceConfigResponse.class);
 	}
 
@@ -130,8 +129,9 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 		if (!pricingParam.isBlank()) {
 			params.put("pricingParam", pricingParam);
 		}
-		return execute(client.createRequestBuilder(URI.create(serviceConfigSupplier.get().getVPPAssetsSrvUrl()))
-				.POST(ofBody(params)), VppGetAssetResponse.class);
+		return execute(
+				client.createRequestBuilder(serviceConfigSupplier.get().getVPPAssetsSrvUrl()).POST(ofBody(params)),
+				VppGetAssetResponse.class);
 	}
 
 	@Nonnull
@@ -157,8 +157,9 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 			params.put("pageIndex", pageIndex);
 		}
 
-		return execute(client.createRequestBuilder(URI.create(serviceConfigSupplier.get().getAssignmentsSrvUrl()))
-				.POST(ofBody(params)), VppGetAssignmentsResponse.class);
+		return execute(
+				client.createRequestBuilder(serviceConfigSupplier.get().getAssignmentsSrvUrl()).POST(ofBody(params)),
+				VppGetAssignmentsResponse.class);
 	}
 
 	@Nonnull
@@ -199,8 +200,8 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 			params.put("itsIdHash", userIdParam.itsIdHash());
 		}
 
-		return execute(client.createRequestBuilder(URI.create(serviceConfigSupplier.get().getUserSrvUrl()))
-				.POST(ofBody(params)), VppGetUserResponse.class);
+		return execute(client.createRequestBuilder(serviceConfigSupplier.get().getUserSrvUrl()).POST(ofBody(params)),
+				VppGetUserResponse.class);
 	}
 
 	@Nonnull
@@ -221,8 +222,8 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 			params.put("includeRetired", true);
 		}
 
-		return execute(client.createRequestBuilder(URI.create(serviceConfigSupplier.get().getUsersSrvUrl()))
-				.POST(ofBody(params)), VppGetUsersResponse.class);
+		return execute(client.createRequestBuilder(serviceConfigSupplier.get().getUsersSrvUrl()).POST(ofBody(params)),
+				VppGetUsersResponse.class);
 	}
 
 	@Nonnull
@@ -234,8 +235,9 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 			params("managedAppleIDStr", managedAppleIDStr);
 		}
 
-		return execute(client.createRequestBuilder(URI.create(serviceConfigSupplier.get().registerUserSrvUrl()))
-				.POST(ofBody(params)), VppRegisterUserResponse.class);
+		return execute(
+				client.createRequestBuilder(serviceConfigSupplier.get().registerUserSrvUrl()).POST(ofBody(params)),
+				VppRegisterUserResponse.class);
 	}
 
 	@Nonnull
@@ -255,8 +257,8 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 
 		params.put("email", email);
 
-		return execute(client.createRequestBuilder(URI.create(serviceConfigSupplier.get().editUserSrvUrl()))
-				.POST(ofBody(params)), VppEditUserResponse.class);
+		return execute(client.createRequestBuilder(serviceConfigSupplier.get().editUserSrvUrl()).POST(ofBody(params)),
+				VppEditUserResponse.class);
 	}
 
 	@Nonnull
@@ -270,7 +272,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 			params.put("clientUserIdStr", userIdParam.clientUserIdStr());
 		}
 
-		return execute(client.createRequestBuilder(URI.create(serviceConfigSupplier.get().retireUserSrvUrl()))
-				.POST(ofBody(params)), VppRetireUserResponse.class);
+		return execute(client.createRequestBuilder(serviceConfigSupplier.get().retireUserSrvUrl()).POST(ofBody(params)),
+				VppRetireUserResponse.class);
 	}
 }
