@@ -1,13 +1,11 @@
 package com.github.petarov.mdm.aab.legacy;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.io.InputStream;
-import java.security.Security;
 import java.time.OffsetDateTime;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -17,7 +15,6 @@ public class LegacyAppAndBookTokenTests {
 
 	@BeforeAll
 	void init() throws Exception {
-		Security.addProvider(new BouncyCastleProvider());
 		sTokenInput = this.getClass().getResourceAsStream("/apple-mdm-client-tests-stoken-1.stoken");
 	}
 

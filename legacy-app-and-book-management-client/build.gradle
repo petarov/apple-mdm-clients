@@ -4,9 +4,6 @@ plugins {
 
 dependencies {
     implementation project(':shared')
-    api 'org.bouncycastle:bcprov-jdk18on:1.78.1',
-            'org.bouncycastle:bcmail-jdk18on:1.78.1',
-            'com.sun.mail:javax.mail:1.6.2'
 
     testImplementation libs.junit.jupiter
 

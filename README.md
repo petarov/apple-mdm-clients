@@ -59,8 +59,8 @@ See the complete list of service API calls on Apple's [Device Assignment](https:
 
 ## Legacy App and Book Management client
 
-Manage apps and books for students and employees. This Apple API is still perfectly functional, however, it has been
-deprecated, and it's no longer maintained.
+Manage apps and books for students and employees. This API is still perfectly functional, however, it has been 
+deprecated by Apple, and it's no longer maintained.
 
 > Status: Testing ...
 
