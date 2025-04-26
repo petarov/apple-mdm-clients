@@ -155,8 +155,8 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 			params.put("adamIdStr", adamIdStr);
 		}
 
-		if (!assignmentOptions.clientUserIdStr().isBlank()) {
-			params.put("clientUserIdStr", assignmentOptions.clientUserIdStr());
+		if (!assignmentOptions.clientUserId().isBlank()) {
+			params.put("clientUserIdStr", assignmentOptions.clientUserId());
 		} else if (!assignmentOptions.serialNumber().isBlank()) {
 			params.put("serialNumber", assignmentOptions.serialNumber());
 		}
@@ -217,8 +217,8 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 
 		if (userIdParam.userId() > 0) {
 			params.put("userId", userIdParam.userId());
-		} else if (!userIdParam.clientUserIdStr().isBlank()) {
-			params.put("clientUserIdStr", userIdParam.clientUserIdStr());
+		} else if (!userIdParam.clientUserId().isBlank()) {
+			params.put("clientUserIdStr", userIdParam.clientUserId());
 		}
 
 		if (!userIdParam.itsIdHash().isBlank()) {
@@ -273,8 +273,8 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 
 		if (userIdParam.userId() > 0) {
 			params.put("userId", userIdParam.userId());
-		} else if (!userIdParam.clientUserIdStr().isBlank()) {
-			params.put("clientUserIdStr", userIdParam.clientUserIdStr());
+		} else if (!userIdParam.clientUserId().isBlank()) {
+			params.put("clientUserIdStr", userIdParam.clientUserId());
 		}
 
 		if (!managedAppleID.isBlank()) {
@@ -294,8 +294,8 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 
 		if (userIdParam.userId() > 0) {
 			params.put("userId", userIdParam.userId());
-		} else if (!userIdParam.clientUserIdStr().isBlank()) {
-			params.put("clientUserIdStr", userIdParam.clientUserIdStr());
+		} else if (!userIdParam.clientUserId().isBlank()) {
+			params.put("clientUserIdStr", userIdParam.clientUserId());
 		}
 
 		return execute(client.createRequestBuilder(serviceConfigSupplier.get().retireUserSrvUrl()).POST(ofBody(params)),

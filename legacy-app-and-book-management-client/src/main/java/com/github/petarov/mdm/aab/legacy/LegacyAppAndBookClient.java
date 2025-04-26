@@ -177,19 +177,19 @@ public interface LegacyAppAndBookClient {
 	/**
 	 * Registers a user with the volume-purchase program.
 	 * <p>
-	 * The {@code clientUserIdStr} must be unique within the organization and may not be changed once a user is
+	 * The {@code clientUserId} must be unique within the organization and may not be changed once a user is
 	 * registered. It should not, for example, be an email address, because an email address might be reused by a
 	 * future user. It can be, for example, the <i>GUID</i> of the user.
 	 * <p>
 	 * When a user is first registered, the user's initial status is <i>Registered</i>.
 	 * <ul>
-	 * <li>If the user has already been registered, as identified by {@code clientUserIdStr}, the following occurs:
+	 * <li>If the user has already been registered, as identified by {@code clientUserId}, the following occurs:
 	 * <li>If the user's status is <i>Registered</i> or <i>Associated</i>, that active user account is returned.
 	 * <li>If the user's status is <i>Retired</i> and the user has never been assigned to an iTunes account, the account's status is changed to <i>Registered</i> and the existing user is returned.
 	 * <li>If the user's status is <i>Retired</i> and the user has previously been assigned to an iTunes account, a new account is created.
 	 *
 	 * @param clientUserId   required identifier supplied by the client when registering a user: the identifier must be unique within the organization
-	 * @param email             the user’s email address
+	 * @param email          the user’s email address
 	 * @param managedAppleID the Apple ID associated with the user. This ID's organization must match that of the provided sToken.
 	 * @return {@link VppEditUserResponse} object
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/register-a-user">Register a User</a>
@@ -208,8 +208,8 @@ public interface LegacyAppAndBookClient {
 	/**
 	 * Modifies details about a user.
 	 *
-	 * @param userIdParam       the user id. See {@link UserIdParam}.
-	 * @param email             the user's email address i.e. the email field is updated only if the value is provided in the request
+	 * @param userIdParam    the user id. See {@link UserIdParam}.
+	 * @param email          the user's email address i.e. the email field is updated only if the value is provided in the request
 	 * @param managedAppleID the Apple ID associated with the user. This ID's organization must match that of the provided sToken.
 	 * @return {@link VppEditUserResponse} object
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/edit-a-user">Edit a User</a>
@@ -238,14 +238,14 @@ public interface LegacyAppAndBookClient {
 	/**
 	 * Union of fetch assignment parameters. Only one of the two parameters must be set.
 	 *
-	 * @param clientUserIdStr if specified, returns only assignments assigned to the given client user ID
-	 * @param serialNumber    if specified, returns only assignments assigned to the given device serial number
+	 * @param clientUserId if specified, returns only assignments assigned to the given client user ID
+	 * @param serialNumber if specified, returns only assignments assigned to the given device serial number
 	 */
-	record FetchAssignmentsOptions(String clientUserIdStr, String serialNumber) {
+	record FetchAssignmentsOptions(String clientUserId, String serialNumber) {
 
 		@Nonnull
-		public static FetchAssignmentsOptions ofClientUserIdStr(String clientUserIdStr) {
-			return new FetchAssignmentsOptions(clientUserIdStr, "");
+		public static FetchAssignmentsOptions ofClientUserId(String clientUserId) {
+			return new FetchAssignmentsOptions(clientUserId, "");
 		}
 
 		@Nonnull
@@ -257,30 +257,30 @@ public interface LegacyAppAndBookClient {
 	/**
 	 * Union of user id parameters.
 	 * <p>
-	 * Either {@code clientUserIdStr} or {@code userId} is required. If {@code clientUserIdStr} is used, an
-	 * {@code itsIdHash} (iTunes Store ID hash) value may be included, but it is optional. If {@code userId} has a
-	 * value, only that value is used, and {@code clientUserIdStr} and {@code itsIdHash} are ignored.
+	 * Either {@code clientUserId} or {@code userId} is required. If {@code clientUserId} is used, an {@code itsIdHash}
+	 * (iTunes Store ID hash) value may be included, but it is optional. If {@code userId} has a value, only that value
+	 * is used, and {@code clientUserId} and {@code itsIdHash} are ignored.
 	 * <p>
 	 * To obtain a retired user record previously associated with an iTunes Store account, your MDM server can pass
-	 * either the {@code userId} for that record or the {@code clientUserIdStr} and {@code itsIdHash}  for that record.
+	 * either the {@code userId} for that record or the {@code clientUserId} and {@code itsIdHash}  for that record.
 	 *
-	 * @param clientUserIdStr the identifier supplied by the client when registering a user.
-	 *                        Either {@code clientUserIdStr} or {@code userId} is required.
-	 *                        If both {@code clientUserIdStr} and {@code userId} are supplied, {@code userId} takes precedence.
-	 * @param userId          the unique identifier assigned by the VPP when registering the user.
-	 *                        Either {@code clientUserIdStr} or {@code userId} is required.
-	 * @param itsIdHash       (optional) the hash of the user's iTunes Store ID
+	 * @param clientUserId the identifier supplied by the client when registering a user.
+	 *                     Either {@code clientUserId} or {@code userId} is required.
+	 *                     If both {@code clientUserId} and {@code userId} are supplied, {@code userId} takes precedence.
+	 * @param userId       the unique identifier assigned by the VPP when registering the user.
+	 *                     Either {@code clientUserId} or {@code userId} is required.
+	 * @param itsIdHash    (optional) the hash of the user's iTunes Store ID
 	 */
-	record UserIdParam(String clientUserIdStr, long userId, String itsIdHash) {
+	record UserIdParam(String clientUserId, long userId, String itsIdHash) {
 
 		@Nonnull
-		public static UserIdParam of(String clientUserIdStr, String itsIdHash) {
-			return new UserIdParam(clientUserIdStr, 0, itsIdHash);
+		public static UserIdParam of(String clientUserId, String itsIdHash) {
+			return new UserIdParam(clientUserId, 0, itsIdHash);
 		}
 
 		@Nonnull
-		public static UserIdParam of(String clientUserIdStr) {
-			return of(clientUserIdStr, "");
+		public static UserIdParam of(String clientUserId) {
+			return of(clientUserId, "");
 		}
 
 		@Nonnull
