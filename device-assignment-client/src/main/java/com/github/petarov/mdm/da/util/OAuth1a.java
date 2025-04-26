@@ -2,12 +2,13 @@ package com.github.petarov.mdm.da.util;
 
 import com.github.petarov.mdm.da.DeviceAssignmentServerToken;
 import jakarta.annotation.Nonnull;
-import org.bouncycastle.crypto.digests.SHA1Digest;
-import org.bouncycastle.crypto.macs.HMac;
-import org.bouncycastle.crypto.params.KeyParameter;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 /**
@@ -64,15 +65,14 @@ public final class OAuth1a {
 						baseString.getBytes(StandardCharsets.UTF_8))));
 	}
 
-	private static byte[] signWithHMacSHA1(byte[] key, byte[] data) {
-		var hmac = new HMac(new SHA1Digest());
-		hmac.init(new KeyParameter(key));
-
-		hmac.update(data, 0, data.length);
-		var result = new byte[hmac.getMacSize()];
-		hmac.doFinal(result, 0);
-
-		return result;
+	public static byte[] signWithHMacSHA1(byte[] key, byte[] data) {
+		try {
+			var mac = Mac.getInstance("HmacSHA1");
+			mac.init(new SecretKeySpec(key, "HmacSHA1"));
+			return mac.doFinal(data);
+		} catch (NoSuchAlgorithmException | InvalidKeyException e) {
+			throw new IllegalStateException("Error calculate HMAC-SHA1", e);
+		}
 	}
 
 	private static String percentEncode(String value) {
