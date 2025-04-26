@@ -1,12 +1,11 @@
-<p style="text-align: center;">
+<div align="center">
   <img src="apple-cogs.png" width="128" alt="Apple icon"/>
-</p>
-<p style="text-align: center;">
+  <br>
   <img alt="MDM" src="https://img.shields.io/badge/Apple-gray?style=flat-square"/>
   <img alt="MDM" src="https://img.shields.io/badge/MDM-gray?style=flat-square"/>
   <img alt="ABM" src="https://img.shields.io/badge/Java-gray?style=flat-square"/>
   <img alt="License" src="https://img.shields.io/github/license/petarov/apple-mdm-clients?style=square">
-</p>
+</div>
 
 # Apple MDM clients for Java
 
