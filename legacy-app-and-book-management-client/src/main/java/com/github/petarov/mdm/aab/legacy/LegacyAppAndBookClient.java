@@ -130,14 +130,14 @@ public interface LegacyAppAndBookClient {
 	/**
 	 * Disassociate licenses by their ids.
 	 *
-	 * @param adamIdStr                 the unique identifier for a product in the iTunes Store
-	 * @param disassociateLicenseIdStrs a list of license IDs to disassociate from the user ID or device
-	 * @param notifyDisassociation      if {@code true}, sends notifications when licenses are disassociated
+	 * @param adamIdStr            the unique identifier for a product in the iTunes Store
+	 * @param licenseIds           a list of license IDs to disassociate from the user ID or device
+	 * @param notifyDisassociation if {@code true}, sends notifications when licenses are disassociated
 	 * @return {@link VppManageLicensesByAdamIdResponse} object
 	 */
 	@Nonnull
-	VppManageLicensesByAdamIdResponse disassociateLicenses(String adamIdStr,
-			@Nonnull Set<String> disassociateLicenseIdStrs, boolean notifyDisassociation);
+	VppManageLicensesByAdamIdResponse disassociateLicenses(String adamIdStr, @Nonnull Set<String> licenseIds,
+			boolean notifyDisassociation);
 
 	/**
 	 * Fetches information about a particular user.

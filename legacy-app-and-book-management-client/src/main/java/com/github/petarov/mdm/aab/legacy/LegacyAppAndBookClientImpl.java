@@ -193,8 +193,12 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Nonnull
 	@Override
 	public VppManageLicensesByAdamIdResponse disassociateLicenses(String adamIdStr,
-			@Nonnull Set<String> disassociateLicenseIdStrs, boolean notifyDisassociation) {
-		return null;
+			@Nonnull Set<String> licenseIds, boolean notifyDisassociation) {
+		var params = params("adamIdStr", adamIdStr, "disassociateLicenseIdStrs", licenseIds,
+				"notifyDisassociation", notifyDisassociation);
+
+		return execute(client.createRequestBuilder(serviceConfigSupplier.get().manageVPPLicensesByAdamIdSrvUrl())
+				.POST(ofBody(params)), VppManageLicensesByAdamIdResponse.class);
 	}
 
 	@Nonnull
