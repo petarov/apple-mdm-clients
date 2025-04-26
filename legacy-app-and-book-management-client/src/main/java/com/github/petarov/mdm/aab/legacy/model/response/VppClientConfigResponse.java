@@ -147,4 +147,12 @@ public class VppClientConfigResponse implements VppHasResponse {
 	public void setOrganizationIdHash(String organizationIdHash) {
 		this.organizationIdHash = organizationIdHash;
 	}
+
+	@Override
+	public String toString() {
+		return "VppClientConfigResponse{" + "response=" + response + ", apnToken='" + apnToken + '\'' + ", appleId='"
+				+ appleId + '\'' + ", clientContext='" + clientContext + '\'' + ", countryCode='" + countryCode + '\''
+				+ ", defaultPlatform='" + defaultPlatform + '\'' + ", email='" + email + '\'' + ", organizationId='"
+				+ organizationId + '\'' + ", organizationIdHash='" + organizationIdHash + '\'' + '}';
+	}
 }

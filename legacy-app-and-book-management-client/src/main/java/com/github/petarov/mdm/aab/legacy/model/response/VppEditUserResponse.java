@@ -46,4 +46,9 @@ public class VppEditUserResponse implements VppHasResponse {
 	public void setUser(@Nonnull VppUser user) {
 		this.user = user;
 	}
+
+	@Override
+	public String toString() {
+		return "VppEditUserResponse{" + "response=" + response + ", user=" + user + '}';
+	}
 }
