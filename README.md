@@ -1,15 +1,26 @@
-# Apple MDM Clients for Java
+<p style="text-align: center;">
+  <img src="apple-cogs.png" width="128" alt="Apple icon"/>
+</p>
+<p style="text-align: center;">
+  <img alt="MDM" src="https://img.shields.io/badge/Apple-gray?style=flat-square"/>
+  <img alt="MDM" src="https://img.shields.io/badge/MDM-gray?style=flat-square"/>
+  <img alt="ABM" src="https://img.shields.io/badge/Java-gray?style=flat-square"/>
+  <img alt="License" src="https://img.shields.io/github/license/petarov/apple-mdm-clients?style=square">
+</p>
+
+# Apple MDM clients for Java
 
 Java clients for Apple Mobile Device Management (MDM) services.
 
 Among other technical goals, this library aims to use as few external dependencies as possible.
 
-## Device Assignment Client (Automated Device Enrollment)
+## Device Assignment client
 
 > Status: Testing ...
 
-Manage your organization's Apple Business Manager (`ABM`) devices. ADE, previously known as "The Device Enrollment
-Program `(DEP)`" allows for creating device enrollment profiles and assigning them to your organization's devices.
+Manage your organization's Apple Business Manager (`ABM`) devices. Automated Device Enrollment `(ADE)`, previously known 
+as "The Device Enrollment Program" `(DEP)` allows for creating device enrollment profiles and assigning them to your 
+organization's devices.
 
 To use the Java client, it is required that you already have created a valid device assignment token on ABM.
 The private key with which the token must be decrypted is also required.
@@ -47,7 +58,7 @@ System.out.println(response.profileUuid());
 
 See the complete list of service API calls on Apple's [Device Assignment](https://developer.apple.com/documentation/devicemanagement/device-assignment) web page.
 
-## Legacy App and Book Management Client
+## Legacy App and Book Management client
 
 Manage apps and books for students and employees. This Apple API is still perfectly functional, however, it has been
 deprecated, and it's no longer maintained.

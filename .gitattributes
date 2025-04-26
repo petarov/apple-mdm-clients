@@ -10,6 +10,6 @@
 
 # Binary files should be left untouched
 *.jar           binary
-*.der            binary
-*.cer            binary
-
+*.der           binary
+*.cer           binary
+*.png		binary
