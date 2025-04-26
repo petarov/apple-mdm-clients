@@ -177,9 +177,14 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Nonnull
 	@Override
 	public VppManageLicensesByAdamIdResponse manageUserLicenses(String adamIdStr,
-			@Nonnull Set<String> associateClientUserIdStrs, @Nonnull Set<String> disassociateClientUserIdStrs,
+			@Nonnull Set<String> associateClientUserIds, @Nonnull Set<String> disassociateClientUserIds,
 			boolean notifyDisassociation) {
-		return null;
+		var params = params("adamIdStr", adamIdStr, "associateClientUserIdStrs", associateClientUserIds,
+				"disassociateClientUserIdStrs", disassociateClientUserIds, "notifyDisassociation",
+				notifyDisassociation);
+
+		return execute(client.createRequestBuilder(serviceConfigSupplier.get().manageVPPLicensesByAdamIdSrvUrl())
+				.POST(ofBody(params)), VppManageLicensesByAdamIdResponse.class);
 	}
 
 	@Nonnull
@@ -187,15 +192,19 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	public VppManageLicensesByAdamIdResponse manageDeviceLicenses(String adamIdStr,
 			@Nonnull Set<String> associateSerialNumbers, @Nonnull Set<String> disassociateSerialNumbers,
 			boolean notifyDisassociation) {
-		return null;
+		var params = params("adamIdStr", adamIdStr, "associateSerialNumbers", associateSerialNumbers,
+				"disassociateSerialNumbers", disassociateSerialNumbers, "notifyDisassociation", notifyDisassociation);
+
+		return execute(client.createRequestBuilder(serviceConfigSupplier.get().manageVPPLicensesByAdamIdSrvUrl())
+				.POST(ofBody(params)), VppManageLicensesByAdamIdResponse.class);
 	}
 
 	@Nonnull
 	@Override
-	public VppManageLicensesByAdamIdResponse disassociateLicenses(String adamIdStr,
-			@Nonnull Set<String> licenseIds, boolean notifyDisassociation) {
-		var params = params("adamIdStr", adamIdStr, "disassociateLicenseIdStrs", licenseIds,
-				"notifyDisassociation", notifyDisassociation);
+	public VppManageLicensesByAdamIdResponse disassociateLicenses(String adamIdStr, @Nonnull Set<String> licenseIds,
+			boolean notifyDisassociation) {
+		var params = params("adamIdStr", adamIdStr, "disassociateLicenseIdStrs", licenseIds, "notifyDisassociation",
+				notifyDisassociation);
 
 		return execute(client.createRequestBuilder(serviceConfigSupplier.get().manageVPPLicensesByAdamIdSrvUrl())
 				.POST(ofBody(params)), VppManageLicensesByAdamIdResponse.class);
@@ -245,11 +254,11 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 
 	@Nonnull
 	@Override
-	public VppRegisterUserResponse registerUser(String clientUserIdStr, String email, String managedAppleIDStr) {
-		var params = params("clientUserIdStr", clientUserIdStr, "email", email);
+	public VppRegisterUserResponse registerUser(String clientUserId, String email, String managedAppleID) {
+		var params = params("clientUserIdStr", clientUserId, "email", email);
 
-		if (!managedAppleIDStr.isBlank()) {
-			params("managedAppleIDStr", managedAppleIDStr);
+		if (!managedAppleID.isBlank()) {
+			params("managedAppleIDStr", managedAppleID);
 		}
 
 		return execute(
@@ -259,7 +268,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 
 	@Nonnull
 	@Override
-	public VppEditUserResponse editUser(@Nonnull UserIdParam userIdParam, String email, String managedAppleIDStr) {
+	public VppEditUserResponse editUser(@Nonnull UserIdParam userIdParam, String email, String managedAppleID) {
 		var params = params();
 
 		if (userIdParam.userId() > 0) {
@@ -268,8 +277,8 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 			params.put("clientUserIdStr", userIdParam.clientUserIdStr());
 		}
 
-		if (!managedAppleIDStr.isBlank()) {
-			params("managedAppleIDStr", managedAppleIDStr);
+		if (!managedAppleID.isBlank()) {
+			params("managedAppleIDStr", managedAppleID);
 		}
 
 		params.put("email", email);

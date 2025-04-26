@@ -100,17 +100,16 @@ public interface LegacyAppAndBookClient {
 	/**
 	 * Associates and disassociates licenses with users.
 	 *
-	 * @param adamIdStr                    the unique identifier for a product in the iTunes Store
-	 * @param associateClientUserIdStrs    a list of client-user IDs to associate licenses with
-	 * @param disassociateClientUserIdStrs a list of client-user IDs to disassociate licenses from
-	 * @param notifyDisassociation         if {@code true}, sends notifications when licenses are disassociated
+	 * @param adamIdStr                 the unique identifier for a product in the iTunes Store
+	 * @param associateClientUserIds    a list of client-user IDs to associate licenses with
+	 * @param disassociateClientUserIds a list of client-user IDs to disassociate licenses from
+	 * @param notifyDisassociation      if {@code true}, sends notifications when licenses are disassociated
 	 * @return {@link VppManageLicensesByAdamIdResponse} object
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/manage-licenses">Manage Licenses</a>
 	 */
 	@Nonnull
-	VppManageLicensesByAdamIdResponse manageUserLicenses(String adamIdStr,
-			@Nonnull Set<String> associateClientUserIdStrs, @Nonnull Set<String> disassociateClientUserIdStrs,
-			boolean notifyDisassociation);
+	VppManageLicensesByAdamIdResponse manageUserLicenses(String adamIdStr, @Nonnull Set<String> associateClientUserIds,
+			@Nonnull Set<String> disassociateClientUserIds, boolean notifyDisassociation);
 
 	/**
 	 * Associates and disassociates licenses with devices.
@@ -189,21 +188,21 @@ public interface LegacyAppAndBookClient {
 	 * <li>If the user's status is <i>Retired</i> and the user has never been assigned to an iTunes account, the account's status is changed to <i>Registered</i> and the existing user is returned.
 	 * <li>If the user's status is <i>Retired</i> and the user has previously been assigned to an iTunes account, a new account is created.
 	 *
-	 * @param clientUserIdStr   required identifier supplied by the client when registering a user: the identifier must be unique within the organization
+	 * @param clientUserId   required identifier supplied by the client when registering a user: the identifier must be unique within the organization
 	 * @param email             the user’s email address
-	 * @param managedAppleIDStr the Apple ID associated with the user. This ID's organization must match that of the provided sToken.
+	 * @param managedAppleID the Apple ID associated with the user. This ID's organization must match that of the provided sToken.
 	 * @return {@link VppEditUserResponse} object
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/register-a-user">Register a User</a>
 	 */
 	@Nonnull
-	VppRegisterUserResponse registerUser(String clientUserIdStr, String email, String managedAppleIDStr);
+	VppRegisterUserResponse registerUser(String clientUserId, String email, String managedAppleID);
 
 	/**
 	 * @see #registerUser(String, String, String)
 	 */
 	@Nonnull
-	default VppRegisterUserResponse registerUser(String clientUserIdStr, String email) {
-		return registerUser(clientUserIdStr, email, "");
+	default VppRegisterUserResponse registerUser(String clientUserId, String email) {
+		return registerUser(clientUserId, email, "");
 	}
 
 	/**
@@ -211,12 +210,12 @@ public interface LegacyAppAndBookClient {
 	 *
 	 * @param userIdParam       the user id. See {@link UserIdParam}.
 	 * @param email             the user's email address i.e. the email field is updated only if the value is provided in the request
-	 * @param managedAppleIDStr the Apple ID associated with the user. This ID's organization must match that of the provided sToken.
+	 * @param managedAppleID the Apple ID associated with the user. This ID's organization must match that of the provided sToken.
 	 * @return {@link VppEditUserResponse} object
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/edit-a-user">Edit a User</a>
 	 */
 	@Nonnull
-	VppEditUserResponse editUser(@Nonnull UserIdParam userIdParam, String email, String managedAppleIDStr);
+	VppEditUserResponse editUser(@Nonnull UserIdParam userIdParam, String email, String managedAppleID);
 
 	/**
 	 * Retires a user account.
@@ -237,7 +236,7 @@ public interface LegacyAppAndBookClient {
 	VppRetireUserResponse retireUser(@Nonnull UserIdParam userIdParam);
 
 	/**
-	 * Union of fetch assignments parameters. Only one of the two parameters must be set.
+	 * Union of fetch assignment parameters. Only one of the two parameters must be set.
 	 *
 	 * @param clientUserIdStr if specified, returns only assignments assigned to the given client user ID
 	 * @param serialNumber    if specified, returns only assignments assigned to the given device serial number
