@@ -6,6 +6,7 @@ import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
@@ -13,6 +14,7 @@ import java.security.Security;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @WireMockTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -20,12 +22,6 @@ public class DeviceAssignmentClientTests {
 
 	private HttpHeaders            headers;
 	private DeviceAssignmentClient client;
-
-	@BeforeAll
-	void init() {
-		Security.addProvider(new BouncyCastleProvider());
-		headers = HttpHeaders.noHeaders().plus(HttpHeader.httpHeader("Content-Type", "application/json;charset=UTF8"));
-	}
 
 	private DeviceAssignmentClient newClient(WireMockRuntimeInfo wm) {
 		var serverTokenInput = this.getClass().getResourceAsStream("/apple-mdm-client-tests-1-server-token.p7m");
@@ -40,14 +36,90 @@ public class DeviceAssignmentClientTests {
 		return builder.build();
 	}
 
-	@Test
-	void test_fetch_account(WireMockRuntimeInfo wm) throws Exception {
-		var client = newClient(wm);
+	@BeforeAll
+	void init() {
+		Security.addProvider(new BouncyCastleProvider());
+		headers = HttpHeaders.noHeaders().plus(HttpHeader.httpHeader("Content-Type", "application/json;charset=UTF8"));
+	}
 
+	@BeforeEach
+	void test_session() {
 		stubFor(get(urlEqualTo("/session")).willReturn(aResponse().withStatus(200).withHeaders(headers).withBody("""
 				{"auth_session_token":"1745786035268O1O789F19CF078867E47DC9D9BF4682D021O75CA72ECB87046A1B2239D9CFA4D6771O420397O11Op1OB123AA978976E390FF7693C640C92D3F8F6FE7F6O81E6CAAC7816AD3E12D531496695CF5A"}
 				""".stripIndent())));
+	}
 
+	@Test
+	void test_fetch_devices(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(post(urlEqualTo("/server/devices")).willReturn(
+				aResponse().withStatus(200).withHeaders(headers).withBody("""
+						{
+						    "devices": [
+						        {
+						            "serial_number": "F6BRR3Z6GLK0",
+						            "description": "IPAD MINI 4 WI-FI 16GB SPACE GRAY-FRD",
+						            "model": "iPad mini 4",
+						            "os": "iOS",
+						            "device_family": "iPad",
+						            "color": "SPACE GRAY",
+						            "profile_uuid": "722081EC2F9D9F6CAC4106A7CE1AD6A7",
+						            "profile_assign_time": "2025-02-18T15:43:38Z",
+						            "profile_push_time": "2025-02-18T20:13:06Z",
+						            "profile_status": "pushed",
+						            "device_assigned_by": "max-muster-work@petarov.net",
+						            "device_assigned_date": "2022-03-03T08:16:27Z"
+						        },
+						        {
+						            "serial_number": "M1525642873",
+						            "description": "IPHONE 14 MIDNIGHT 128GB-ZDD",
+						            "model": "iPhone 14",
+						            "os": "iOS",
+						            "device_family": "iPhone",
+						            "color": "MIDNIGHT",
+						            "profile_uuid": "714081EC2F9D9F6CAC4152A79E1006B1",
+						            "profile_assign_time": "2025-02-25T21:14:39Z",
+						            "profile_push_time": "2025-03-03T17:18:03Z",
+						            "profile_status": "pushed",
+						            "device_assigned_by": "max.mustermann@midpointsde.appleid.com",
+						            "device_assigned_date": "2025-02-14T12:28:26Z"
+						        }
+						    ],
+						    "fetched_until": "2025-04-28T08:03:42Z",
+						    "more_to_follow": false,
+						    "cursor": "MDovOjE7NDU5Mjc0MjIyODU1MTc0NTgyNzQyMjI2NTp0cnVlOjE0NDU7Mjc1LiIjUDU"
+						}
+						""".stripIndent())));
+
+		var client = newClient(wm);
+		var response = client.fetchDevices();
+
+		assertEquals("2025-04-28T08:03:42Z", response.fetchedUntil().toString());
+		assertFalse(response.moreToFollow());
+		assertEquals("MDovOjE7NDU5Mjc0MjIyODU1MTc0NTgyNzQyMjI2NTp0cnVlOjE0NDU7Mjc1LiIjUDU", response.cursor());
+
+		var devices = response.devices();
+		assertEquals(2, devices.size());
+
+		assertEquals("F6BRR3Z6GLK0", devices.getFirst().serialNumber());
+		assertEquals("IPAD MINI 4 WI-FI 16GB SPACE GRAY-FRD", devices.getFirst().description());
+		assertEquals("iPad mini 4", devices.getFirst().model());
+		assertEquals("iOS", devices.getFirst().os());
+		assertEquals("iPad", devices.getFirst().deviceFamily());
+		assertEquals("SPACE GRAY", devices.getFirst().color());
+		assertEquals("722081EC2F9D9F6CAC4106A7CE1AD6A7", devices.getFirst().profileUuid());
+		assertEquals("2025-02-18T15:43:38Z", devices.getFirst().profileAssignTime());
+		assertEquals("2025-02-18T20:13:06Z", devices.getFirst().profilePushTime());
+		assertEquals("pushed", devices.getFirst().profileStatus());
+		assertEquals("max-muster-work@petarov.net", devices.getFirst().deviceAssignedBy());
+		assertEquals("2022-03-03T08:16:27Z", devices.getFirst().deviceAssignedDate());
+
+		assertEquals("M1525642873", devices.getLast().serialNumber());
+		assertEquals("IPHONE 14 MIDNIGHT 128GB-ZDD", devices.getLast().description());
+		assertEquals("max.mustermann@midpointsde.appleid.com", devices.getLast().deviceAssignedBy());
+	}
+
+	@Test
+	void test_fetch_account(WireMockRuntimeInfo wm) throws Exception {
 		stubFor(get(urlEqualTo("/account")).willReturn(aResponse().withStatus(200).withHeaders(headers).withBody("""
 				{
 				    "server_name": "MY-DEV-LOCAL (server.petarov.net)",
@@ -83,6 +155,7 @@ public class DeviceAssignmentClientTests {
 				}
 				""".stripIndent())));
 
+		var client = newClient(wm);
 		var accountDetail = client.fetchAccount();
 
 		// verify the headers are right
