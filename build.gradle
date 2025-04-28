@@ -1,7 +1,25 @@
 plugins {
     id 'java'
-    id 'org.ajoberstar.grgit' version '5.3.0'
 }
+
+def gitExec = { List<String> args ->
+    ByteArrayOutputStream out = new ByteArrayOutputStream()
+    exec {
+        commandLine = ['git'] + args
+        standardOutput = out
+        ignoreExitValue = true
+    }
+    String s = out.toString().trim()
+    return s ? s : null
+}
+
+ext {
+    gitCommitId = gitExec(['rev-parse', '--short', 'HEAD'])
+    gitCommitTime = gitExec(['log', '-1', '--format=%cI', 'HEAD'])
+}
+
+println "--> Last commit id:   ${gitCommitId}"
+println "--> Last commit time: ${gitCommitTime}"
 
 allprojects {
     repositories {
@@ -11,10 +29,7 @@ allprojects {
     // Version of all profiler components
     group 'com.github.petarov'
     version '0.0.1'
-
-    ext.classifier = ['master', 'release'].stream().anyMatch({
-        grgit.branch.current().getName().startsWith(it)
-    }).booleanValue() ? null : 'SNAPSHOT'
+    ext.classifier = 'SNAPSHOT'
     ext.copyright = 'MIT License, Copyright (c) 2025 Petar Petrov'
 
     java {
@@ -30,9 +45,8 @@ allprojects {
             attributes(
                     "Implementation-Title": project.name,
                     "Implementation-Version": project.version,
-                    "Implementation-Id": grgit.head().id,
-                    "Implementation-Id-Short": grgit.head().abbreviatedId,
-                    "Implementation-LastModified": grgit.head().getDateTime().toOffsetDateTime().toString()
+                    "Implementation-Id": "${gitCommitId}",
+                    "Implementation-LastModified": "${gitCommitTime}"
             )
         }
     }
