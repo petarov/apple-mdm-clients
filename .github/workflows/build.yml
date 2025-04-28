@@ -1,0 +1,51 @@
+name: Build CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+
+      - name: Grant exec permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run build & test
+        run: ./gradlew build --no-daemon
+
+  upload-tests:
+    name: Upload test results
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: [ 'shared', 'device-assignment-client', 'legacy-app-and-book-management-client' ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Upload ${{ matrix.project }} test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.project }}
+          path: |
+            ${{ matrix.project }}/build/test-results/test/*.xml
+
+      - name: Upload ${{ matrix.project }} reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report-${{ matrix.project }}
+          path: |
+            ${{ matrix.project }}/build/reports/tests/test/*.html
