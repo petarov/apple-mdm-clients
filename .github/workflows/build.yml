@@ -25,27 +25,41 @@ jobs:
       - name: Run build & test
         run: ./gradlew build --no-daemon
 
-  upload-tests:
-    name: Upload test results
-    needs: build
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        project: [ 'shared', 'device-assignment-client', 'legacy-app-and-book-management-client' ]
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Upload ${{ matrix.project }} test results
+      ## --- sub-project: shared
+      - name: Upload shared test results
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-${{ matrix.project }}
-          path: |
-            ${{ matrix.project }}/build/test-results/test/*.xml
+          name: test-results-shared
+          path: shared/build/test-results/test/*.xml
 
-      - name: Upload ${{ matrix.project }} reports
+      - name: Upload shared reports
         uses: actions/upload-artifact@v4
         with:
-          name: test-report-${{ matrix.project }}
-          path: |
-            ${{ matrix.project }}/build/reports/tests/test/*.html
+          name: test-report-shared
+          path: shared/build/reports/tests/test/*.html
+
+      ## --- sub-project: device-assignment-client
+      - name: Upload device-assignment-client test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-device-assignment-client
+          path: device-assignment-client/build/test-results/test/*.xml
+
+      - name: Upload device-assignment-client reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report-device-assignment-client
+          path: device-assignment-client/build/reports/tests/test/*.html
+
+      ## --- sub-project: legacy-app-and-book-management-client
+      - name: Upload legacy-app-and-book-management-client test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-legacy-app-and-book-management-client
+          path: legacy-app-and-book-management-client/build/test-results/test/*.xml
+
+      - name: Upload legacy-app-and-book-management-client reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report-legacy-app-and-book-management-client
+          path: legacy-app-and-book-management-client/build/reports/tests/test/*.html
