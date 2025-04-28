@@ -26,40 +26,40 @@ jobs:
         run: ./gradlew build --no-daemon
 
       ## --- sub-project: shared
-      - name: Upload shared test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results-shared
-          path: shared/build/test-results/test/*.xml
-
-      - name: Upload shared reports
+      - name: Upload shared test reports
         uses: actions/upload-artifact@v4
         with:
           name: test-report-shared
-          path: shared/build/reports/tests/test/*.html
+          path: shared/build/reports/tests/test/**/*
+
+      #      - name: Upload shared test results
+      #        uses: actions/upload-artifact@v4
+      #        with:
+      #          name: test-results-shared
+      #          path: shared/build/test-results/test/*.xml
 
       ## --- sub-project: device-assignment-client
-      - name: Upload device-assignment-client test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results-device-assignment-client
-          path: device-assignment-client/build/test-results/test/*.xml
-
-      - name: Upload device-assignment-client reports
+      - name: Upload device-assignment-client test reports
         uses: actions/upload-artifact@v4
         with:
           name: test-report-device-assignment-client
-          path: device-assignment-client/build/reports/tests/test/*.html
+          path: device-assignment-client/build/reports/tests/test/**/*
+
+      #      - name: Upload device-assignment-client test results
+      #        uses: actions/upload-artifact@v4
+      #        with:
+      #          name: test-results-device-assignment-client
+      #          path: device-assignment-client/build/test-results/test/*.xml
 
       ## --- sub-project: legacy-app-and-book-management-client
-      - name: Upload legacy-app-and-book-management-client test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results-legacy-app-and-book-management-client
-          path: legacy-app-and-book-management-client/build/test-results/test/*.xml
-
-      - name: Upload legacy-app-and-book-management-client reports
+      - name: Upload legacy-app-and-book-management-client test reports
         uses: actions/upload-artifact@v4
         with:
           name: test-report-legacy-app-and-book-management-client
-          path: legacy-app-and-book-management-client/build/reports/tests/test/*.html
+          path: legacy-app-and-book-management-client/build/reports/tests/test/**/*
+
+#      - name: Upload legacy-app-and-book-management-client test results
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: test-results-legacy-app-and-book-management-client
+#          path: legacy-app-and-book-management-client/build/test-results/test/*.xml
