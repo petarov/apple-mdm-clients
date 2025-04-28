@@ -1,11 +1,8 @@
-<div align="center">
-  <img src="apple-cogs.png" width="128" alt="Apple icon"/>
-  <br>
-  <img alt="MDM" src="https://img.shields.io/badge/Apple-gray?style=flat-square"/>
-  <img alt="MDM" src="https://img.shields.io/badge/MDM-gray?style=flat-square"/>
-  <img alt="ABM" src="https://img.shields.io/badge/Java-gray?style=flat-square"/>
-  <img alt="License" src="https://img.shields.io/github/license/petarov/apple-mdm-clients?style=square">
-</div>
+<img alt="Apple icon" src="apple-cogs.png" width="128" />
+
+[![Build CI](https://github.com/petarov/apple-mdm-clients/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/petarov/apple-mdm-clients/actions/workflows/build.yml)
+[![Dependabot Updates](https://github.com/petarov/apple-mdm-clients/actions/workflows/dependabot/dependabot-updates/badge.svg?branch=main)](https://github.com/petarov/apple-mdm-clients/actions/workflows/dependabot/dependabot-updates)
+[![License](https://img.shields.io/github/license/petarov/apple-mdm-clients?style=square)](https://github.com/petarov/apple-mdm-clients/blob/main/LICENSE)
 
 # Apple MDM clients for Java
 
