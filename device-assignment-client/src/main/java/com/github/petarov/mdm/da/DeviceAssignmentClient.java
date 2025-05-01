@@ -65,7 +65,7 @@ public interface DeviceAssignmentClient {
 	 *     <li>{@code SUCCESS} - Device was successfully disowned.</li>
 	 *     <li>{@code NOT_ACCESSIBLE} - A device with the specified ID was not accessible by this MDM server.</li>
 	 *     <li>{@code FAILED} - Disowning the device failed for an unexpected reason. If three retries fail, the user
-	 *     should contact Apple support.</li>
+	 *     should contact Apple Support.</li>
 	 * </ul>
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/device-details">Get Device Details</a>
 	 */
