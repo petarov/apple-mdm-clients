@@ -102,7 +102,8 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	@Override
 	public DevicesResponse fetchDevices(String cursor, int limit) {
 		return execute(client.createRequestBuilder(client.complementURI("/server/devices"))
-				.POST(ofBody(Map.of("cursor", cursor, "limit", limit))), DevicesResponse.class);
+						.POST(ofBody(cursor.isBlank() ? Map.of("limit", limit) : Map.of("cursor", cursor, "limit", limit))),
+				DevicesResponse.class);
 	}
 
 	@Nonnull
@@ -123,7 +124,7 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	@Override
 	public DeviceStatusResponse disownDevices(@Nonnull Set<String> serialNumbers) {
 		return execute(client.createRequestBuilder(client.complementURI("/devices/disown"))
-				.POST(ofBody(new DeviceListRequest(serialNumbers))), DeviceStatusResponse.class);
+				.POST(ofBody(Map.of("devices", serialNumbers))), DeviceStatusResponse.class);
 	}
 
 	@Nonnull
