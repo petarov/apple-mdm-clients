@@ -23,7 +23,7 @@ public interface DeviceAssignmentClient {
 	}
 
 	/**
-	 * Obtain the details for your account.
+	 * Fetches the details for your account.
 	 * <p>
 	 * Each Mobile Device Management server must be registered with Apple. This endpoint provides details about the
 	 * server entity to identify it uniquely throughout your organization. Each server is identifiable by either its

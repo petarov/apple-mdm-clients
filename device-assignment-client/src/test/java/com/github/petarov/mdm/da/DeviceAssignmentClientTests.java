@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.security.Security;
+import java.time.OffsetDateTime;
 import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -97,7 +98,7 @@ public class DeviceAssignmentClientTests {
 	}
 
 	@Test
-	void test_fetch_devices(WireMockRuntimeInfo wm) throws Exception {
+	void test_fetch_devices_sync_devices(WireMockRuntimeInfo wm) throws Exception {
 		stubFor(post(urlEqualTo("/server/devices")).willReturn(
 				aResponse().withStatus(200).withHeaders(headers).withBody("""
 						{
@@ -133,19 +134,18 @@ public class DeviceAssignmentClientTests {
 						    ],
 						    "fetched_until": "2025-04-28T08:03:42Z",
 						    "more_to_follow": false,
-						    "cursor": "MDovOjE7NDU5Mjc0MjIyODU1MTc0NTgyNzQyMjI2NTp0cnVlOjE0NDU7Mjc1LiIjUDU"
+						    "cursor": "MDovOjE7NDU6Njc0MjIyODU1MTc0NTgyNzQyMjI3MTp0cnVlOjE0NDU7Mjc1LiIjUDU"
 						}
 						""".stripIndent())));
 
-		var response = newClient(wm).fetchDevices();
+		var fetchResponse = newClient(wm).fetchDevices();
 
-		assertEquals("2025-04-28T08:03:42Z", response.fetchedUntil().toString());
-		assertFalse(response.moreToFollow());
-		assertEquals("MDovOjE7NDU5Mjc0MjIyODU1MTc0NTgyNzQyMjI2NTp0cnVlOjE0NDU7Mjc1LiIjUDU", response.cursor());
+		assertEquals("2025-04-28T08:03:42Z", fetchResponse.fetchedUntil().toString());
+		assertFalse(fetchResponse.moreToFollow());
+		assertEquals("MDovOjE7NDU6Njc0MjIyODU1MTc0NTgyNzQyMjI3MTp0cnVlOjE0NDU7Mjc1LiIjUDU", fetchResponse.cursor());
 
-		var devices = response.devices();
+		var devices = fetchResponse.devices();
 		assertEquals(2, devices.size());
-
 		assertEquals("F6BRR3Z6GLK0", devices.getFirst().serialNumber());
 		assertEquals("IPAD MINI 4 WI-FI 16GB SPACE GRAY-FRD", devices.getFirst().description());
 		assertEquals("iPad mini 4", devices.getFirst().model());
@@ -158,10 +158,23 @@ public class DeviceAssignmentClientTests {
 		assertEquals("pushed", devices.getFirst().profileStatus());
 		assertEquals("max-muster-work@petarov.net", devices.getFirst().deviceAssignedBy());
 		assertEquals("2022-03-03T08:16:27Z", devices.getFirst().deviceAssignedDate());
-
 		assertEquals("M1525642873", devices.getLast().serialNumber());
 		assertEquals("IPHONE 14 MIDNIGHT 128GB-ZDD", devices.getLast().description());
 		assertEquals("max.mustermann@midpointsde.appleid.com", devices.getLast().deviceAssignedBy());
+
+
+		stubFor(post(urlEqualTo("/devices/sync")).willReturn(
+				aResponse().withStatus(200).withHeaders(headers).withBody("""
+						{"devices":[],"fetched_until":"2025-05-03T08:28:03Z","more_to_follow":false,"cursor":"MTAwOjA5MTc0NjI2MDg4MzIyNToxNyQ3NjYwODgzMjI1OnRydWU6MTc0NjI2MDg4MzIyNQ"}
+						""".stripIndent())));
+
+		var syncResponse = newClient(wm).syncDevices(
+				"MDovOjE7NDU6Njc0MjIyODU1MTc0NTgyNzQyMjI3MTp0cnVlOjE0NDU7Mjc1LiIjUDU");
+
+		assertEquals("MTAwOjA5MTc0NjI2MDg4MzIyNToxNyQ3NjYwODgzMjI1OnRydWU6MTc0NjI2MDg4MzIyNQ", syncResponse.cursor());
+		assertFalse(syncResponse.moreToFollow());
+		assertEquals(OffsetDateTime.parse("2025-05-03T08:28:03Z"), syncResponse.fetchedUntil());
+		assertEquals(0, syncResponse.devices().size());
 	}
 
 	@Test
