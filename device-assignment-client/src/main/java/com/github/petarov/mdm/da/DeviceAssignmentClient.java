@@ -75,9 +75,9 @@ public interface DeviceAssignmentClient {
 	/**
 	 * Fetch updates about the list of devices the server manages.
 	 * <p>
-	 * The sync service depends on a cursor returned by the fetch device service. It returns a list of all modifications
-	 * (additions or deletions) since the specified cursor. The cursor passed to this endpoint <i>should not</i> be
-	 * older than 7 days.
+	 * The sync service depends on a cursor returned by the {@link #fetchDevices(String, int)} service. It returns a
+	 * list of all modifications (additions or deletions) since the specified cursor. The cursor passed to this endpoint
+	 * should not be older than <b>7 days</b>.
 	 * <p>
 	 * This service may return the same device more than once. You must resolve duplicates by matching on the device
 	 * serial number and the {@code op_type} and {@code op_date} fields. The record with the latest {@code op_date}

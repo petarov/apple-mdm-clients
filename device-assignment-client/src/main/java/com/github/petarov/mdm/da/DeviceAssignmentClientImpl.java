@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.http.HttpRequest;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -45,7 +46,8 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 		var authParams = oauth.getAuthParams(client.getOptions().random());
 		authParams.forEach((k, v) -> authHeaderBuilder.append(k).append("=").append("\"").append(v).append("\","));
 		authHeaderBuilder.append("oauth_signature=\"");
-		authHeaderBuilder.append(oauth.generateSignature("GET", client.complementURI("/session").toString(), authParams));
+		authHeaderBuilder.append(
+				oauth.generateSignature("GET", client.complementURI("/session").toString(), authParams));
 		authHeaderBuilder.append("\"");
 
 		var request = client.createRequestBuilder(client.complementURI("/session")).GET()
@@ -100,7 +102,7 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	@Override
 	public DevicesResponse fetchDevices(String cursor, int limit) {
 		return execute(client.createRequestBuilder(client.complementURI("/server/devices"))
-				.POST(ofBody(new FetchDeviceRequest(cursor, limit))), DevicesResponse.class);
+				.POST(ofBody(Map.of("cursor", cursor, "limit", limit))), DevicesResponse.class);
 	}
 
 	@Nonnull
@@ -114,7 +116,7 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	@Override
 	public DevicesResponse syncDevices(String cursor, int limit) {
 		return execute(client.createRequestBuilder(client.complementURI("/devices/sync"))
-				.POST(ofBody(new FetchDeviceRequest(cursor, limit))), DevicesResponse.class);
+				.POST(ofBody(Map.of("cursor", cursor, "limit", limit))), DevicesResponse.class);
 	}
 
 	@Nonnull
@@ -136,8 +138,8 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	public Optional<Profile> fetchProfile(String profileUuid) {
 		try {
 			return Optional.of(
-					execute(client.createRequestBuilder(client.complementURI("/profile?profile_uuid=" + profileUuid)).GET(),
-							Profile.class));
+					execute(client.createRequestBuilder(client.complementURI("/profile?profile_uuid=" + profileUuid))
+							.GET(), Profile.class));
 		} catch (DeviceAssignmentException e) {
 			if (e.getCode() == HttpConsts.STATUS_NOT_FOUND) {
 				return Optional.empty();
