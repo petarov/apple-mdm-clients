@@ -6,9 +6,9 @@
 
 # Apple MDM clients for Java
 
-Java clients for Apple Mobile Device Management (MDM) services.
+Java clients for Apple's Mobile Device Management (MDM) services.
 
-Among other technical goals, this library aims to use as few external dependencies as possible.
+Requires `Java 21`. Among other technical goals, this library aims to use as few external dependencies as possible.
 
 ## Device Assignment client
 
@@ -100,7 +100,7 @@ The libraries use SLF4J, so you can plug debug and trace logs into your own logg
 
 # Build
 
-Requires [Java 21](https://adoptium.net/temurin/releases/) or later
+Requires [JDK 21](https://adoptium.net/temurin/releases/) or later
 
     ./gradlew clean build
 
