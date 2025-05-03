@@ -64,11 +64,8 @@ public class DeviceAssignmentDeviceManagementTests {
 						            "device_family": "iPhone",
 						            "color": "MIDNIGHT",
 						            "profile_uuid": "714081EC2F9D9F6CAC4152A79E1006B1",
-						            "profile_assign_time": "2025-02-25T21:14:39Z",
-						            "profile_push_time": "2025-03-03T17:18:03Z",
-						            "profile_status": "pushed",
-						            "device_assigned_by": "max.mustermann@midpointsde.appleid.com",
-						            "device_assigned_date": "2025-02-14T12:28:26Z"
+						            "profile_status": "",
+						            "device_assigned_by": "max.mustermann@petarov.appleid.com"
 						        }
 						    ],
 						    "fetched_until": "2025-04-28T08:03:42Z",
@@ -97,10 +94,21 @@ public class DeviceAssignmentDeviceManagementTests {
 		assertEquals("pushed", devices.getFirst().profileStatus());
 		assertEquals("max-muster-work@petarov.net", devices.getFirst().deviceAssignedBy());
 		assertEquals("2022-03-03T08:16:27Z", devices.getFirst().deviceAssignedDate());
+
 		assertEquals("M1525642873", devices.getLast().serialNumber());
 		assertEquals("IPHONE 14 MIDNIGHT 128GB-ZDD", devices.getLast().description());
-		assertEquals("max.mustermann@midpointsde.appleid.com", devices.getLast().deviceAssignedBy());
+		assertEquals("max.mustermann@petarov.appleid.com", devices.getLast().deviceAssignedBy());
+		assertEquals("", devices.getLast().profilePushTime());
+		assertEquals("", devices.getLast().profileStatus());
+		assertEquals(OffsetDateTime.MIN, devices.getLast().profilePushDateTime());
+		assertEquals("", devices.getLast().profileAssignTime());
+		assertEquals(OffsetDateTime.MIN, devices.getLast().opDateTime());
+		assertEquals("", devices.getLast().opDate());
+		assertEquals(OffsetDateTime.MIN, devices.getLast().profileAssignDateTime());
+		assertEquals("", devices.getLast().deviceAssignedDate());
+		assertEquals(OffsetDateTime.MIN, devices.getLast().deviceAssignedDateTime());
 
+		// --- sync test #1
 
 		stubFor(post(urlEqualTo("/devices/sync")).willReturn(
 				aResponse().withStatus(200).withHeaders(headers).withBody("""
@@ -114,6 +122,66 @@ public class DeviceAssignmentDeviceManagementTests {
 		assertFalse(syncResponse.moreToFollow());
 		assertEquals(OffsetDateTime.parse("2025-05-03T08:28:03Z"), syncResponse.fetchedUntil());
 		assertEquals(0, syncResponse.devices().size());
+
+		// --- sync test #2
+
+		stubFor(post(urlEqualTo("/devices/sync")).willReturn(
+				aResponse().withStatus(200).withHeaders(headers).withBody("""
+						{
+						    "devices": [
+						        {
+						            "serial_number": "C112342756",
+						            "description": "IPHONE 14 MIDNIGHT 128GB-ZDD",
+						            "model": "iPhone 14",
+						            "os": "iOS",
+						            "device_family": "iPhone",
+						            "color": "MIDNIGHT",
+						            "profile_uuid": "95C2189CA0EFB3272AC8B3C66201F33",
+						            "profile_assign_time": "2025-04-29T18:06:53Z",
+						            "profile_status": "removed",
+						            "device_assigned_by": "max.mustermann@petarov.appleid.com",
+						            "device_assigned_date": "2025-05-03T20:59:31Z",
+						            "op_type": "modified",
+						            "op_date": "2025-05-03T20:59:31Z"
+						        },
+						        {
+						            "serial_number": "C112342756",
+						            "description": "IPHONE 14 MIDNIGHT 128GB-ZDD",
+						            "model": "iPhone 14",
+						            "os": "iOS",
+						            "device_family": "iPhone",
+						            "color": "MIDNIGHT",
+						            "profile_uuid": "95C2189CA0EFB3272AC8B3C66201F33",
+						            "profile_assign_time": "2025-04-29T18:06:53Z",
+						            "profile_status": "removed",
+						            "device_assigned_by": "max.mustermann@petarov.appleid.com",
+						            "device_assigned_date": "2025-05-03T21:01:55Z",
+						            "op_type": "modified",
+						            "op_date": "2025-05-03T21:01:55Z"
+						        }
+						    ],
+						    "fetched_until": "2025-05-03T21:01:55Z",
+						    "more_to_follow": false,
+						    "cursor": "MTAwOjA6MTc0NjMwNjExNTA1OToxNzQ2MzA2NDgyNTM2OnRydWU6MTc0NjMwNjExNTA1OQ"
+						}
+						""".stripIndent())));
+
+		var syncResponse2 = TestUtil.createClient(wm)
+				.syncDevices("MTAwOjA6MTc0NjMwNjExNTA1OToxNzQ2MzA2NDgyNTM2OnRydWU6MTc0NjMwNjExNTA1OQ");
+
+		assertEquals("MTAwOjA6MTc0NjMwNjExNTA1OToxNzQ2MzA2NDgyNTM2OnRydWU6MTc0NjMwNjExNTA1OQ", syncResponse2.cursor());
+		assertFalse(syncResponse2.moreToFollow());
+		assertEquals(OffsetDateTime.parse("2025-05-03T21:01:55Z"), syncResponse2.fetchedUntil());
+		assertEquals(2, syncResponse2.devices().size());
+		assertEquals("C112342756", syncResponse2.devices().getFirst().serialNumber());
+		assertEquals("modified", syncResponse2.devices().getFirst().opType());
+		assertEquals("2025-05-03T20:59:31Z", syncResponse2.devices().getFirst().opDate());
+		assertEquals(OffsetDateTime.parse("2025-05-03T20:59:31Z"), syncResponse2.devices().getFirst().opDateTime());
+
+		assertEquals("C112342756", syncResponse2.devices().getLast().serialNumber());
+		assertEquals("modified", syncResponse2.devices().getLast().opType());
+		assertEquals("2025-05-03T21:01:55Z", syncResponse2.devices().getLast().opDate());
+		assertEquals(OffsetDateTime.parse("2025-05-03T21:01:55Z"), syncResponse2.devices().getLast().opDateTime());
 	}
 
 	@Test

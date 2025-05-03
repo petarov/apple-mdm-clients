@@ -7,7 +7,9 @@ import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.github.petarov.mdm.da.DeviceAssignmentClient;
+import jakarta.annotation.Nonnull;
 
+import java.time.OffsetDateTime;
 import java.util.Set;
 
 /**
@@ -55,4 +57,37 @@ public record Device(@JsonSetter(nulls = Nulls.AS_EMPTY) String assetTag,
                      @JsonSetter(nulls = Nulls.AS_EMPTY) String profileStatus,
                      @JsonSetter(nulls = Nulls.AS_EMPTY) String profileUuid,
                      @JsonSetter(nulls = Nulls.AS_EMPTY) String serialNumber,
-                     @JsonSetter(nulls = Nulls.AS_EMPTY) String responseStatus) {}
+                     @JsonSetter(nulls = Nulls.AS_EMPTY) String responseStatus) {
+
+	/**
+	 * @return parsed {@link #deviceAssignedDate()} or {@link OffsetDateTime#MIN} if no date-time is available
+	 */
+	@Nonnull
+	public OffsetDateTime deviceAssignedDateTime() {
+		return deviceAssignedDate.isBlank() ? OffsetDateTime.MIN : OffsetDateTime.parse(deviceAssignedDate);
+	}
+
+	/**
+	 * @return parsed {@link #opDate()} or {@link OffsetDateTime#MIN} if no date-time is available
+	 */
+	@Nonnull
+	public OffsetDateTime opDateTime() {
+		return opDate.isBlank() ? OffsetDateTime.MIN : OffsetDateTime.parse(opDate);
+	}
+
+	/**
+	 * @return parsed {@link #profileAssignTime()} or {@link OffsetDateTime#MIN} if no date-time is available
+	 */
+	@Nonnull
+	public OffsetDateTime profileAssignDateTime() {
+		return profileAssignTime.isBlank() ? OffsetDateTime.MIN : OffsetDateTime.parse(profileAssignTime);
+	}
+
+	/**
+	 * @return parsed {@link #profilePushTime()} or {@link OffsetDateTime#MIN} if no date-time is available
+	 */
+	@Nonnull
+	public OffsetDateTime profilePushDateTime() {
+		return profilePushTime.isBlank() ? OffsetDateTime.MIN : OffsetDateTime.parse(profilePushTime);
+	}
+}
