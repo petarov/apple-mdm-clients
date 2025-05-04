@@ -3,8 +3,16 @@ name: Build CI
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - "LICENSE"
+      - "**/*.md"
+      - "**/*.png"
   pull_request:
     branches: [ main ]
+    paths-ignore:
+      - "LICENSE"
+      - "**/*.md"
+      - "**/*.png"   
 
 jobs:
   build:
