@@ -31,48 +31,48 @@ public class DeviceAssignmentDeviceManagementTests {
 
 	@BeforeEach
 	void test_session() {
-		stubFor(get(urlEqualTo("/session")).willReturn(aResponse().withStatus(200).withHeaders(headers).withBody("""
-				{"auth_session_token":"1745786035268O1O789F19CF078867E47DC9D9BF4682D021O75CA72ECB87046A1B2239D9CFA4D6771O420397O11Op1OB123AA978976E390FF7693C640C92D3F8F6FE7F6O81E6CAAC7816AD3E12D531496695CF5A"}
-				""".stripIndent())));
+		stubFor(get(urlEqualTo("/session")).willReturn(
+				aResponse().withStatus(200).withHeaders(headers).withBody(TestUtil.authSessionToken())));
 	}
 
 	@Test
 	void test_fetch_devices_sync_devices(WireMockRuntimeInfo wm) throws Exception {
-		stubFor(post(urlEqualTo("/server/devices")).willReturn(
-				aResponse().withStatus(200).withHeaders(headers).withBody("""
-						{
-						    "devices": [
-						        {
-						            "serial_number": "F6BRR3Z6GLK0",
-						            "description": "IPAD MINI 4 WI-FI 16GB SPACE GRAY-FRD",
-						            "model": "iPad mini 4",
-						            "os": "iOS",
-						            "device_family": "iPad",
-						            "color": "SPACE GRAY",
-						            "profile_uuid": "722081EC2F9D9F6CAC4106A7CE1AD6A7",
-						            "profile_assign_time": "2025-02-18T15:43:38Z",
-						            "profile_push_time": "2025-02-18T20:13:06Z",
-						            "profile_status": "pushed",
-						            "device_assigned_by": "max-muster-work@petarov.net",
-						            "device_assigned_date": "2022-03-03T08:16:27Z"
-						        },
-						        {
-						            "serial_number": "M1525642873",
-						            "description": "IPHONE 14 MIDNIGHT 128GB-ZDD",
-						            "model": "iPhone 14",
-						            "os": "iOS",
-						            "device_family": "iPhone",
-						            "color": "MIDNIGHT",
-						            "profile_uuid": "714081EC2F9D9F6CAC4152A79E1006B1",
-						            "profile_status": "",
-						            "device_assigned_by": "max.mustermann@petarov.appleid.com"
-						        }
-						    ],
-						    "fetched_until": "2025-04-28T08:03:42Z",
-						    "more_to_follow": false,
-						    "cursor": "MDovOjE7NDU6Njc0MjIyODU1MTc0NTgyNzQyMjI3MTp0cnVlOjE0NDU7Mjc1LiIjUDU"
-						}
-						""".stripIndent())));
+		stubFor(post(urlEqualTo("/server/devices")).withRequestBody(equalToJson("""
+				{"limit": 100}
+				""".stripIndent())).willReturn(aResponse().withStatus(200).withHeaders(headers).withBody("""
+				{
+				    "devices": [
+				        {
+				            "serial_number": "F6BRR3Z6GLK0",
+				            "description": "IPAD MINI 4 WI-FI 16GB SPACE GRAY-FRD",
+				            "model": "iPad mini 4",
+				            "os": "iOS",
+				            "device_family": "iPad",
+				            "color": "SPACE GRAY",
+				            "profile_uuid": "722081EC2F9D9F6CAC4106A7CE1AD6A7",
+				            "profile_assign_time": "2025-02-18T15:43:38Z",
+				            "profile_push_time": "2025-02-18T20:13:06Z",
+				            "profile_status": "pushed",
+				            "device_assigned_by": "max-muster-work@petarov.net",
+				            "device_assigned_date": "2022-03-03T08:16:27Z"
+				        },
+				        {
+				            "serial_number": "M1525642873",
+				            "description": "IPHONE 14 MIDNIGHT 128GB-ZDD",
+				            "model": "iPhone 14",
+				            "os": "iOS",
+				            "device_family": "iPhone",
+				            "color": "MIDNIGHT",
+				            "profile_uuid": "714081EC2F9D9F6CAC4152A79E1006B1",
+				            "profile_status": "",
+				            "device_assigned_by": "max.mustermann@petarov.appleid.com"
+				        }
+				    ],
+				    "fetched_until": "2025-04-28T08:03:42Z",
+				    "more_to_follow": false,
+				    "cursor": "MDovOjE7NDU6Njc0MjIyODU1MTc0NTgyNzQyMjI3MTp0cnVlOjE0NDU7Mjc1LiIjUDU"
+				}
+				""".stripIndent())));
 
 		var fetchResponse = TestUtil.createClient(wm).fetchDevices();
 
@@ -110,13 +110,14 @@ public class DeviceAssignmentDeviceManagementTests {
 
 		// --- sync test #1
 
-		stubFor(post(urlEqualTo("/devices/sync")).willReturn(
-				aResponse().withStatus(200).withHeaders(headers).withBody("""
-						{"devices":[],"fetched_until":"2025-05-03T08:28:03Z","more_to_follow":false,"cursor":"MTAwOjA5MTc0NjI2MDg4MzIyNToxNyQ3NjYwODgzMjI1OnRydWU6MTc0NjI2MDg4MzIyNQ"}
-						""".stripIndent())));
+		stubFor(post(urlEqualTo("/devices/sync")).withRequestBody(equalToJson("""
+				{"cursor":"MDovOjE7NDU6Njc0MjIyODU1MTc0NTgyNzQyMjI3MTp0cnVlOjE0NDU7Mjc1LiIjUDU", "limit": 500}
+				""".stripIndent())).willReturn(aResponse().withStatus(200).withHeaders(headers).withBody("""
+				{"devices":[],"fetched_until":"2025-05-03T08:28:03Z","more_to_follow":false,"cursor":"MTAwOjA5MTc0NjI2MDg4MzIyNToxNyQ3NjYwODgzMjI1OnRydWU6MTc0NjI2MDg4MzIyNQ"}
+				""".stripIndent())));
 
 		var syncResponse = TestUtil.createClient(wm)
-				.syncDevices("MDovOjE7NDU6Njc0MjIyODU1MTc0NTgyNzQyMjI3MTp0cnVlOjE0NDU7Mjc1LiIjUDU");
+				.syncDevices("MDovOjE7NDU6Njc0MjIyODU1MTc0NTgyNzQyMjI3MTp0cnVlOjE0NDU7Mjc1LiIjUDU", 500);
 
 		assertEquals("MTAwOjA5MTc0NjI2MDg4MzIyNToxNyQ3NjYwODgzMjI1OnRydWU6MTc0NjI2MDg4MzIyNQ", syncResponse.cursor());
 		assertFalse(syncResponse.moreToFollow());
@@ -186,29 +187,32 @@ public class DeviceAssignmentDeviceManagementTests {
 
 	@Test
 	void test_fetch_device_details(WireMockRuntimeInfo wm) throws Exception {
-		stubFor(post(urlEqualTo("/devices")).willReturn(aResponse().withStatus(200).withHeaders(headers).withBody("""
-				{
-				    "devices": {
-				        "B9FPP3Q6GMK7": {
-				            "serial_number": "B9FPP3Q6GMK7",
-				            "description": "IPAD MINI 4 WI-FI 16GB SPACE GRAY-FRD",
-				            "model": "iPad mini 4",
-				            "os": "iOS",
-				            "device_family": "iPad",
-				            "color": "SPACE GRAY",
-				            "profile_uuid": "95C2189CB0EFB3192BC7B3C555091D22",
-				            "profile_assign_time": "2025-04-29T18:06:53Z",
-				            "profile_status": "assigned",
-				            "device_assigned_by": "max-muster-work@petarov.net",
-				            "device_assigned_date": "2022-03-03T08:16:27Z",
-				            "response_status": "SUCCESS"
-				        },
-				        "BNPT0GHHM7252": {
-				            "response_status": "NOT_ACCESSIBLE"
-				        }
-				    }
-				}
-				""".stripIndent())));
+		stubFor(post(urlEqualTo("/devices")).withRequestBody(equalToJson("""
+						{"devices":["B9FPP3Q6GMK7", "BNPT0GHHM7252"]}
+						""".stripIndent(), true, false))
+				.willReturn(aResponse().withStatus(200).withHeaders(headers).withBody("""
+						{
+						    "devices": {
+						        "B9FPP3Q6GMK7": {
+						            "serial_number": "B9FPP3Q6GMK7",
+						            "description": "IPAD MINI 4 WI-FI 16GB SPACE GRAY-FRD",
+						            "model": "iPad mini 4",
+						            "os": "iOS",
+						            "device_family": "iPad",
+						            "color": "SPACE GRAY",
+						            "profile_uuid": "95C2189CB0EFB3192BC7B3C555091D22",
+						            "profile_assign_time": "2025-04-29T18:06:53Z",
+						            "profile_status": "assigned",
+						            "device_assigned_by": "max-muster-work@petarov.net",
+						            "device_assigned_date": "2022-03-03T08:16:27Z",
+						            "response_status": "SUCCESS"
+						        },
+						        "BNPT0GHHM7252": {
+						            "response_status": "NOT_ACCESSIBLE"
+						        }
+						    }
+						}
+						""".stripIndent())));
 
 		var response = TestUtil.createClient(wm).fetchDeviceDetails(Set.of("B9FPP3Q6GMK7", "BNPT0GHHM7252"));
 

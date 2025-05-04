@@ -33,16 +33,45 @@ public class DeviceAssignmentProfileManagementTests {
 
 	@BeforeEach
 	void test_session() {
-		stubFor(get(urlEqualTo("/session")).willReturn(aResponse().withStatus(200).withHeaders(headers).withBody("""
-				{"auth_session_token":"1745786035268O1O789F19CF078867E47DC9D9BF4682D021O75CA72ECB87046A1B2239D9CFA4D6771O420397O11Op1OB123AA978976E390FF7693C640C92D3F8F6FE7F6O81E6CAAC7816AD3E12D531496695CF5A"}
-				""".stripIndent())));
+		stubFor(get(urlEqualTo("/session")).willReturn(
+				aResponse().withStatus(200).withHeaders(headers).withBody(TestUtil.authSessionToken())));
 	}
 
 	@Test
 	void test_create_profile(WireMockRuntimeInfo wm) throws Exception {
-		stubFor(post(urlEqualTo("/profile")).willReturn(aResponse().withStatus(200).withHeaders(headers).withBody("""
-				{"profile_uuid":"F3325E3D2646895BC4261BDAC42D4708","devices":{"A9C1R3Q8KJA9":"NOT_ACCESSIBLE","B112R4L8KJC7":"SUCCESS"}}
-				""".stripIndent())));
+		stubFor(post(urlEqualTo("/profile")).withRequestBody(equalToJson("""
+						{
+						    "auto_advance_setup": false,
+						    "await_device_configured": true,
+						    "department": "Sales",
+						    "devices": [
+						        "A9C1R3Q8KJA9",
+						        "B112R4L8KJC7"
+						    ],
+						    "is_mandatory": false,
+						    "is_mdm_removable": true,
+						    "is_multi_user": false,
+						    "profile_name": "mdm-server-01-sales-profile",
+						    "skip_setup_items": [
+						        "TapToSetup",
+						        "iCloudDiagnostics",
+						        "EnableLockdownMode",
+						        "iCloudStorage"
+						    ],
+						    "support_email_address": "sales-it@example.org",
+						    "support_phone_number": "555-555-555",
+						    "url": "https://mdm-server-01.local"
+						}
+						""".stripIndent(), true, false))
+				.willReturn(aResponse().withStatus(200).withHeaders(headers).withBody("""
+						{
+						    "profile_uuid": "F3325E3D2646895BC4261BDAC42D4708",
+						    "devices": {
+						        "A9C1R3Q8KJA9": "NOT_ACCESSIBLE",
+						        "B112R4L8KJC7": "SUCCESS"
+						    }
+						}
+						""".stripIndent())));
 
 		var response = TestUtil.createClient(wm).createProfile(
 				new Profile.ProfileBuilder().setProfileName("mdm-server-01-sales-profile")
@@ -78,20 +107,53 @@ public class DeviceAssignmentProfileManagementTests {
 						    "do_not_use_profile_from_backup": false,
 						    "auto_advance_setup": true,
 						    "skip_setup_items": [
-						        "Keyboard",
-						        "DeviceToDeviceMigration",
-						        "SIMSetup",
-						        "Payment",
-						        "AppleID",
-						        "Location",
-						        "AppStore",
-						        "MessagingActivationUsingPhoneNumber",
-						        "Welcome"
+								"Accessibility",
+								"ActionButton",
+								"Android",
+								"Appearance",
+								"AppleID",
+								"AppStore",
+								"Biometric",
+								"CameraButton",
+								"DeviceToDeviceMigration",
+								"Diagnostics",
+								"EnableLockdownMode",
+								"FileVault",
+								"iCloudDiagnostics",
+								"iCloudStorage",
+								"iMessageAndFaceTime",
+								"Intelligence",
+								"Keyboard",
+								"Location",
+								"MessagingActivationUsingPhoneNumber",
+								"Passcode",
+								"Payment",
+								"Privacy",
+								"Restore",
+								"RestoreCompleted",
+								"Safety",
+								"ScreenSaver",
+								"ScreenTime",
+								"SIMSetup",
+								"Siri",
+								"SoftwareUpdate",
+								"SpokenLanguage",
+								"TapToSetup",
+								"TermsOfAddress",
+								"TOS",
+								"TVHomeScreenSync",
+								"TVProviderSignIn",
+								"TVRoom",
+								"UpdateCompleted",
+								"Wallpaper",
+								"WatchMigration",
+								"WebContentFiltering",
+								"Welcome",
+								"SafetyAndHandling"
 						    ],
 						    "profile_uuid": "95C2189CB0EFB3192BC7B3C555091D22",
 						    "profile_name": "MDM petarov"
-						}
-						""".stripIndent())));
+						}""".stripIndent())));
 
 		var wrappedResponse = TestUtil.createClient(wm).fetchProfile("95C2189CB0EFB3192BC7B3C555091D22");
 		assertTrue(wrappedResponse.isPresent());
@@ -107,7 +169,7 @@ public class DeviceAssignmentProfileManagementTests {
 		assertTrue(response.isAwaitDeviceConfigured());
 		assertTrue(response.isMultiUser());
 		assertTrue(response.isAutoAdvanceSetup());
-		assertEquals(9, response.skipSetupItems().size());
+		assertEquals(43, response.skipSetupItems().size());
 		assertEquals("95C2189CB0EFB3192BC7B3C555091D22", response.profileUuid());
 		assertEquals("MDM petarov", response.profileName());
 
@@ -117,8 +179,10 @@ public class DeviceAssignmentProfileManagementTests {
 
 	@Test
 	void test_assign_profile(WireMockRuntimeInfo wm) throws Exception {
-		stubFor(post(urlEqualTo("/profile/devices")).willReturn(
-				aResponse().withStatus(200).withHeaders(headers).withBody("""
+		stubFor(post(urlEqualTo("/profile/devices")).withRequestBody(equalToJson("""
+						{"profile_uuid": "95C2189CA0EFB3272AC8B3C66201F33", "devices": ["C112342756", "B222342AF8"]}
+						""".stripIndent(), true, false))
+				.willReturn(aResponse().withStatus(200).withHeaders(headers).withBody("""
 						{"profile_uuid":"95C2189CB0EFB3192BC7B3C555091D22","devices":{"C112342756":"SUCCESS","B222342AF8":"NOT_ACCESSIBLE"}}
 						""".stripIndent())));
 
@@ -132,8 +196,10 @@ public class DeviceAssignmentProfileManagementTests {
 
 	@Test
 	void test_unassign_profile(WireMockRuntimeInfo wm) throws Exception {
-		stubFor(delete(urlEqualTo("/profile/devices")).willReturn(
-				aResponse().withStatus(200).withHeaders(headers).withBody("""
+		stubFor(delete(urlEqualTo("/profile/devices")).withRequestBody(equalToJson("""
+						{"profile_uuid": "95C2189CA0EFB3272AC8B3C66201F33", "devices": ["C112342756", "B222342AF8"]}
+						""".stripIndent(), true, false))
+				.willReturn(aResponse().withStatus(200).withHeaders(headers).withBody("""
 						{"devices":{"C112342756":"SUCCESS","B222342AF8":"NOT_ACCESSIBLE"}}
 						""".stripIndent())));
 

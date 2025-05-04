@@ -110,7 +110,7 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	@Override
 	public DeviceListResponse fetchDeviceDetails(@Nonnull Set<String> serialNumbers) {
 		return execute(client.createRequestBuilder(client.complementURI("/devices"))
-				.POST(ofBody(new DeviceListRequest(serialNumbers))), DeviceListResponse.class);
+				.POST(ofBody(Map.of("devices", serialNumbers))), DeviceListResponse.class);
 	}
 
 	@Nonnull

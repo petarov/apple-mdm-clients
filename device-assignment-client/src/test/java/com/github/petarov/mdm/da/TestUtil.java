@@ -24,4 +24,10 @@ public final class TestUtil {
 		return com.github.tomakehurst.wiremock.http.HttpHeaders.noHeaders()
 				.plus(HttpHeader.httpHeader("Content-Type", "application/json;charset=UTF8"));
 	}
+
+	public static String authSessionToken() {
+		return """
+				{"auth_session_token":"1745786035268O1O789F19CF078867E47DC9D9BF4682D021O75CA72ECB87046A1B2239D9CFA4D6771O420397O11Op1OB123AA978976E390FF7693C640C92D3F8F6FE7F6O81E6CAAC7816AD3E12D531496695CF5A"}
+				""".stripIndent();
+	}
 }

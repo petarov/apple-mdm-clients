@@ -28,9 +28,8 @@ public class DeviceAssignmentClientTests {
 
 	@BeforeEach
 	void test_session() {
-		stubFor(get(urlEqualTo("/session")).willReturn(aResponse().withStatus(200).withHeaders(headers).withBody("""
-				{"auth_session_token":"1745786035268O1O789F19CF078867E47DC9D9BF4682D021O75CA72ECB87046A1B2239D9CFA4D6771O420397O11Op1OB123AA978976E390FF7693C640C92D3F8F6FE7F6O81E6CAAC7816AD3E12D531496695CF5A"}
-				""".stripIndent())));
+		stubFor(get(urlEqualTo("/session")).willReturn(
+				aResponse().withStatus(200).withHeaders(headers).withBody(TestUtil.authSessionToken())));
 	}
 
 	@Test
