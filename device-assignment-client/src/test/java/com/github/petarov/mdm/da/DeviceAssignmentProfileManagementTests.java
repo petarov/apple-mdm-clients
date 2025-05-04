@@ -14,6 +14,7 @@ import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @WireMockTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -32,6 +33,77 @@ public class DeviceAssignmentProfileManagementTests {
 		stubFor(get(urlEqualTo("/session")).willReturn(aResponse().withStatus(200).withHeaders(headers).withBody("""
 				{"auth_session_token":"1745786035268O1O789F19CF078867E47DC9D9BF4682D021O75CA72ECB87046A1B2239D9CFA4D6771O420397O11Op1OB123AA978976E390FF7693C640C92D3F8F6FE7F6O81E6CAAC7816AD3E12D531496695CF5A"}
 				""".stripIndent())));
+	}
+
+	@Test
+	void test_fetch_profile(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlEqualTo("/profile?profile_uuid=95C2189CB0EFB3192BC7B3C555091D22")).willReturn(
+				aResponse().withStatus(200).withHeaders(headers).withBody("""
+						{
+						    "support_phone_number": "077 555 555",
+						    "support_email_address": "support@petarov.net",
+						    "org_magic": "petarov GmbH",
+						    "url": "https://node.petarov.net/srv/intra",
+						    "is_supervised": true,
+						    "allow_pairing": true,
+						    "is_mandatory": true,
+						    "is_mdm_removable": true,
+						    "await_device_configured": true,
+						    "is_multi_user": true,
+						    "is_return_to_service": false,
+						    "do_not_use_profile_from_backup": false,
+						    "auto_advance_setup": true,
+						    "skip_setup_items": [
+						        "Keyboard",
+						        "DeviceToDeviceMigration",
+						        "SIMSetup",
+						        "Payment",
+						        "AppleID",
+						        "Location",
+						        "AppStore",
+						        "MessagingActivationUsingPhoneNumber",
+						        "Welcome"
+						    ],
+						    "profile_uuid": "95C2189CB0EFB3192BC7B3C555091D22",
+						    "profile_name": "MDM petarov"
+						}
+						""".stripIndent())));
+
+		var wrappedResponse = TestUtil.createClient(wm).fetchProfile("95C2189CB0EFB3192BC7B3C555091D22");
+		assertTrue(wrappedResponse.isPresent());
+
+		var response = wrappedResponse.orElseThrow();
+		assertTrue(response.devices().isEmpty());
+		assertEquals("077 555 555", response.supportPhoneNumber());
+		assertEquals("support@petarov.net", response.supportEmailAddress());
+		assertEquals("petarov GmbH", response.orgMagic());
+		assertEquals("https://node.petarov.net/srv/intra", response.url());
+		assertTrue(response.isMandatory());
+		assertTrue(response.isMdmRemovable());
+		assertTrue(response.isAwaitDeviceConfigured());
+		assertTrue(response.isMultiUser());
+		assertTrue(response.isAutoAdvanceSetup());
+		assertEquals(9, response.skipSetupItems().size());
+		assertEquals("95C2189CB0EFB3192BC7B3C555091D22", response.profileUuid());
+		assertEquals("MDM petarov", response.profileName());
+
+		var wrappedResponse2 = TestUtil.createClient(wm).fetchProfile("DOESNOTEXIST");
+		assertTrue(wrappedResponse2.isEmpty());
+	}
+
+	@Test
+	void test_assign_profile(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(post(urlEqualTo("/profile/devices")).willReturn(
+				aResponse().withStatus(200).withHeaders(headers).withBody("""
+						{"profile_uuid":"95C2189CB0EFB3192BC7B3C555091D22","devices":{"C112342756":"SUCCESS","B222342AF8":"NOT_ACCESSIBLE"}}
+						""".stripIndent())));
+
+		var response = TestUtil.createClient(wm)
+				.assignProfile("95C2189CA0EFB3272AC8B3C66201F33", Set.of("C112342756", "B222342AF8"));
+
+		assertEquals(2, response.devices().size());
+		assertEquals("SUCCESS", response.devices().get("C112342756"));
+		assertEquals("NOT_ACCESSIBLE", response.devices().get("B222342AF8"));
 	}
 
 	@Test

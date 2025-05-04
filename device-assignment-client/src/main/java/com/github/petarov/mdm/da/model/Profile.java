@@ -30,6 +30,8 @@ import java.util.Set;
  *                                profile must originate from the same host as specified in this field.</p>
  * @param department              the user-defined department or location name
  * @param devices                 array of strings that contains device serial numbers (may be empty)
+ * @param isMandatory             if {@code true}, the user cannot skip applying the profile returned by the MDM server.
+ *                                Default is {@code false}. In iOS 13 and later, all DEP enrollments are mandatory.
  * @param isMdmRemovable          if {@code false}, the MDM payload delivered by the configuration URL cannot be removed
  *                                by the user via the user interface on the device; that is, the MDM payload is locked
  *                                onto the device.
@@ -66,10 +68,11 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> a
                       @JsonProperty("await_device_configured") boolean isAwaitDeviceConfigured,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String configurationWebUrl,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String department,
-                      @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> devices, boolean isMdmRemovable,
-                      boolean isMultiUser, @JsonSetter(nulls = Nulls.AS_EMPTY) String language,
+                      @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> devices, boolean isMandatory,
+                      boolean isMdmRemovable, boolean isMultiUser, @JsonSetter(nulls = Nulls.AS_EMPTY) String language,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String orgMagic,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String profileName,
+                      @JsonSetter(nulls = Nulls.AS_EMPTY) String profileUuid,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String region, @Nonnull Set<ProfileSkipItem> skipSetupItems,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> supervisingHostCerts,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String supportEmailAddress,
@@ -87,6 +90,7 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> a
 		private       String               configurationWebUrl     = "";
 		private       String               department              = "";
 		private final Set<String>          devices                 = new HashSet<>();
+		private       boolean              isMandatory             = false;
 		private       boolean              isMdmRemovable          = true;
 		private       boolean              isMultiUser             = false;
 		private       String               language                = "";
@@ -146,6 +150,14 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> a
 		public ProfileBuilder setDevices(@Nonnull Set<String> devices) {
 			this.devices.clear();
 			this.devices.addAll(devices);
+			return this;
+		}
+
+		/**
+		 * @see #isMandatory()
+		 */
+		public ProfileBuilder setMandatory(boolean mandatory) {
+			isMandatory = mandatory;
 			return this;
 		}
 
@@ -250,8 +262,8 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> a
 			}
 
 			return new Profile(anchorCerts, isAutoAdvanceSetup, isAwaitDeviceConfigured, configurationWebUrl,
-					department, devices, isMdmRemovable, isMultiUser, language, orgMagic, profileName, region,
-					skipSetupItems, supervisingHostCerts, supportEmailAddress, supportPhoneNumber, url);
+					department, devices, isMandatory, isMdmRemovable, isMultiUser, language, orgMagic, profileName, "",
+					region, skipSetupItems, supervisingHostCerts, supportEmailAddress, supportPhoneNumber, url);
 		}
 	}
 }
