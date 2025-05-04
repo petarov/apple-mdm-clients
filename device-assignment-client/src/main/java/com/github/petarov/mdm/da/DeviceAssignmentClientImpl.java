@@ -153,14 +153,15 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	@Override
 	public ProfileDevicesResponse assignProfile(String profileUuid, @Nonnull Set<String> serialNumbers) {
 		return execute(client.createRequestBuilder(client.complementURI("/profile/devices"))
-				.POST(ofBody(new ProfileDevicesRequest(profileUuid, serialNumbers))), ProfileDevicesResponse.class);
+						.POST(ofBody(Map.of("profile_uuid", profileUuid, "devices", serialNumbers))),
+				ProfileDevicesResponse.class);
 	}
 
 	@Nonnull
 	@Override
 	public ProfileDevicesResponse unassignProfile(String profileUuid, @Nonnull Set<String> serialNumbers) {
 		return execute(client.createRequestBuilder(client.complementURI("/profile/devices"))
-						.method("DELETE", ofBody(new ProfileDevicesRequest(profileUuid, serialNumbers))),
+						.method("DELETE", ofBody(Map.of("profile_uuid", profileUuid, "devices", serialNumbers))),
 				ProfileDevicesResponse.class);
 	}
 

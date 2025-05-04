@@ -129,6 +129,15 @@ public enum ProfileSkipItem {
 	SIM_SETUP("SIMSetup", OsType.IOS),
 
 	/**
+	 * Disables Location services.
+	 * Availability: iOS 7.0+ and macOS 10.11+
+	 * Skips the add cellular plan pane.
+	 * <p>
+	 * Availability: iOS 12.0+
+	 */
+	LOCATION("Location", OsType.IOS, OsType.MACOS),
+
+	/**
 	 * Skips the mandatory software update screen in iOS.
 	 * <p>
 	 * Availability: iOS 12.0+
@@ -212,6 +221,15 @@ public enum ProfileSkipItem {
 	 * Availability: iOS 17.1+ and macOS 14+
 	 */
 	ENABLE_LOCKDOWN_MODE("EnableLockdownMode", OsType.IOS, OsType.MACOS),
+
+	/**
+	 * Disables Siri.
+	 * Availability: iOS 7.0+, tvOS 10.2+, and macOS 10.12+
+	 * Skips the Camera Button pane.
+	 * <p>
+	 * Availability: iOS 18.0+
+	 */
+	SIRI("Siri", OsType.IOS, OsType.MACOS, OsType.TVOS),
 
 	/**
 	 * Skips the Camera Button pane.
