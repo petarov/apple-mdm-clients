@@ -234,4 +234,34 @@ public class DeviceAssignmentDeviceManagementTests {
 
 		assertEquals("NOT_ACCESSIBLE", response.devices().get("BNPT0GHHM7252").responseStatus());
 	}
+
+	@Test
+	void test_enable_activation_lock(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(post(urlEqualTo("/device/activationlock")).withRequestBody(equalToJson("""
+						{"device": "B9FPP3Q6GMK7"}
+						""".stripIndent(), true, false))
+				.willReturn(aResponse().withStatus(200).withHeaders(headers).withBody("""
+						{"serial_number":"B9FPP3Q6GMK7","response_status":"SUCCESS"}
+						""".stripIndent())));
+
+		var response1 = TestUtil.createClient(wm).enableActivationLock("B9FPP3Q6GMK7");
+
+		assertEquals("B9FPP3Q6GMK7", response1.serialNumber());
+		assertEquals("SUCCESS", response1.responseStatus());
+
+
+		stubFor(post(urlEqualTo("/device/activationlock")).withRequestBody(equalToJson("""
+						{"device": "BNPT0GHHM7252", "escrow_key": "eqMk9Jc4cIq0WeOmnBHYyET4aeBZ+JNfOmIPgMiEgMg=", "lost_message": "call me at 0555 555"}
+						""".stripIndent(), true, false))
+				.willReturn(aResponse().withStatus(200).withHeaders(headers).withBody("""
+						{"serial_number":"BNPT0GHHM7252","response_status":"NOT_ACCESSIBLE"}
+						""".stripIndent())));
+
+		var response2 = TestUtil.createClient(wm)
+				.enableActivationLock("BNPT0GHHM7252", "eqMk9Jc4cIq0WeOmnBHYyET4aeBZ+JNfOmIPgMiEgMg=",
+						"call me at 0555 555");
+
+		assertEquals("BNPT0GHHM7252", response2.serialNumber());
+		assertEquals("NOT_ACCESSIBLE", response2.responseStatus());
+	}
 }

@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.http.HttpRequest;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -169,8 +170,18 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	@Override
 	public ActivationLockStatusResponse enableActivationLock(String serialNumber, String escrowKey,
 			String lostMessage) {
-		return execute(client.createRequestBuilder(client.complementURI("/device/activationlock"))
-						.POST(ofBody(new ActivationLockRequest(serialNumber, escrowKey, lostMessage))),
+		var params = new HashMap<String, String>();
+		params.put("device", serialNumber);
+
+		if (!escrowKey.isBlank()) {
+			params.put("escrow_key", escrowKey);
+		}
+
+		if (!lostMessage.isBlank()) {
+			params.put("lost_message", lostMessage);
+		}
+
+		return execute(client.createRequestBuilder(client.complementURI("/device/activationlock")).POST(ofBody(params)),
 				ActivationLockStatusResponse.class);
 	}
 

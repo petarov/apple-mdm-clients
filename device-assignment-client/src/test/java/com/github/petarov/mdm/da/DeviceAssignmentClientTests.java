@@ -108,4 +108,101 @@ public class DeviceAssignmentClientTests {
 		assertEquals(3, accountDetail.urls().getLast().httpMethod().size());
 		assertEquals("DELETE", accountDetail.urls().getLast().httpMethod().getFirst());
 	}
+
+	@Test
+	void test_fetch_beta_enrollment_tokens(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlEqualTo("/os-beta-enrollment/tokens")).willReturn(
+				aResponse().withStatus(200).withHeaders(headers).withBody("""
+						{
+						    "betaEnrollmentTokens": [
+						        {
+						            "token": "ZS16DKkGwAGFsF5on9evLPYkFmq99fs2EFBHd3F2JUXpJVUvAYBDwyFRQn1nVLp8",
+						            "title": "visionOS Developer Beta",
+						            "os": "visionOS"
+						        },
+						        {
+						            "token": "eLcTr7mLGCKMG9iLdyVJ6DuPPcVSeks8dbh19EYmmcaSq5gWgu2XKLSTPKUF9r9y",
+						            "title": "iOS 17 AppleSeed Beta",
+						            "os": "iOS"
+						        },
+						        {
+						            "token": "LtbJZUKkXWQuX9R5TtMMNXwreDhScfdZ5FmEnzLtqAKXYqRTRgnYahoG3DnWZaUh",
+						            "title": "iOS 16 AppleSeed Beta",
+						            "os": "iOS"
+						        },
+						        {
+						            "token": "3zok2onMHfoMjGuoaSpDbq5DdQtq4cRYfS2eApLovxmEPYfrVTAA3uwdNqRnnjiZ",
+						            "title": "watchOS 9 AppleSeed Beta",
+						            "os": "watchOS"
+						        },
+						        {
+						            "token": "ETf1Kskkx5z6R5pB7vkKLbxf63MHXvksPd2PmzHHhBb6PycCU1FeGy2PcDxVEQZa",
+						            "title": "tvOS 16 AppleSeed Beta",
+						            "os": "tvOS"
+						        },
+						        {
+						            "token": "GLZUYgFJBNG6pwrppRGBZEUzqv1n6tKpPkhtTT7UyUECi9JtRsZubbRJj67RbnjJ",
+						            "title": "macOS Sonoma AppleSeed Beta",
+						            "os": "OSX"
+						        },
+						        {
+						            "token": "sokXoiafhinCQkM2SfSJxVfstnSfL1HX2ZK9vFnHSdzpNnBXu8WYX1yHkvJNhZso",
+						            "title": "macOS Ventura AppleSeed Beta",
+						            "os": "OSX"
+						        },
+						        {
+						            "token": "n2TmDBAy11PWhueoJFT8HoFyuiw1U8a34u6mAbCyVSJpD4St9VRDxs95kmGxjUG3",
+						            "title": "iOS 18 AppleSeed Beta",
+						            "os": "iOS"
+						        },
+						        {
+						            "token": "TDtaNhvtQQyiF2g3ADywnQhFUYXoodMrVjxYDqmy187vg3vEZpNdfbbNxhCVBRpm",
+						            "title": "tvOS 18 AppleSeed Beta",
+						            "os": "tvOS"
+						        },
+						        {
+						            "token": "ybVYn7FqNBFeu8NVFvePE1BtfwMf1j6N8dzBazv131FxR4ARk7UeQ7vfQRjTy1w4",
+						            "title": "visionOS 2 AppleSeed Beta",
+						            "os": "visionOS"
+						        },
+						        {
+						            "token": "pMvBppeG6gahZVdLY6BP7r5PCidwcDUBG33azJMCJsgKxvhtCaknPt6aASoE2cg1",
+						            "title": "watchOS 11 AppleSeed Beta",
+						            "os": "watchOS"
+						        },
+						        {
+						            "token": "LzRt9NaUMbw7xyyJ2Zav6q5tzCuWcC9T1bDRSfajS87GQ5dW2mMevwTygHUZ8GzM",
+						            "title": "tvOS 17 AppleSeed Beta",
+						            "os": "tvOS"
+						        },
+						        {
+						            "token": "njMBtZAZFk1uv9LVjqajxBqA5ZYvaqf8hjW5iFVjUVHGSx4zUyUuiAYaqWc6gM9n",
+						            "title": "macOS Sequoia AppleSeed Beta",
+						            "os": "OSX"
+						        },
+						        {
+						            "token": "q1toS113vePpcfWLKnWVhdwYD1zd5tHK55WWcJQ1MLdHTi17XdRdpFLrHzpduUNT",
+						            "title": "watchOS 10 AppleSeed Beta",
+						            "os": "watchOS"
+						        },
+						        {
+						            "token": "WkaTiJV3QAvUkeo46QJynL631Pxja6sbGTiPjcjHUncAZdL1fozjSPbmMhy1u2Ws",
+						            "title": "macOS Sequoia 15.2 AppleSeed Beta",
+						            "os": "OSX"
+						        }
+						    ]
+						}
+						""".stripIndent())));
+
+		var seedBuild = TestUtil.createClient(wm).fetchBetaEnrollmentTokens();
+		assertEquals(15, seedBuild.betaEnrollmentTokens().size());
+		assertEquals("ZS16DKkGwAGFsF5on9evLPYkFmq99fs2EFBHd3F2JUXpJVUvAYBDwyFRQn1nVLp8",
+				seedBuild.betaEnrollmentTokens().getFirst().token());
+		assertEquals("visionOS Developer Beta", seedBuild.betaEnrollmentTokens().getFirst().title());
+		assertEquals("visionOS", seedBuild.betaEnrollmentTokens().getFirst().os());
+		assertEquals("WkaTiJV3QAvUkeo46QJynL631Pxja6sbGTiPjcjHUncAZdL1fozjSPbmMhy1u2Ws",
+				seedBuild.betaEnrollmentTokens().getLast().token());
+		assertEquals("macOS Sequoia 15.2 AppleSeed Beta", seedBuild.betaEnrollmentTokens().getLast().title());
+		assertEquals("OSX", seedBuild.betaEnrollmentTokens().getLast().os());
+	}
 }
