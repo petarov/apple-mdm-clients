@@ -1,5 +1,7 @@
 package com.github.petarov.mdm.da;
 
+import com.github.petarov.mdm.da.model.Profile;
+import com.github.petarov.mdm.da.model.ProfileSkipItem;
 import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
@@ -10,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.security.Security;
+import java.util.EnumSet;
 import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -33,6 +36,27 @@ public class DeviceAssignmentProfileManagementTests {
 		stubFor(get(urlEqualTo("/session")).willReturn(aResponse().withStatus(200).withHeaders(headers).withBody("""
 				{"auth_session_token":"1745786035268O1O789F19CF078867E47DC9D9BF4682D021O75CA72ECB87046A1B2239D9CFA4D6771O420397O11Op1OB123AA978976E390FF7693C640C92D3F8F6FE7F6O81E6CAAC7816AD3E12D531496695CF5A"}
 				""".stripIndent())));
+	}
+
+	@Test
+	void test_create_profile(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(post(urlEqualTo("/profile")).willReturn(aResponse().withStatus(200).withHeaders(headers).withBody("""
+				{"profile_uuid":"F3325E3D2646895BC4261BDAC42D4708","devices":{"A9C1R3Q8KJA9":"NOT_ACCESSIBLE","B112R4L8KJC7":"SUCCESS"}}
+				""".stripIndent())));
+
+		var response = TestUtil.createClient(wm).createProfile(
+				new Profile.ProfileBuilder().setProfileName("mdm-server-01-sales-profile")
+						.setUrl("https://mdm-server-01.local").setDepartment("Sales").setAwaitDeviceConfigured(true)
+						.setMdmRemovable(true).setSupportPhoneNumber("555-555-555")
+						.setSupportEmailAddress("sales-it@example.org").setSkipSetupItems(
+								EnumSet.of(ProfileSkipItem.ENABLE_LOCKDOWN_MODE, ProfileSkipItem.TAP_TO_SETUP,
+										ProfileSkipItem.ICLOUD_DIAGNOSTICS, ProfileSkipItem.ICLOUD_STORAGE))
+						.setDevices(Set.of("A9C1R3Q8KJA9", "B112R4L8KJC7")).build());
+
+		assertEquals("F3325E3D2646895BC4261BDAC42D4708", response.profileUuid());
+		assertEquals(2, response.devices().size());
+		assertEquals("NOT_ACCESSIBLE", response.devices().get("A9C1R3Q8KJA9"));
+		assertEquals("SUCCESS", response.devices().get("B112R4L8KJC7"));
 	}
 
 	@Test
