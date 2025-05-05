@@ -40,28 +40,12 @@ jobs:
           name: test-report-shared
           path: shared/build/reports/tests/test/**/*
 
-      - name: Test report
-        uses: dorny/test-reporter@v2
-        if: success() || failure()
-        with:
-          name: shared tests
-          path: shared/build/test-results/test/*.xml
-          reporter: java-junit
-
       ## --- sub-project: device-assignment-client
       - name: Upload device-assignment-client test reports
         uses: actions/upload-artifact@v4
         with:
           name: test-report-device-assignment-client
           path: device-assignment-client/build/reports/tests/test/**/*
-
-      - name: Test report
-        uses: dorny/test-reporter@v2
-        if: success() || failure()
-        with:
-          name: device-assignment-client tests
-          path: device-assignment-client/build/test-results/test/*.xml
-          reporter: java-junit
 
       ## --- sub-project: legacy-app-and-book-management-client
       - name: Upload legacy-app-and-book-management-client test reports
@@ -70,10 +54,13 @@ jobs:
           name: test-report-legacy-app-and-book-management-client
           path: legacy-app-and-book-management-client/build/reports/tests/test/**/*
 
-      - name: Test report
+      ## --- Upload unit test results for all projects
+      - name: Unit test results
         uses: dorny/test-reporter@v2
         if: success() || failure()
         with:
-          name: legacy-app-and-book-management-client tests
-          path: legacy-app-and-book-management-client/build/test-results/test/*.xml
+          name: Uploading unit test results and generating badges
+          path: 'shared/build/test-results/test/*.xml,device-assignment-client/build/test-results/test/*.xml,legacy-app-and-book-management-client/build/test-results/test/*.xml'
           reporter: java-junit
+          only-summary: 'true'
+          badge-title: 'unit tests'
