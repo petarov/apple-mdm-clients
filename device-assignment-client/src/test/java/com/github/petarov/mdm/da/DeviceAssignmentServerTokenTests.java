@@ -19,14 +19,14 @@ public class DeviceAssignmentServerTokenTests {
 	private InputStream privateKeyInput;
 
 	@BeforeAll
-	void init() throws Exception {
+	void init() {
 		Security.addProvider(new BouncyCastleProvider());
 		serverTokenInput = this.getClass().getResourceAsStream("/apple-mdm-client-tests-1-server-token.p7m");
 		privateKeyInput = this.getClass().getResourceAsStream("/apple-mdm-client-tests-1.der");
 	}
 
 	@Test
-	void load_server_token_from_smime_envelop() throws Exception {
+	void load_server_token_from_smime_envelop() {
 		var serverToken = DeviceAssignmentServerToken.create(serverTokenInput,
 				DeviceAssignmentPrivateKey.createFromDER(privateKeyInput));
 

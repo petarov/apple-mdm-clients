@@ -14,12 +14,12 @@ public class LegacyAppAndBookTokenTests {
 	private InputStream sTokenInput;
 
 	@BeforeAll
-	void init() throws Exception {
+	void init() {
 		sTokenInput = this.getClass().getResourceAsStream("/apple-mdm-client-tests-stoken-1.stoken");
 	}
 
 	@Test
-	void load_stoken_from_file() throws Exception {
+	void load_stoken_from_file() {
 		var serverToken = LegacyAppAndBookToken.create(sTokenInput);
 
 		Assertions.assertEquals(

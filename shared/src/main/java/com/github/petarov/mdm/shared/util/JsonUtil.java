@@ -15,7 +15,6 @@ public final class JsonUtil {
 	public static ObjectMapper createObjectMapper() {
 		var mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
-		//		mapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
 		// Format date-time as ISO-8601
 		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		// Do not convert date-time to local timezone

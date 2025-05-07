@@ -10,7 +10,7 @@ import java.util.Objects;
 public class LegacyAppAndBookClientBuilder
 		extends MdmClientBuilder<LegacyAppAndBookClientBuilder, LegacyAppAndBookClient> {
 
-	private final String DEFAULT_APPLE_PRODUCTION_HOST = "https://vpp.itunes.apple.com/mdm";
+	private static final String DEFAULT_APPLE_PRODUCTION_HOST = "https://vpp.itunes.apple.com/mdm";
 
 	private String                appleHost;
 	private LegacyAppAndBookToken serverToken;

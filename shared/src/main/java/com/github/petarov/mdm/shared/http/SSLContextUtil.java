@@ -9,7 +9,7 @@ import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-class SSLContextUtil {
+final class SSLContextUtil {
 
 	public static final String DEFAULT_PROTOCOL = "TLS";
 

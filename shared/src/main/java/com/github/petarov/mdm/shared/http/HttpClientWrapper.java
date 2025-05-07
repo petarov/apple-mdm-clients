@@ -33,13 +33,14 @@ public class HttpClientWrapper {
 	public HttpClientWrapper(@Nonnull MdmClientBuilder.MdmBuilderOptions options, @Nonnull Logger logger) {
 		this.options = options;
 		this.logger = logger;
-		this.proxyCredentials = options.proxyOptions() == null ?
-				"" :
-				(options.proxyOptions().getUsername().isBlank() ?
-						"" :
-						"Basic " + Base64.getEncoder().encodeToString(
-								(options.proxyOptions().getUsername() + ":" + options.proxyOptions()
-										.getPassword()).getBytes(StandardCharsets.UTF_8)));
+
+		if (options.proxyOptions() == null || options.proxyOptions().getUsername().isBlank()) {
+			this.proxyCredentials = "";
+		} else {
+			this.proxyCredentials = "Basic " + Base64.getEncoder().encodeToString(
+					(options.proxyOptions().getUsername() + ":" + options.proxyOptions().getPassword()).getBytes(
+							StandardCharsets.UTF_8));
+		}
 	}
 
 	@Nonnull
@@ -139,21 +140,24 @@ public class HttpClientWrapper {
 	}
 
 	private void debugReqHeaders(HttpRequest req) {
-		var sb = new StringBuilder();
-		req.headers().map().forEach((k, v) -> sb.append(k).append("=").append(v).append(" "));
-
-		logger.debug("req: {} {} headers: {}", req.method(), req.uri(), sb);
+		if (logger.isDebugEnabled()) {
+			var sb = new StringBuilder();
+			req.headers().map().forEach((k, v) -> sb.append(k).append("=").append(v).append(" "));
+			logger.debug("req: {} {} headers: {}", req.method(), req.uri(), sb);
+		}
 	}
 
 	private void debugRespHeaders(HttpResponse<?> resp, String body) {
-		var sb = new StringBuilder();
-		resp.headers().map().forEach((k, v) -> sb.append(k).append("=").append(v).append(" "));
+		if (logger.isDebugEnabled() || logger.isTraceEnabled()) {
+			var sb = new StringBuilder();
+			resp.headers().map().forEach((k, v) -> sb.append(k).append("=").append(v).append(" "));
 
-		if (logger.isTraceEnabled()) {
-			logger.trace("resp: {} ({}) headers: {} body: {}", resp.uri(), resp.statusCode(), sb,
-					body.isBlank() ? "<blank>" : body);
-		} else if (logger.isDebugEnabled()) {
-			logger.debug("resp: {} ({}) headers: {}", resp.uri(), resp.statusCode(), sb);
+			if (logger.isTraceEnabled()) {
+				logger.trace("resp: {} ({}) headers: {} body: {}", resp.uri(), resp.statusCode(), sb,
+						body.isBlank() ? "<blank>" : body);
+			} else if (logger.isDebugEnabled()) {
+				logger.debug("resp: {} ({}) headers: {}", resp.uri(), resp.statusCode(), sb);
+			}
 		}
 	}
 
@@ -169,13 +173,13 @@ public class HttpClientWrapper {
 	public <RESPONSE> RESPONSE send(@Nonnull HttpRequest request, @Nonnull Class<RESPONSE> clazz) {
 		HttpResponse<InputStream> response;
 		try {
-			if (logger.isDebugEnabled()) {
-				debugReqHeaders(request);
-			}
+			debugReqHeaders(request);
 			response = getClient().send(request, HttpResponse.BodyHandlers.ofInputStream());
 		} catch (IOException e) {
 			throw new RuntimeException("I/O error while sending request", e);
 		} catch (InterruptedException e) {
+			// TODO: handle this?
+			Thread.currentThread().interrupt();
 			throw new RuntimeException("Send request interrupted", e);
 		}
 
@@ -183,15 +187,11 @@ public class HttpClientWrapper {
 			if (isResponseOk(response.statusCode())) {
 				try (var input = decodeResponseBody(response)) {
 					var body = new String(input.readAllBytes(), StandardCharsets.UTF_8);
-					if (logger.isDebugEnabled() || logger.isTraceEnabled()) {
-						debugRespHeaders(response, body);
-					}
+					debugRespHeaders(response, body);
 					return getObjectMapper().reader().readValue(body, clazz);
 				}
 			} else {
-				if (logger.isDebugEnabled() || logger.isTraceEnabled()) {
-					debugRespHeaders(response, "");
-				}
+				debugRespHeaders(response, "");
 				try (var input = decodeResponseBody(response)) {
 					throw new HttpClientWrapperException(getRequestResponseLine(request, response),
 							response.statusCode(), new String(input.readAllBytes(), StandardCharsets.UTF_8),

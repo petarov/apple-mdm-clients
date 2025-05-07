@@ -24,10 +24,11 @@ import java.util.Set;
  * @param opDate             a time stamp in ISO 8601 format that indicates when the device was added, updated, or
  *                           deleted. If the value of {@link #opType()} is added, this is the same as
  *                           {@link #deviceAssignedDate()}. This field is only applicable with the
- *                           <i>Sync the List of Devices</i> command. TODO: link client method
+ *                           <i>Sync the List of Devices</i> call - {@link DeviceAssignmentClient#syncDevices(String, int)}.
  * @param opType             indicates whether the device was added (assigned to the MDM server), modified, or deleted.
  *                           Contains one of the following strings: added, modified, or deleted. This field is only
- *                           applicable with the <i>Sync the List of Devices</i> command. TODO: link client method
+ *                           applicable with the <i>Sync the List of Devices</i> call -
+ *                           {@link DeviceAssignmentClient#syncDevices(String, int)}.
  * @param os                 the device's operating system: {@code iOS}, {@code OSX}, or {@code tvOS}. This key is valid
  *                           in <i>X-Server-Protocol-Version 2</i> and later.
  * @param profileAssignTime  a time stamp in ISO 8601 format that indicates when a profile was assigned to the device

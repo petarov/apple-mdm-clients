@@ -10,9 +10,9 @@ import java.util.Objects;
 public class DeviceAssignmentClientBuilder
 		extends MdmClientBuilder<DeviceAssignmentClientBuilder, DeviceAssignmentClient> {
 
-	private final String DEFAULT_APPLE_PRODUCTION_HOST = "https://mdmenrollment.apple.com";
+	private static final String DEFAULT_APPLE_PRODUCTION_HOST = "https://mdmenrollment.apple.com";
 
-	private String appleHost;
+	private String                      appleHost;
 	private DeviceAssignmentServerToken serverToken;
 
 	DeviceAssignmentClientBuilder() {
