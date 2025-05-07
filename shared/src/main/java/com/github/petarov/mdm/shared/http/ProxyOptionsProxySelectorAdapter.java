@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.net.*;
 import java.util.List;
 
-class ProxyOptionsProxySelectorAdapter extends ProxySelector {
+final class ProxyOptionsProxySelectorAdapter extends ProxySelector {
 
 	private final MdmClientProxyOptions options;
 	private       List<Proxy>           proxies;

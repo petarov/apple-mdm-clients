@@ -5,6 +5,8 @@ import jakarta.annotation.Nonnull;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -17,7 +19,8 @@ final class SSLContextUtil {
 	 * @return new {@link SSLContext} TLS protocol instance that does not verify remote server certificates
 	 */
 	@Nonnull
-	public static SSLContext newTrustAllSSLContext(@Nonnull SecureRandom secureRandom) throws Exception {
+	public static SSLContext newTrustAllSSLContext(@Nonnull SecureRandom secureRandom)
+			throws NoSuchAlgorithmException, KeyManagementException {
 		var ctx = SSLContext.getInstance(DEFAULT_PROTOCOL);
 		ctx.init(null, new TrustManager[] { new TrustAllX509TrustManager() }, secureRandom);
 		return ctx;

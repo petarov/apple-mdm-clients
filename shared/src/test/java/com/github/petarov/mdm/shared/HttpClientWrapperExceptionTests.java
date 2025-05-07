@@ -3,6 +3,7 @@ package com.github.petarov.mdm.shared;
 import com.github.petarov.mdm.shared.http.HttpClientWrapperException;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,19 @@ public class HttpClientWrapperExceptionTests {
 
 			assertTrue(e.headers().containsKey("apple-tk"));
 			assertIterableEquals(List.of("false"), e.headers().get("apple-tk"));
+		}
+	}
+
+	@Test
+	void test_non_http() throws Exception {
+		try {
+			throw new HttpClientWrapperException("http request error", new IOException("channel closed"));
+		} catch (HttpClientWrapperException e) {
+			assertEquals("http request error", e.getMessage());
+			assertEquals(0, e.getStatusCode());
+			assertTrue(e.getStatusLine().isEmpty());
+			assertTrue(e.headers().isEmpty());
+			assertInstanceOf(IOException.class, e.getCause());
 		}
 	}
 }

@@ -27,8 +27,8 @@ public class HttpClientWrapper {
 	private final Logger                             logger;
 	private final String                             proxyCredentials;
 
-	private HttpClient   _client;
-	private ObjectMapper _objectMapper;
+	private HttpClient   httpClient;
+	private ObjectMapper objectMapper;
 
 	public HttpClientWrapper(@Nonnull MdmClientBuilder.MdmBuilderOptions options, @Nonnull Logger logger) {
 		this.options = options;
@@ -65,13 +65,12 @@ public class HttpClientWrapper {
 			try {
 				builder.sslContext(SSLContextUtil.newTrustAllSSLContext(options.random()));
 			} catch (Exception e) {
-				throw new RuntimeException("Error creating SSL context", e);
+				throw new HttpClientWrapperException("Error creating SSL context", e);
 			}
 		}
 
 		if (options.proxyOptions() != null) {
 			builder.proxy(new ProxyOptionsProxySelectorAdapter(options.proxyOptions()));
-
 			//			if (!options.proxyOptions().getUsername().isBlank()) {
 			//				builder.authenticator(new Authenticator() {
 			//
@@ -88,17 +87,17 @@ public class HttpClientWrapper {
 	}
 
 	protected HttpClient getClient() {
-		if (_client == null) {
-			_client = createClientBuilder().build();
+		if (httpClient == null) {
+			httpClient = createClientBuilder().build();
 		}
-		return _client;
+		return httpClient;
 	}
 
 	protected ObjectMapper getObjectMapper() {
-		if (_objectMapper == null) {
-			_objectMapper = JsonUtil.createObjectMapper();
+		if (objectMapper == null) {
+			objectMapper = JsonUtil.createObjectMapper();
 		}
-		return _objectMapper;
+		return objectMapper;
 	}
 
 	/**
@@ -176,11 +175,10 @@ public class HttpClientWrapper {
 			debugReqHeaders(request);
 			response = getClient().send(request, HttpResponse.BodyHandlers.ofInputStream());
 		} catch (IOException e) {
-			throw new RuntimeException("I/O error while sending request", e);
+			throw new HttpClientWrapperException("I/O error while sending request", e);
 		} catch (InterruptedException e) {
-			// TODO: handle this?
 			Thread.currentThread().interrupt();
-			throw new RuntimeException("Send request interrupted", e);
+			throw new HttpClientWrapperException("Send request interrupted", e);
 		}
 
 		try {
@@ -200,7 +198,7 @@ public class HttpClientWrapper {
 				}
 			}
 		} catch (IOException e) {
-			throw new RuntimeException("Error reading response", e);
+			throw new HttpClientWrapperException("Error reading response", e);
 		}
 	}
 }
