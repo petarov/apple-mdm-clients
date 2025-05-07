@@ -26,7 +26,6 @@ public class LegacyAppAndBookClientException extends RuntimeException {
 		 */
 		if (exception.getStatusLine().substring(0, Math.min(100, exception.getStatusLine().length()))
 				.contains("errorNumber")) {
-			/// Example: {"errorNumber":9602,"errorMessage":"Invalid argument","status":-1}
 			try {
 				var parsedError = JsonUtil.createObjectMapper()
 						.readValue(exception.getStatusLine(), VppErrorCode.class);
