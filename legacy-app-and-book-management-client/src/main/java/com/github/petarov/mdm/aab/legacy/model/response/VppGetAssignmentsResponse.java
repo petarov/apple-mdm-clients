@@ -34,9 +34,6 @@ public class VppGetAssignmentsResponse implements VppHasResponse {
 	@JsonSetter(nulls = Nulls.AS_EMPTY)
 	List<VppAssignment> assignments = new ArrayList<>();
 
-	public VppGetAssignmentsResponse() {
-	}
-
 	/**
 	 * @return {@link VppResponse}
 	 */

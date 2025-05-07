@@ -35,9 +35,6 @@ public class VppGetUsersResponse implements VppHasResponse {
 	@JsonSetter(nulls = Nulls.AS_EMPTY)
 	private List<VppUser> users = List.of();
 
-	public VppGetUsersResponse() {
-	}
-
 	/**
 	 * @return {@link VppResponse}
 	 */

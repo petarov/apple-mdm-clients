@@ -20,12 +20,6 @@ public class VppGetUserResponse implements VppHasResponse {
 	private VppUser user;
 
 	/**
-	 * Creates an empty VppGetUserResponse.
-	 */
-	public VppGetUserResponse() {
-	}
-
-	/**
 	 * @return {@link VppResponse}
 	 */
 	@Nonnull

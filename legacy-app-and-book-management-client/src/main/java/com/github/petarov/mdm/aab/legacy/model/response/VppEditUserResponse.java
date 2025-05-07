@@ -19,9 +19,6 @@ public class VppEditUserResponse implements VppHasResponse {
 
 	private VppUser user;
 
-	public VppEditUserResponse() {
-	}
-
 	/**
 	 * @return {@link VppResponse}
 	 */

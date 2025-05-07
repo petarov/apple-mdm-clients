@@ -27,9 +27,6 @@ public class VppGetAssetResponse implements VppHasResponse {
 	@JsonSetter(nulls = Nulls.AS_EMPTY)
 	private List<VppAsset> assets = new ArrayList<>();
 
-	public VppGetAssetResponse() {
-	}
-
 	/**
 	 * @return {@link VppResponse}
 	 */

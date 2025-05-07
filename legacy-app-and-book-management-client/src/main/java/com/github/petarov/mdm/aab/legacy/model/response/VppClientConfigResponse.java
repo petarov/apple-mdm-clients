@@ -42,9 +42,6 @@ public class VppClientConfigResponse implements VppHasResponse {
 	@JsonSetter(nulls = Nulls.AS_EMPTY)
 	private String organizationIdHash;
 
-	public VppClientConfigResponse() {
-	}
-
 	/**
 	 * @return {@link VppResponse}
 	 */

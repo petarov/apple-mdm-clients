@@ -43,9 +43,6 @@ public class VppManageLicensesByAdamIdResponse implements VppHasResponse {
 	@JsonSetter(nulls = Nulls.AS_EMPTY)
 	private String productTypeName;
 
-	public VppManageLicensesByAdamIdResponse() {
-	}
-
 	/**
 	 * @return {@link VppResponse}
 	 */

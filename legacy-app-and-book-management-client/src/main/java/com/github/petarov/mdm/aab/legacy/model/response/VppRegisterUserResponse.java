@@ -19,9 +19,6 @@ public class VppRegisterUserResponse implements VppHasResponse {
 
 	private VppUser user;
 
-	public VppRegisterUserResponse() {
-	}
-
 	/**
 	 * @return {@link VppResponse}
 	 */

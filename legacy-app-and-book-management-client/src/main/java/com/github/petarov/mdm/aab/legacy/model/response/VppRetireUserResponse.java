@@ -22,9 +22,6 @@ public class VppRetireUserResponse implements VppHasResponse {
 
 	private VppUser user;
 
-	public VppRetireUserResponse() {
-	}
-
 	/**
 	 * @return {@link VppResponse}
 	 */
