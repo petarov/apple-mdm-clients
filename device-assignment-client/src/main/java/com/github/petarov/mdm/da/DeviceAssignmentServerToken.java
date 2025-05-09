@@ -3,6 +3,7 @@ package com.github.petarov.mdm.da;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.github.petarov.mdm.shared.http.HttpClientWrapperException;
 import com.github.petarov.mdm.shared.util.JsonUtil;
 import jakarta.annotation.Nonnull;
 import org.bouncycastle.cms.CMSException;
@@ -34,7 +35,8 @@ public record DeviceAssignmentServerToken(String consumerKey, String consumerSec
 		try {
 			var recipients = new SMIMEEnveloped(SMIMEUtil.toMimeBodyPart(input)).getRecipientInfos().getRecipients();
 			if (recipients.isEmpty()) {
-				throw new RuntimeException("Error reading server token from S/MIME content: public key not found");
+				throw new HttpClientWrapperException(
+						"Error reading server token from S/MIME content: public key not found");
 			}
 
 			var mimePart = SMIMEUtil.toMimeBodyPart(recipients.iterator().next().getContent(
@@ -52,9 +54,9 @@ public record DeviceAssignmentServerToken(String consumerKey, String consumerSec
 
 			return JsonUtil.createObjectMapper().readValue(json, DeviceAssignmentServerToken.class);
 		} catch (JsonProcessingException e) {
-			throw new RuntimeException("Error parsing json from S/MIME text content", e);
+			throw new HttpClientWrapperException("Error parsing json from S/MIME text content", e);
 		} catch (SMIMEException | CMSException | MessagingException | IOException e) {
-			throw new RuntimeException("Error reading server token from S/MIME content", e);
+			throw new HttpClientWrapperException("Error reading server token from S/MIME content", e);
 		}
 	}
 

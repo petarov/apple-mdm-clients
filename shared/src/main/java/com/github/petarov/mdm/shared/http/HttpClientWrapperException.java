@@ -34,10 +34,11 @@ public class HttpClientWrapperException extends RuntimeException {
 	}
 
 	public HttpClientWrapperException(String message, @Nullable Throwable cause) {
-		super(message, cause);
-		this.statusCode = 0;
-		this.statusLine = "";
-		this.headers = Map.of();
+		this(message, cause, 0, "", Map.of());
+	}
+
+	public HttpClientWrapperException(String message) {
+		this(message, null);
 	}
 
 	public int getStatusCode() {

@@ -89,7 +89,7 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 		try {
 			return HttpRequest.BodyPublishers.ofByteArray(objectMapper.writeValueAsBytes(obj));
 		} catch (JsonProcessingException e) {
-			throw new RuntimeException("Error serializing to json: " + obj.getClass().getName(), e);
+			throw new HttpClientWrapperException("Error serializing to json: " + obj.getClass().getName(), e);
 		}
 	}
 

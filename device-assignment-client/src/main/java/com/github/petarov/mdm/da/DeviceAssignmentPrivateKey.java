@@ -2,6 +2,7 @@ package com.github.petarov.mdm.da;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.github.petarov.mdm.shared.http.HttpClientWrapperException;
 import jakarta.annotation.Nonnull;
 
 import java.io.ByteArrayInputStream;
@@ -29,9 +30,9 @@ public record DeviceAssignmentPrivateKey(@Nonnull PrivateKey privateKey) {
 			var spec = new PKCS8EncodedKeySpec(input.readAllBytes());
 			return new DeviceAssignmentPrivateKey(KeyFactory.getInstance("RSA").generatePrivate(spec));
 		} catch (IOException e) {
-			throw new RuntimeException("Error read PKCS8 binary input stream", e);
+			throw new HttpClientWrapperException("Error read PKCS8 binary input stream", e);
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-			throw new RuntimeException("Error reading private key", e);
+			throw new HttpClientWrapperException("Error reading private key", e);
 		}
 	}
 
@@ -57,7 +58,7 @@ public record DeviceAssignmentPrivateKey(@Nonnull PrivateKey privateKey) {
 				return createFromDER(encodedInput);
 			}
 		} catch (IOException e) {
-			throw new RuntimeException("Error read PEM input stream", e);
+			throw new HttpClientWrapperException("Error read PEM input stream", e);
 		}
 	}
 
