@@ -71,16 +71,6 @@ public class HttpClientWrapper {
 
 		if (options.proxyOptions() != null) {
 			builder.proxy(new ProxyOptionsProxySelectorAdapter(options.proxyOptions()));
-			//			if (!options.proxyOptions().getUsername().isBlank()) {
-			//				builder.authenticator(new Authenticator() {
-			//
-			//					@Override
-			//					protected PasswordAuthentication getPasswordAuthentication() {
-			//						return new PasswordAuthentication(options.proxyOptions().getUsername(),
-			//								options.proxyOptions().getPassword().toCharArray());
-			//					}
-			//				});
-			//			}
 		}
 
 		return builder;
