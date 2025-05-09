@@ -41,6 +41,6 @@ final class ProxyOptionsProxySelectorAdapter extends ProxySelector {
 			throw new IllegalArgumentException("Arguments can't be null");
 		}
 
-		throw new RuntimeException("Error connecting to " + uri + " using proxy server", ex);
+		throw new HttpClientWrapperException("Error connecting to " + uri + " using proxy server", ex);
 	}
 }
