@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
  *                       <li>{@code DEVICE_NOT_SUPPORTED}: The device type is not supported.
  *                       <li>{@code DEVICE_ALREADY_LOCKED}: The device is already locked by someone.
  *                       <li>{@code FAILED}: Activation lock of the device failed for unexpected reason. If retry fails, the client should contact Apple support.
+ *                       </ul>
  * @param serialNumber   serial number of the device
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/activationlockstatusresponse">ActivationLockStatusResponse</a>
  */

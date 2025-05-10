@@ -39,6 +39,7 @@ import java.util.List;
  * @param status                           the status code for the response. Possible values are:<ul>
  *                                         <li>{@code 0}: Success
  *                                         <li>{@code –1}: Failure
+ *                                         </ul>
  * @param vppWebsiteUrl                    the URL for the VPP website
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/vppserviceconfigresponse">VppServiceConfigResponse</a>
  */

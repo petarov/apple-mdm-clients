@@ -20,7 +20,7 @@ import java.util.Set;
  *                                and later.
  * @param isAwaitDeviceConfigured if {@code true}, the device will not continue in Setup Assistant until the MDM server
  *                                sends a command that states the device is configured. This key is valid in
- *                                <i>X-Server-Protocol-Version 2</i> and later.</p>
+ *                                <i>X-Server-Protocol-Version 2</i> and later.
  * @param configurationWebUrl     the URL that the clients load into a web view during setup. This site provides the
  *                                appropriate UI to authenticate the user, and when satisfied, initiates the download of
  *                                the MDM enrollment profile. <p>To provide the MDM enrollment profile, the web view

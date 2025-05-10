@@ -101,6 +101,7 @@ public class VppClientConfigResponse implements VppHasResponse {
 	 * Possible values are:<ul>
 	 * <li>{@code volumestore}: For apps in the educational store
 	 * <li>{@code enterprisestore}: For apps in the enterprise store
+	 * </ul>
 	 * <p>
 	 * See also <a href="https://developer.apple.com/documentation/devicemanagement/app_and_book_management/service_configuration/getting_app_and_book_information">Getting app and book information</a> for more information.
 	 */

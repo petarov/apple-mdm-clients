@@ -20,10 +20,12 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
  * @param pricingParam       the quality of a product in the iTunes Store. Possible values are:<ul>
  *                           <li>{@code STDQ}: Standard quality
  *                           <li>{@code PLUS}: High quality
+ *                           </ul>
  * @param productTypeId      the type of product. Possible values are:<ul>
  *                           <li>{@code 7} = macOS software
  *                           <li>{@code 8} = iOS or macOS app from the App Store
  *                           <li>{@code 10} = Book
+ *                           </ul>
  * @param productTypeName    the name of the product type.
  * @param retiredCount       the total number of licenses that have been retired for the specified {@link #adamIdStr}
  *                           and {@link #pricingParam}

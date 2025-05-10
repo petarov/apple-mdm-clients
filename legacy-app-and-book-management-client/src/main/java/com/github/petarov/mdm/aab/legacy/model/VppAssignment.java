@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
  * @param pricingParam    the quality of a product in the iTunes Store. Possible values are:<ul>
  *                        <li>{@code STDQ}: Standard quality
  *                        <li>{@code PLUS}: High quality
+ *                        </ul>
  * @param serialNumber    the device's serial number that the license is currently assigned to
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/vppassignment">VppAssignment</a>
  */

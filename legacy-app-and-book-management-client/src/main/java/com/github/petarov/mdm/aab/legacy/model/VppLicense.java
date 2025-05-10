@@ -21,16 +21,19 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
  * @param pricingParam    the quality of a product in the iTunes Store. Possible values are:<ul>
  *                        <li>{@code STDQ}: Standard quality
  *                        <li>{@code PLUS}: High quality
+ *                        </ul>
  * @param productTypeId   the type of product. Possible values are:<ul>
  *                        <li>{@code 7} = macOS software
  *                        <li>{@code 8} = iOS or macOS app from the App Store
  *                        <li>{@code 10} = Book
+ *                        </ul>
  * @param productTypeName the name of the product type
  * @param serialNumber    the device serial number to which this license is assigned
  * @param status          the current state of the license. Possible values are:<ul>
  *                        <li>{@code Associated}
  *                        <li>{@code Available}
  *                        <li>{@code Refunded}
+ *                        </ul>
  * @param userId          the unique identifier assigned by the VPP for the user to whom this license is assigned
  * @param userIdStr       the string representation of the unique identifier assigned by the VPP for the user to whom
  *                        this license is assigned

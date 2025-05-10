@@ -27,8 +27,10 @@ import java.util.List;
  *                        <li>{@code Retired}: Indicates the user has been retired via Retire a User.
  *                        <li>{@code Deleted}: Indicates that a VPP user is retired and its associated iTunes user has
  *                        since been invited and associated with a new VPP user that shares the same clientUserId.
- *                        Because there are two VPP users with distinct [userId] values but the same [clientUserId] value, the `Deleted` status is used to ensure database
+ *                        Because there are two VPP users with distinct [userId] values but the same [clientUserId]
+ *                        value, the `Deleted` status is used to ensure database
  *                        consistency.
+ *                        </ul>
  *                        <p>
  *                        A user with a Deleted status will never change status; its sole purpose is to ensure that your software can
  *                        recognize that the userId is no longer associated with the [clientUserId] record, and update any internal

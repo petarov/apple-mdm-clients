@@ -23,6 +23,7 @@ import jakarta.annotation.Nullable;
  * @param status           The status code for the response. Possible values are:<ul>
  *                         <li>{@code 0}: Success
  *                         <li>{@code –1}: Failure
+ *                         </ul>
  * @param uId              the unique library identifier. When querying records using multiple tokens that may share
  *                         libraries, use the {@code uId} field to filter duplicates. In this way, you can avoid
  *                         double-counting records when duplicate tokens are uploaded by different content managers.

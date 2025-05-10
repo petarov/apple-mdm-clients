@@ -46,6 +46,7 @@ public interface LegacyAppAndBookClient {
 	 *                             <ul>
 	 *                             <li>{@code STDQ}: Standard quality
 	 *                             <li>{@code PLUS}: High quality
+	 *                             </ul>
 	 * @return {@link VppGetAssetResponse} object
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/get-assets-44p83">Get Assets</a>
 	 */
@@ -187,6 +188,7 @@ public interface LegacyAppAndBookClient {
 	 * <li>If the user's status is <i>Registered</i> or <i>Associated</i>, that active user account is returned.
 	 * <li>If the user's status is <i>Retired</i> and the user has never been assigned to an iTunes account, the account's status is changed to <i>Registered</i> and the existing user is returned.
 	 * <li>If the user's status is <i>Retired</i> and the user has previously been assigned to an iTunes account, a new account is created.
+	 * </ul>
 	 *
 	 * @param clientUserId   required identifier supplied by the client when registering a user: the identifier must be unique within the organization
 	 * @param email          the user’s email address

@@ -116,6 +116,7 @@ public class VppManageLicensesByAdamIdResponse implements VppHasResponse {
 	 * <ul>
 	 * <li>{@code STDQ}: Standard quality
 	 * <li>{@code PLUS}: High quality
+	 * </ul>
 	 */
 	@Nonnull
 	public String getPricingParam() {
@@ -132,6 +133,7 @@ public class VppManageLicensesByAdamIdResponse implements VppHasResponse {
 	 * <li>{@code 7} = macOS software
 	 * <li>{@code 8} = iOS or macOS app from the App Store
 	 * <li>{@code 10} = Book
+	 * </ul>
 	 */
 	public int getProductTypeId() {
 		return productTypeId;
