@@ -16,6 +16,12 @@ public class LegacyAppAndBookClientException extends RuntimeException {
 		this.errorMessage = errorMessage;
 	}
 
+	public LegacyAppAndBookClientException(String message, Throwable cause) {
+		super(message, cause);
+		this.code = 0;
+		this.errorMessage = "";
+	}
+
 	public LegacyAppAndBookClientException(@Nonnull HttpClientWrapperException exception) {
 		super(exception.getMessage(), exception);
 		/*
@@ -32,7 +38,8 @@ public class LegacyAppAndBookClientException extends RuntimeException {
 				this.code = parsedError.errorNumber();
 				this.errorMessage = parsedError.errorMessage();
 			} catch (JsonProcessingException e) {
-				throw new RuntimeException("Error parsing JSON error message: " + exception.getStatusLine(), e);
+				throw new LegacyAppAndBookClientException(
+						"Error parsing JSON error message: " + exception.getStatusLine(), e);
 			}
 		} else {
 			this.code = exception.getStatusCode();
@@ -51,6 +58,8 @@ public class LegacyAppAndBookClientException extends RuntimeException {
 
 	@Override
 	public String toString() {
-		return super.toString() + ": (" + getCode() + ") " + getErrorMessage();
+		return getErrorMessage().isBlank() && getCode() == 0 ?
+				super.toString() :
+				super.toString() + ": (" + getCode() + ") " + getErrorMessage();
 	}
 }

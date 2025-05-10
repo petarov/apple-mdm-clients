@@ -26,7 +26,7 @@ public record LegacyAppAndBookToken(String sToken, @Nonnull AppAndBookTokenDetai
 			return new LegacyAppAndBookToken(sToken, JsonUtil.createObjectMapper()
 					.readValue(Base64.getDecoder().decode(sToken), AppAndBookTokenDetails.class));
 		} catch (IOException e) {
-			throw new RuntimeException("Error read sToken input stream", e);
+			throw new LegacyAppAndBookClientException("Error read sToken input stream", e);
 		}
 	}
 

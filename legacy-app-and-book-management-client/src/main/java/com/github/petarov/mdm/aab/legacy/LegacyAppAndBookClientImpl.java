@@ -106,7 +106,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 		try {
 			return HttpRequest.BodyPublishers.ofByteArray(objectMapper.writeValueAsBytes(obj));
 		} catch (JsonProcessingException e) {
-			throw new RuntimeException("Error serializing to json: " + obj.getClass().getName(), e);
+			throw new LegacyAppAndBookClientException("Error serializing to json: " + obj.getClass().getName(), e);
 		}
 	}
 
