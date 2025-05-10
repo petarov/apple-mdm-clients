@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.annotation.Nonnull;
 
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -212,7 +211,7 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> a
 		/**
 		 * @see #skipSetupItems()
 		 */
-		public ProfileBuilder setSkipSetupItems(@Nonnull EnumSet<ProfileSkipItem> skipSetupItems) {
+		public ProfileBuilder setSkipSetupItems(@Nonnull Set<ProfileSkipItem> skipSetupItems) {
 			this.skipSetupItems.clear();
 			this.skipSetupItems.addAll(skipSetupItems);
 			return this;

@@ -159,7 +159,7 @@ public class HttpClientWrapper {
 	}
 
 	@Nonnull
-	public <RESPONSE> RESPONSE send(@Nonnull HttpRequest request, @Nonnull Class<RESPONSE> clazz) {
+	public <T> T send(@Nonnull HttpRequest request, @Nonnull Class<T> clazz) {
 		HttpResponse<InputStream> response;
 		try {
 			debugReqHeaders(request);

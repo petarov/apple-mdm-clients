@@ -6,7 +6,7 @@ import jakarta.annotation.Nullable;
 import java.security.SecureRandom;
 import java.time.Duration;
 
-public abstract class MdmClientBuilder<CFG extends MdmClientBuilder<CFG, CLIENT>, CLIENT> {
+public abstract class MdmClientBuilder<T extends MdmClientBuilder<T, U>, U> {
 
 	protected static final Duration DEFAULT_CONNECT_TIMEOUT = Duration.ofSeconds(10);
 	protected static final Duration DEFAULT_READ_TIMEOUT    = Duration.ofSeconds(20);
@@ -25,65 +25,65 @@ public abstract class MdmClientBuilder<CFG extends MdmClientBuilder<CFG, CLIENT>
 	                                @Nullable MdmClientProxyOptions proxyOptions, SecureRandom random) {}
 
 	@SuppressWarnings("unchecked")
-	protected CFG setServiceUrl(@Nonnull String serviceUrl) {
+	protected T setServiceUrl(@Nonnull String serviceUrl) {
 		this.serviceUrl = serviceUrl;
-		return (CFG) this;
+		return (T) this;
 	}
 
 	/**
 	 * Sets the user-agent to use when sending requests to Apple's servers. Setting a user-agent is recommended.
 	 */
 	@SuppressWarnings("unchecked")
-	public CFG setUserAgent(@Nonnull String userAgent) {
+	public T setUserAgent(@Nonnull String userAgent) {
 		this.userAgent = userAgent;
-		return (CFG) this;
+		return (T) this;
 	}
 
 	/**
 	 * @param skipSslVerify if {@code true}, it skips SSL certificate verification. Default is {@code false}.
 	 */
 	@SuppressWarnings("unchecked")
-	public CFG setSkipSslVerify(boolean skipSslVerify) {
+	public T setSkipSslVerify(boolean skipSslVerify) {
 		this.skipSslVerify = skipSslVerify;
-		return (CFG) this;
+		return (T) this;
 	}
 
 	/**
 	 * @param connectTimeout TCP socket connect timeout. Not set by default
 	 */
 	@SuppressWarnings("unchecked")
-	public CFG setConnectTimeout(@Nonnull Duration connectTimeout) {
+	public T setConnectTimeout(@Nonnull Duration connectTimeout) {
 		this.connectTimeout = connectTimeout;
-		return (CFG) this;
+		return (T) this;
 	}
 
 	/**
 	 * @param readTimeout TCP socket read timeout. Not set by default
 	 */
 	@SuppressWarnings("unchecked")
-	public CFG setReadTimeout(@Nonnull Duration readTimeout) {
+	public T setReadTimeout(@Nonnull Duration readTimeout) {
 		this.readTimeout = readTimeout;
-		return (CFG) this;
+		return (T) this;
 	}
 
 	/**
 	 * @param proxyOptions optional proxy settings
 	 */
 	@SuppressWarnings("unchecked")
-	public CFG setProxyOptions(@Nonnull MdmClientProxyOptions proxyOptions) {
+	public T setProxyOptions(@Nonnull MdmClientProxyOptions proxyOptions) {
 		this.proxyOptions = proxyOptions;
-		return (CFG) this;
+		return (T) this;
 	}
 
 	/**
 	 * @param random set a custom random generator, uses {@link SecureRandom} by default
 	 */
 	@SuppressWarnings("unchecked")
-	public CFG setRandom(@Nonnull SecureRandom random) {
+	public T setRandom(@Nonnull SecureRandom random) {
 		this.secureRandom = random;
-		return (CFG) this;
+		return (T) this;
 	}
 
 	@Nonnull
-	public abstract CLIENT build();
+	public abstract U build();
 }
