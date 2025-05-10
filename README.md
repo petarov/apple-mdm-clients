@@ -10,11 +10,9 @@
 
 Java clients for Apple's Mobile Device Management (MDM) services.
 
-Requires `Java 21`. Among other technical goals, this library aims to use as few external dependencies as possible.
+`Java 21` required, with the goal to use as few external dependencies as possible.
 
 ## Device Assignment client
-
-> Status: Testing ...
 
 Manage your organization's Apple Business Manager (`ABM`) devices. Automated Device Enrollment `(ADE)`, previously known 
 as "The Device Enrollment Program" `(DEP)` allows for creating device enrollment profiles and assigning them to your 
@@ -23,7 +21,7 @@ organization's devices.
 To use the Java client, it is required that you already have created a valid device assignment token on ABM.
 The private key with which the token must be decrypted is also required.
 
-### Client Example 
+### Client example 
 
 ```java
 var builder = DeviceAssignmentClient.newBuilder();
@@ -61,9 +59,9 @@ See the complete list of service API calls on Apple's [Device Assignment](https:
 Manage apps and books for students and employees. This API is still perfectly functional, however, it has been 
 deprecated by Apple, and it's no longer maintained.
 
-> Status: Testing ...
+> Status: Unit tests are WIP ...
 
-### Client Example 
+### Client example 
 
 ```java
 var builder = LegacyAppAndBookClient.newBuilder();
