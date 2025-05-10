@@ -1,7 +1,3 @@
-plugins {
-    id 'java'
-}
-
 def gitExec = { List<String> args ->
     ByteArrayOutputStream out = new ByteArrayOutputStream()
     exec {
@@ -22,38 +18,31 @@ println "--> Last commit id:   ${gitCommitId}"
 println "--> Last commit time: ${gitCommitTime}"
 
 allprojects {
+    apply plugin: 'java-library'
+
     repositories {
         mavenCentral()
     }
 
-    // Version of all profiler components
     group 'com.github.petarov'
-    version '0.0.1'
-    ext.classifier = 'SNAPSHOT'
     ext.copyright = 'MIT License, Copyright (c) 2025 Petar Petrov'
 
     java {
-//        modularity.inferModulePath = true
         toolchain {
             languageVersion = JavaLanguageVersion.of(21)
         }
+        withSourcesJar()
+        withJavadocJar()
     }
 
     jar {
-        archiveClassifier.set(project.ext.classifier)
         manifest {
             attributes(
                     "Implementation-Title": project.name,
-                    "Implementation-Version": project.version,
+                    "Implementation-Version": project.provider { project.version },
                     "Implementation-Id": "${gitCommitId}",
                     "Implementation-LastModified": "${gitCommitTime}"
             )
         }
-    }
-
-    tasks.register('javadocJar', Jar) {
-        dependsOn javadoc
-        archiveClassifier.set('javadoc')
-        from tasks.javadoc.destinationDir
     }
 }
