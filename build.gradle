@@ -24,7 +24,7 @@ allprojects {
         mavenCentral()
     }
 
-    group 'com.github.petarov'
+    group 'net.vexelon.mdm'
     ext.copyright = 'MIT License, Copyright (c) 2025 Petar Petrov'
 
     java {

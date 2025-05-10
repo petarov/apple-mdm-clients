@@ -2,7 +2,7 @@ version '0.0.1-SNAPSHOT'
 description = "Legacy App and Book management client for Apple's MDM services"
 
 dependencies {
-    implementation project(':shared')
+    implementation project(':shared-apple-client')
 
     testImplementation libs.junit.jupiter
 
