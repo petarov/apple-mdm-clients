@@ -1,3 +1,7 @@
+plugins {
+    id "com.vanniktech.maven.publish" version "0.31.0" apply false
+}
+
 def gitExec = { List<String> args ->
     ByteArrayOutputStream out = new ByteArrayOutputStream()
     exec {
@@ -17,32 +21,76 @@ ext {
 println "--> Last commit id:   ${gitCommitId}"
 println "--> Last commit time: ${gitCommitTime}"
 
+
+import com.vanniktech.maven.publish.JavaLibrary
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.SonatypeHost
+
 allprojects {
-    apply plugin: 'java-library'
+    group 'net.vexelon.mdm'
+    ext.copyright = 'MIT License, Copyright (c) 2025 Petar Petrov'
 
     repositories {
         mavenCentral()
     }
+}
 
-    group 'net.vexelon.mdm'
-    ext.copyright = 'MIT License, Copyright (c) 2025 Petar Petrov'
+subprojects {
+    if (project.path == ':examples') {
+        return
+    }
+
+    apply plugin: 'java-library'
+    apply plugin: 'com.vanniktech.maven.publish'
 
     java {
         toolchain {
             languageVersion = JavaLanguageVersion.of(21)
         }
-        withSourcesJar()
-        withJavadocJar()
     }
 
     jar {
         manifest {
-            attributes(
-                    "Implementation-Title": project.name,
+            attributes("Implementation-Title": project.name,
                     "Implementation-Version": project.provider { project.version },
                     "Implementation-Id": "${gitCommitId}",
-                    "Implementation-LastModified": "${gitCommitTime}"
-            )
+                    "Implementation-LastModified": "${gitCommitTime}")
         }
+    }
+
+    mavenPublishing {
+        configure(new JavaLibrary(new JavadocJar.Javadoc(), true))
+        publishToMavenCentral(SonatypeHost.DEFAULT)
+        signAllPublications()
+
+        pom {
+            version = project.version.toString()
+            name = project.name
+            description = project.provider { project.description }
+            url = 'https://github.com/petarov/apple-mdm-clients'
+
+            licenses {
+                license {
+                    name = 'The MIT License'
+                    url = 'http://opensource.org/licenses/MIThttp://opensource.org/licenses/MIT'
+                }
+            }
+            developers {
+                developer {
+                    id = 'petarov'
+                    name = 'Petar Petrov'
+                    email = "${dev_email}"
+                }
+            }
+            scm {
+                connection = 'scm:git:https://github.com/petarov/apple-mdm-clients.git'
+                developerConnection = 'scm:git:git@github.com:petarov/apple-mdm-clients.git'
+                url = 'https://github.com/petarov/apple-mdm-clients'
+            }
+        }
+    }
+
+    signing {
+        useGpgCmd()
     }
 }
