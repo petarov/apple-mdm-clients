@@ -79,7 +79,7 @@ subprojects {
                 developer {
                     id = 'petarov'
                     name = 'Petar Petrov'
-                    email = "${dev_email}"
+                    email = project.findProperty('dev_email') ?: ''
                 }
             }
             scm {
