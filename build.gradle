@@ -60,7 +60,7 @@ subprojects {
 
     mavenPublishing {
         configure(new JavaLibrary(new JavadocJar.Javadoc(), true))
-        publishToMavenCentral(SonatypeHost.DEFAULT)
+        publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
         signAllPublications()
 
         pom {
