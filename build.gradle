@@ -1,16 +1,15 @@
 plugins {
-    id "com.vanniktech.maven.publish" version "0.31.0" apply false
+    alias(libs.plugins.versions) apply false
 }
 
 def gitExec = { List<String> args ->
-    ByteArrayOutputStream out = new ByteArrayOutputStream()
+    var out = new ByteArrayOutputStream()
     exec {
         commandLine = ['git'] + args
         standardOutput = out
         ignoreExitValue = true
     }
-    String s = out.toString().trim()
-    return s ? s : null
+    return out.toString().trim()
 }
 
 ext {

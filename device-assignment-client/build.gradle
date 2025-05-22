@@ -3,12 +3,12 @@ description = "Device Assignment client for Apple's MDM services"
 
 dependencies {
     implementation project(':shared-apple-client')
-    implementation 'org.bouncycastle:bcprov-jdk18on:1.80',
-            'org.bouncycastle:bcmail-jdk18on:1.80',
-            'com.sun.mail:javax.mail:1.6.2'
+    implementation libs.bcprov.jdk18on,
+            libs.bcmail.jdk18on,
+            libs.javax.mail
 
     testImplementation libs.junit.jupiter,
-            'org.wiremock:wiremock:3.13.0'
+            libs.wiremock
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

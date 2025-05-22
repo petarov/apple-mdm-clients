@@ -2,11 +2,27 @@
 # https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
 
 [versions]
-commons-math3 = "3.6.1"
-guava = "33.1.0-jre"
 junit-jupiter = "5.12.2"
+wiremock = "3.13.0"
+jakarta-annotation-api = "3.0.0"
+slf4j-api = "2.0.17"
+jackson = "2.19.0"
+bouncycastle = "1.80"
+javax_mail = "1.6.2"
 
 [libraries]
-commons-math3 = { module = "org.apache.commons:commons-math3", version.ref = "commons-math3" }
-guava = { module = "com.google.guava:guava", version.ref = "guava" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
+wiremock = { module = "org.wiremock:wiremock", version.ref = "wiremock" }
+jakarta-annotation-api = { module = "jakarta.annotation:jakarta.annotation-api", version.ref = "jakarta-annotation-api" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j-api" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
+bcprov-jdk18on = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
+bcmail-jdk18on = { module = "org.bouncycastle:bcmail-jdk18on", version.ref = "bouncycastle" }
+javax_mail = { module = "com.sun.mail:javax.mail", version.ref = "javax_mail" }
+
+[bundles]
+jackson = ["jackson-databind", "jackson-datatype-jsr310"]
+
+[plugins]
+versions = { id = "com.vanniktech.maven.publish", version = "0.31.0" }
