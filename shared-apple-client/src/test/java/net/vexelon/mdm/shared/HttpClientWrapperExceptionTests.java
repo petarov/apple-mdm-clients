@@ -1,4 +1,4 @@
-package com.github.petarov.mdm.shared;
+package net.vexelon.mdm.shared;
 
 import net.vexelon.mdm.shared.http.HttpClientWrapperException;
 import org.junit.jupiter.api.Test;

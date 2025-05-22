@@ -1,4 +1,4 @@
-package com.github.petarov.mdm.shared;
+package net.vexelon.mdm.shared;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -23,14 +23,14 @@ public class JsonUtilTests {
 	@Test
 	public void test_snake_case() {
 		try {
-			var data = new UserData("Max Mustermann", 42);
+			var userData = new UserData("Max Mustermann", 42);
 			var mapper = JsonUtil.createObjectMapper();
-			var json = mapper.writer().writeValueAsString(data);
+			var json = mapper.writer().writeValueAsString(userData);
 			assertEquals("{\"first_name\":\"Max Mustermann\",\"units_total_count\":42}", json);
 
 			var jsonData = "{\"first_name\":\"Bob Mustermann\",\"units_total_count\":56}";
-			data = mapper.reader().readValue(jsonData, UserData.class);
-			assertEquals(data, new UserData("Bob Mustermann", 56));
+			userData = mapper.reader().readValue(jsonData, UserData.class);
+			assertEquals(new UserData("Bob Mustermann", 56), userData);
 		} catch (Exception e) {
 			fail(e);
 		}
