@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nonnull;
 import net.vexelon.mdm.da.model.*;
+import net.vexelon.mdm.da.model.response.*;
 import net.vexelon.mdm.da.util.OAuth1a;
 import net.vexelon.mdm.shared.http.HttpClientWrapper;
 import net.vexelon.mdm.shared.http.HttpClientWrapperException;

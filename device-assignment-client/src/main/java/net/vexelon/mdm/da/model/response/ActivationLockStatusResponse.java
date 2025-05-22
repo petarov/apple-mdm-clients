@@ -1,4 +1,4 @@
-package net.vexelon.mdm.da.model;
+package net.vexelon.mdm.da.model.response;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;

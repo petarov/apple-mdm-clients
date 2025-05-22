@@ -1,10 +1,11 @@
-package net.vexelon.mdm.da.model;
+package net.vexelon.mdm.da.model.response;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.da.model.Device;
 
 import java.util.Map;
 
