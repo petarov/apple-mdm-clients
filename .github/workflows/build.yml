@@ -33,12 +33,12 @@ jobs:
       - name: Run build & test
         run: ./gradlew build --no-daemon
 
-      ## --- sub-project: shared
-      - name: Upload shared test reports
+      ## --- sub-project: shared-apple-client
+      - name: Upload shared-apple-client test reports
         uses: actions/upload-artifact@v4
         with:
           name: test-report-shared
-          path: shared/build/reports/tests/test/**/*
+          path: shared-apple-client/build/reports/tests/test/**/*
 
       ## --- sub-project: device-assignment-client
       - name: Upload device-assignment-client test reports
@@ -60,7 +60,7 @@ jobs:
         if: success() || failure()
         with:
           name: Uploading unit test results and generating badges
-          path: 'shared/build/test-results/test/*.xml,device-assignment-client/build/test-results/test/*.xml,legacy-app-and-book-management-client/build/test-results/test/*.xml'
+          path: 'shared-apple-client/build/test-results/test/*.xml,device-assignment-client/build/test-results/test/*.xml,legacy-app-and-book-management-client/build/test-results/test/*.xml'
           reporter: java-junit
           only-summary: 'true'
           badge-title: 'unit tests'
