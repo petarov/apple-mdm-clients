@@ -9,6 +9,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 public final class TestUtil {
 
+	static String getSToken() {
+		return "eyJ0b2tlbiI6IlZHaHBjeUJwY3lCaElITmhiWEJzWlNCMFpYaDBJSGRvYVdOb0lIZGhjeUIxYzJWa0lIUnZJR055WldGMFpTQjBhR1VnYzJsdGRXeGhkRzl5SUhSdmEyVnVDZz09IiwiZXhwRGF0ZSI6IjIwMjAtMTItMzFUMTM6NTc6MTkrMDI6MDAiLCJvcmdOYW1lIjoiYmxhYmxhIEdtYkgifQ==";
+	}
+
 	static LegacyAppAndBookClient createClient(WireMockRuntimeInfo wm) {
 		var sTokenInput = TestUtil.class.getResourceAsStream("/apple-mdm-client-tests-stoken-1.stoken");
 

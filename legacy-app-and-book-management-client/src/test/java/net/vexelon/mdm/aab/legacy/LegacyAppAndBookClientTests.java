@@ -83,8 +83,8 @@ public class LegacyAppAndBookClientTests {
 
 		// verify the request body has the correct sToken
 		verify(postRequestedFor(urlEqualTo("/mdm/VPPClientConfigSrv")).withRequestBody(equalToJson("""
-				{"clientContext": "{\\"id\\":\\"somesever8910\\"}", "notificationToken": "ET4aeBZ+JNfOmIPgMiEgMg=", "sToken": "eyJ0b2tlbiI6IlZHaHBjeUJwY3lCaElITmhiWEJzWlNCMFpYaDBJSGRvYVdOb0lIZGhjeUIxYzJWa0lIUnZJR055WldGMFpTQjBhR1VnYzJsdGRXeGhkRzl5SUhSdmEyVnVDZz09IiwiZXhwRGF0ZSI6IjIwMjAtMTItMzFUMTM6NTc6MTkrMDI6MDAiLCJvcmdOYW1lIjoiYmxhYmxhIEdtYkgifQ=="}
-				""".stripIndent(), true, false)));
+				{"clientContext": "{\\"id\\":\\"somesever8910\\"}", "notificationToken": "ET4aeBZ+JNfOmIPgMiEgMg=", "sToken": "%s"}
+				""".stripIndent().formatted(TestUtil.getSToken()), true, false)));
 
 		// verify the account data is right
 		assertEquals("DE", clientConfig.getCountryCode());

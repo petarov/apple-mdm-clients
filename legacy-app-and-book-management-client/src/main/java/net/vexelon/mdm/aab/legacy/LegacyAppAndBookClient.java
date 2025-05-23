@@ -79,6 +79,17 @@ public interface LegacyAppAndBookClient {
 			String requestId, int pageIndex);
 
 	/**
+	 * Fetches all user and device assignments for specified product {@code adamIdStr} and user or serial number.
+	 *
+	 * @see #fetchAssignments(String, FetchAssignmentsOptions, String, int)
+	 */
+	@Nonnull
+	default VppGetAssignmentsResponse fetchAssignments(String adamIdStr,
+			@Nonnull FetchAssignmentsOptions assignmentOptions) {
+		return fetchAssignments(adamIdStr, assignmentOptions, "", 0);
+	}
+
+	/**
 	 * Fetches all user and device assignments for specified product {@code adamIdStr}.
 	 *
 	 * @see #fetchAssignments(String, FetchAssignmentsOptions, String, int)
