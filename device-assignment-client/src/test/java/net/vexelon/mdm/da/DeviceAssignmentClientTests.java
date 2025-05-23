@@ -3,6 +3,7 @@ package net.vexelon.mdm.da;
 import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import net.vexelon.mdm.shared.http.HttpConsts;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,8 +76,8 @@ public class DeviceAssignmentClientTests {
 		verify(getRequestedFor(urlEqualTo("/account")).withHeader("x-adm-auth-session",
 						equalTo("1745786035268O1O789F19CF078867E47DC9D9BF4682D021O75CA72ECB87046A1B2239D9CFA4D6771O420397O11Op1OB123AA978976E390FF7693C640C92D3F8F6FE7F6O81E6CAAC7816AD3E12D531496695CF5A"))
 				.withHeader("x-server-protocol-version", equalTo("3"))
-				.withHeader("content-type", equalTo("application/json;charset=UTF8"))
-				.withHeader("user-agent", equalTo("apple-mdm-device-assignment-v1")));
+				.withHeader(HttpConsts.HEADER_CONTENT_TYPE, equalTo("application/json;charset=UTF8"))
+				.withHeader(HttpConsts.HEADER_USER_AGENT, equalTo("apple-mdm-device-assignment-v1")));
 
 		// verify the account data is right
 		assertEquals("MY-DEV-LOCAL (server.petarov.net)", accountDetail.serverName());
