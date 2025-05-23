@@ -21,7 +21,13 @@ organization's devices.
 To use the Java client, it is required that you already have created a valid device assignment token on ABM.
 The private key with which the token must be decrypted is also required.
 
-### Client example 
+### Getting the library
+
+**Releases**: _TBD_
+
+**Snapshots**: [latest SNAPSHOT](https://github.com/petarov/apple-mdm-clients/packages/2517819) built from the `main` branch. This requires an [authenticated](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry) GitHub user.
+
+### Example 
 
 ```java
 var builder = DeviceAssignmentClient.newBuilder();
@@ -59,9 +65,13 @@ See the complete list of service API calls on Apple's [Device Assignment](https:
 Manage apps and books for students and employees. This API is still perfectly functional, however, it has been 
 deprecated by Apple, and it's no longer maintained.
 
-> Status: Unit tests are WIP ...
+### Getting the library
 
-### Client example 
+**Releases**: _TBD_
+
+**Snapshots**: [latest SNAPSHOT](https://github.com/petarov/apple-mdm-clients/packages/2517820) built from the `main` branch. This requires an [authenticated](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry) GitHub user.
+
+### Example 
 
 ```java
 var builder = LegacyAppAndBookClient.newBuilder();
