@@ -27,6 +27,12 @@ jobs:
           java-version: '21'
           cache: gradle
 
+      - name: Set up Gradle 8.9
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+          cache: 'local'
+
       - name: Grant exec permission for gradlew
         run: chmod +x gradlew
 
@@ -35,6 +41,9 @@ jobs:
 
       - name: Publish to packages
         run: ./gradlew publishSnapshot --no-daemon
+        env:
+          GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       ## --- sub-project: shared-apple-client
       - name: Upload shared-apple-client test reports
