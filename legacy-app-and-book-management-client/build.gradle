@@ -4,7 +4,7 @@ description = "Legacy App and Book management client for Apple's MDM services"
 dependencies {
     implementation project(':shared-apple-client')
 
-    testImplementation libs.junit.jupiter
+    testImplementation libs.junit.jupiter, libs.wiremock
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
