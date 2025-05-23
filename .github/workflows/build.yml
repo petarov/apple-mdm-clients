@@ -31,7 +31,6 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
-          cache: 'local'
 
       - name: Grant exec permission for gradlew
         run: chmod +x gradlew
@@ -43,7 +42,7 @@ jobs:
         run: ./gradlew publishSnapshot --no-daemon
         env:
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOKEN: ${{ secrets.GHP_SEC }}
 
       ## --- sub-project: shared-apple-client
       - name: Upload shared-apple-client test reports
