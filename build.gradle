@@ -40,6 +40,7 @@ subprojects {
     }
 
     apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
     apply plugin: 'com.vanniktech.maven.publish'
 
     java {
@@ -91,5 +92,46 @@ subprojects {
 
     signing {
         useGpgCmd()
+    }
+
+    publishing {
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/petarov/apple-mdm-clients")
+                credentials {
+                    username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+                    password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+                }
+            }
+        }
+        publications {
+            gpr(MavenPublication) {
+                from(components.java)
+            }
+        }
+    }
+
+    tasks.withType(PublishToMavenRepository).configureEach {
+        if (repository.url.host.contains("oss.sonatype.org")) {
+            onlyIf { !project.version.toString().endsWith("-SNAPSHOT") }
+        }
+    }
+
+    tasks.register("publishSnapshot") {
+        group = "publishing"
+        description = "Publish SNAPSHOT versions to GitHub Packages only"
+        dependsOn 'publishMavenPublicationToGitHubPackagesRepository'
+        onlyIf { project.version.toString().endsWith("-SNAPSHOT") }
+    }
+
+    tasks.named("signMavenPublication").configure { Sign s ->
+        s.onlyIf {
+            def isSnapshot = project.version.toString().endsWith("-SNAPSHOT")
+            if (isSnapshot) {
+                logger.lifecycle("Skipping signing for SNAPSHOT build (${project.version})")
+            }
+            !isSnapshot
+        }
     }
 }
