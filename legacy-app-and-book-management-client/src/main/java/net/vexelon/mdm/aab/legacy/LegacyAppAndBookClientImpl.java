@@ -46,7 +46,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 		};
 	}
 
-	private Map<String, Object> params(@Nullable String k1, @Nullable Object v1, @Nullable String k2,
+	private Map<String, Object> paramsOf(@Nullable String k1, @Nullable Object v1, @Nullable String k2,
 			@Nullable Object v2, @Nullable String k3, @Nullable Object v3, @Nullable String k4, @Nullable Object v4) {
 		var result = new HashMap<String, Object>();
 		if (k4 != null) {
@@ -65,20 +65,20 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 		return result;
 	}
 
-	private Map<String, Object> params(String k1, Object v1, String k2, Object v2, String k3, Object v3) {
-		return params(k1, v1, k2, v2, k3, v3, null, null);
+	private Map<String, Object> paramsOf(String k1, Object v1, String k2, Object v2, String k3, Object v3) {
+		return paramsOf(k1, v1, k2, v2, k3, v3, null, null);
 	}
 
-	private Map<String, Object> params(String k1, Object v1, String k2, Object v2) {
-		return params(k1, v1, k2, v2, null, null);
+	private Map<String, Object> paramsOf(String k1, Object v1, String k2, Object v2) {
+		return paramsOf(k1, v1, k2, v2, null, null);
 	}
 
-	private Map<String, Object> params(String k, Object v) {
-		return params(k, v, null, null);
+	private Map<String, Object> paramsOf(String k, Object v) {
+		return paramsOf(k, v, null, null);
 	}
 
-	private Map<String, Object> params() {
-		return params(null, null);
+	private Map<String, Object> paramsOf() {
+		return paramsOf(null, null);
 	}
 
 	private <T> T execute(HttpRequest.Builder requestBuilder, Class<T> clazz) {
@@ -124,7 +124,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 			throw new IllegalArgumentException("clientContext size must be 256 bytes or less");
 		}
 
-		var params = params("clientContext", clientContext, "notificationToken", notificationToken);
+		var params = paramsOf("clientContext", clientContext, "notificationToken", notificationToken);
 
 		return execute(
 				client.createRequestBuilder(serviceConfigSupplier.get().clientConfigSrvUrl()).POST(ofBody(params)),
@@ -134,7 +134,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Nonnull
 	@Override
 	public VppGetAssetResponse fetchAssets(boolean includeLicenseCounts, String pricingParam) {
-		var params = params("includeLicenseCounts", includeLicenseCounts);
+		var params = paramsOf("includeLicenseCounts", includeLicenseCounts);
 
 		if (!pricingParam.isBlank()) {
 			params.put("pricingParam", pricingParam);
@@ -149,7 +149,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Override
 	public VppGetAssignmentsResponse fetchAssignments(String adamIdStr,
 			@Nonnull FetchAssignmentsOptions assignmentOptions, String requestId, int pageIndex) {
-		var params = params();
+		var params = paramsOf();
 
 		if (!adamIdStr.isBlank()) {
 			params.put("adamIdStr", adamIdStr);
@@ -179,7 +179,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	public VppManageLicensesByAdamIdResponse manageUserLicenses(String adamIdStr,
 			@Nonnull Set<String> associateClientUserIds, @Nonnull Set<String> disassociateClientUserIds,
 			boolean notifyDisassociation) {
-		var params = params("adamIdStr", adamIdStr, "associateClientUserIdStrs", associateClientUserIds,
+		var params = paramsOf("adamIdStr", adamIdStr, "associateClientUserIdStrs", associateClientUserIds,
 				"disassociateClientUserIdStrs", disassociateClientUserIds, "notifyDisassociation",
 				notifyDisassociation);
 
@@ -192,7 +192,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	public VppManageLicensesByAdamIdResponse manageDeviceLicenses(String adamIdStr,
 			@Nonnull Set<String> associateSerialNumbers, @Nonnull Set<String> disassociateSerialNumbers,
 			boolean notifyDisassociation) {
-		var params = params("adamIdStr", adamIdStr, "associateSerialNumbers", associateSerialNumbers,
+		var params = paramsOf("adamIdStr", adamIdStr, "associateSerialNumbers", associateSerialNumbers,
 				"disassociateSerialNumbers", disassociateSerialNumbers, "notifyDisassociation", notifyDisassociation);
 
 		return execute(client.createRequestBuilder(serviceConfigSupplier.get().manageVPPLicensesByAdamIdSrvUrl())
@@ -203,7 +203,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Override
 	public VppManageLicensesByAdamIdResponse disassociateLicenses(String adamIdStr, @Nonnull Set<String> licenseIds,
 			boolean notifyDisassociation) {
-		var params = params("adamIdStr", adamIdStr, "disassociateLicenseIdStrs", licenseIds, "notifyDisassociation",
+		var params = paramsOf("adamIdStr", adamIdStr, "disassociateLicenseIdStrs", licenseIds, "notifyDisassociation",
 				notifyDisassociation);
 
 		return execute(client.createRequestBuilder(serviceConfigSupplier.get().manageVPPLicensesByAdamIdSrvUrl())
@@ -213,7 +213,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Nonnull
 	@Override
 	public VppGetUserResponse fetchUser(@Nonnull UserIdParam userIdParam) {
-		var params = params();
+		var params = paramsOf();
 
 		if (userIdParam.userId() > 0) {
 			params.put("userId", userIdParam.userId());
@@ -232,7 +232,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Nonnull
 	@Override
 	public VppGetUsersResponse fetchUsers(String batchToken, @Nonnull FetchUsersOptions options) {
-		var params = params();
+		var params = paramsOf();
 
 		if (!batchToken.isBlank()) {
 			params.put("batchToken", batchToken);
@@ -255,10 +255,10 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Nonnull
 	@Override
 	public VppRegisterUserResponse registerUser(String clientUserId, String email, String managedAppleID) {
-		var params = params("clientUserIdStr", clientUserId, "email", email);
+		var params = paramsOf("clientUserIdStr", clientUserId, "email", email);
 
 		if (!managedAppleID.isBlank()) {
-			params("managedAppleIDStr", managedAppleID);
+			params.put("managedAppleIDStr", managedAppleID);
 		}
 
 		return execute(
@@ -269,7 +269,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Nonnull
 	@Override
 	public VppEditUserResponse editUser(@Nonnull UserIdParam userIdParam, String email, String managedAppleID) {
-		var params = params();
+		var params = paramsOf();
 
 		if (userIdParam.userId() > 0) {
 			params.put("userId", userIdParam.userId());
@@ -278,7 +278,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 		}
 
 		if (!managedAppleID.isBlank()) {
-			params("managedAppleIDStr", managedAppleID);
+			params.put("managedAppleIDStr", managedAppleID);
 		}
 
 		params.put("email", email);
@@ -290,7 +290,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Nonnull
 	@Override
 	public VppRetireUserResponse retireUser(@Nonnull UserIdParam userIdParam) {
-		var params = params();
+		var params = paramsOf();
 
 		if (userIdParam.userId() > 0) {
 			params.put("userId", userIdParam.userId());
