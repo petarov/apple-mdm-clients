@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import java.util.Set; // Added import
+import net.vexelon.mdm.aab.legacy.model.response.VppManageLicensesByAdamIdResponse; // Added import
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -271,4 +273,422 @@ public class LegacyAppAndBookClientLicensesTests {
 		assertEquals("STDQ", assignments.assignments().getFirst().pricingParam());
 		assertEquals("B9FPP3Q6GMK7", assignments.assignments().getFirst().serialNumber());
 	}
+
+    // New test methods to be added:
+
+    @Test
+    void test_manageUserLicenses_associateSuccess(WireMockRuntimeInfo wm) {
+        LegacyAppAndBookClient client = TestUtil.createClient(wm); 
+        String sToken = TestUtil.getSToken(); 
+
+        String adamId = "testAdamId123";
+        Set<String> usersToAssociate = Set.of("user1", "user2");
+        Set<String> usersToDisassociate = Set.of();
+        boolean notify = false;
+
+        String expectedRequestBody = String.format("""
+                {
+                    "adamIdStr": "%s",
+                    "associateClientUserIdStrs": ["user1", "user2"],
+                    "disassociateClientUserIdStrs": [],
+                    "notifyDisassociation": %b,
+                    "sToken": "%s"
+                }""", adamId, notify, sToken);
+
+        String mockResponseBody = String.format("""
+                {
+                    "status": 0,
+                    "uId": "uniqueResponseId_UserAssoc",
+                    "eventId": "someEventId",
+                    "clientContext": "{\\"id\\":\\"somesever8910\\"}",
+                    "expirationMillis": 1776630125812,
+                    "location": {"locationId": 12345, "locationName": "Test Location"},
+                    "associations": [
+                        {"clientUserIdStr": "user1", "licenseIdStr": "lic1", "adamIdStr": "%s"},
+                        {"clientUserIdStr": "user2", "licenseIdStr": "lic2", "adamIdStr": "%s"}
+                    ],
+                    "disassociations": []
+                }""", adamId, adamId);
+
+        stubFor(post(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv"))
+                .withRequestBody(equalToJson(expectedRequestBody, true, true))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeaders(headers) 
+                        .withBody(mockResponseBody)));
+
+        VppManageLicensesByAdamIdResponse response = client.manageUserLicenses(
+                adamId,
+                usersToAssociate,
+                usersToDisassociate,
+                notify
+        );
+
+        assertNotNull(response);
+        assertEquals(0, response.getResponse().status());
+        assertNotNull(response.getResponse().uId());
+        assertEquals("uniqueResponseId_UserAssoc", response.getResponse().uId());
+        assertEquals(2, response.associations().size());
+        assertEquals("user1", response.associations().getFirst().clientUserIdStr());
+        assertEquals("lic1", response.associations().getFirst().licenseIdStr());
+        assertTrue(response.disassociations().isEmpty());
+
+        verify(postRequestedFor(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv"))
+                .withRequestBody(equalToJson(expectedRequestBody, true, true)));
+    }
+
+    @Test
+    void test_manageUserLicenses_disassociateSuccess(WireMockRuntimeInfo wm) {
+        LegacyAppAndBookClient client = TestUtil.createClient(wm);
+        String sToken = TestUtil.getSToken();
+
+        String adamId = "testAdamId456";
+        Set<String> usersToAssociate = Set.of();
+        Set<String> usersToDisassociate = Set.of("user3", "user4");
+        boolean notify = true;
+
+        String expectedRequestBody = String.format("""
+                {
+                    "adamIdStr": "%s",
+                    "associateClientUserIdStrs": [],
+                    "disassociateClientUserIdStrs": ["user3", "user4"],
+                    "notifyDisassociation": %b,
+                    "sToken": "%s"
+                }""", adamId, notify, sToken);
+
+        String mockResponseBody = String.format("""
+                {
+                    "status": 0,
+                    "uId": "uniqueResponseId_UserDisassoc",
+                    "associations": [],
+                    "disassociations": [
+                        {"clientUserIdStr": "user3", "licenseIdStr": "lic3", "adamIdStr": "%s"},
+                        {"clientUserIdStr": "user4", "licenseIdStr": "lic4", "adamIdStr": "%s"}
+                    ]
+                }""", adamId, adamId);
+
+        stubFor(post(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv"))
+                .withRequestBody(equalToJson(expectedRequestBody, true, true))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeaders(headers)
+                        .withBody(mockResponseBody)));
+
+        VppManageLicensesByAdamIdResponse response = client.manageUserLicenses(
+                adamId,
+                usersToAssociate,
+                usersToDisassociate,
+                notify
+        );
+
+        assertNotNull(response);
+        assertEquals(0, response.getResponse().status());
+        assertNotNull(response.getResponse().uId());
+        assertTrue(response.associations().isEmpty());
+        assertEquals(2, response.disassociations().size());
+        assertEquals("user3", response.disassociations().getFirst().clientUserIdStr());
+    }
+
+    @Test
+    void test_manageUserLicenses_apiError(WireMockRuntimeInfo wm) {
+        LegacyAppAndBookClient client = TestUtil.createClient(wm);
+        String sToken = TestUtil.getSToken();
+
+        String adamId = "testAdamId789";
+        Set<String> usersToAssociate = Set.of("unknownUser");
+        Set<String> usersToDisassociate = Set.of();
+        boolean notify = false;
+
+        String expectedRequestBody = String.format("""
+                {
+                    "adamIdStr": "%s",
+                    "associateClientUserIdStrs": ["unknownUser"],
+                    "disassociateClientUserIdStrs": [],
+                    "notifyDisassociation": %b,
+                    "sToken": "%s"
+                }""", adamId, notify, sToken);
+
+        String mockResponseBody = """
+                {
+                    "status": 9609,
+                    "errorMessage": "Unable to find the registered user.",
+                    "errorNumber": 9609,
+                    "uId": "uniqueErrorResponseId_User"
+                }""";
+
+        stubFor(post(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv"))
+                .withRequestBody(equalToJson(expectedRequestBody, true, true))
+                .willReturn(aResponse()
+                        .withStatus(200) 
+                        .withHeaders(headers)
+                        .withBody(mockResponseBody)));
+
+        VppManageLicensesByAdamIdResponse response = client.manageUserLicenses(
+                adamId,
+                usersToAssociate,
+                usersToDisassociate,
+                notify
+        );
+
+        assertNotNull(response);
+        assertEquals(9609, response.getResponse().status());
+        assertEquals("Unable to find the registered user.", response.getResponse().errorMessage());
+        assertEquals(9609, response.getResponse().errorNumber());
+    }
+
+    // New test methods for manageDeviceLicenses:
+
+    @Test
+    void test_manageDeviceLicenses_associateSuccess(WireMockRuntimeInfo wm) {
+        LegacyAppAndBookClient client = TestUtil.createClient(wm);
+        String sToken = TestUtil.getSToken();
+
+        String adamId = "appAdamId789";
+        Set<String> devicesToAssociate = Set.of("SERIAL1A", "SERIAL2B");
+        Set<String> devicesToDisassociate = Set.of();
+        boolean notify = false;
+
+        String expectedRequestBody = String.format("""
+                {
+                    "adamIdStr": "%s",
+                    "associateSerialNumbers": ["SERIAL1A", "SERIAL2B"],
+                    "disassociateSerialNumbers": [],
+                    "notifyDisassociation": %b,
+                    "sToken": "%s"
+                }""", adamId, notify, sToken);
+
+        String mockResponseBody = String.format("""
+                {
+                    "status": 0,
+                    "uId": "uniqueResponseId_DeviceAssoc",
+                    "associations": [
+                        {"serialNumber": "SERIAL1A", "licenseIdStr": "licDev1", "adamIdStr": "%s"},
+                        {"serialNumber": "SERIAL2B", "licenseIdStr": "licDev2", "adamIdStr": "%s"}
+                    ],
+                    "disassociations": []
+                }""", adamId, adamId);
+
+        stubFor(post(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv"))
+                .withRequestBody(equalToJson(expectedRequestBody, true, true))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeaders(headers)
+                        .withBody(mockResponseBody)));
+
+        VppManageLicensesByAdamIdResponse response = client.manageDeviceLicenses(
+                adamId,
+                devicesToAssociate,
+                devicesToDisassociate,
+                notify
+        );
+
+        assertNotNull(response);
+        assertEquals(0, response.getResponse().status());
+        assertEquals(2, response.associations().size());
+        assertEquals("SERIAL1A", response.associations().getFirst().serialNumber());
+        assertTrue(response.disassociations().isEmpty());
+
+        verify(postRequestedFor(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv"))
+                .withRequestBody(equalToJson(expectedRequestBody, true, true)));
+    }
+
+    @Test
+    void test_manageDeviceLicenses_disassociateSuccess(WireMockRuntimeInfo wm) {
+        LegacyAppAndBookClient client = TestUtil.createClient(wm);
+        String sToken = TestUtil.getSToken();
+
+        String adamId = "appAdamIdABC";
+        Set<String> devicesToAssociate = Set.of();
+        Set<String> devicesToDisassociate = Set.of("SERIAL3C", "SERIAL4D");
+        boolean notify = true;
+
+        String expectedRequestBody = String.format("""
+                {
+                    "adamIdStr": "%s",
+                    "associateSerialNumbers": [],
+                    "disassociateSerialNumbers": ["SERIAL3C", "SERIAL4D"],
+                    "notifyDisassociation": %b,
+                    "sToken": "%s"
+                }""", adamId, notify, sToken);
+
+        String mockResponseBody = String.format("""
+                {
+                    "status": 0,
+                    "uId": "uniqueResponseId_DeviceDisassoc",
+                    "associations": [],
+                    "disassociations": [
+                        {"serialNumber": "SERIAL3C", "licenseIdStr": "licDev3", "adamIdStr": "%s"},
+                        {"serialNumber": "SERIAL4D", "licenseIdStr": "licDev4", "adamIdStr": "%s"}
+                    ]
+                }""", adamId, adamId);
+
+        stubFor(post(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv"))
+                .withRequestBody(equalToJson(expectedRequestBody, true, true))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeaders(headers)
+                        .withBody(mockResponseBody)));
+
+        VppManageLicensesByAdamIdResponse response = client.manageDeviceLicenses(
+                adamId,
+                devicesToAssociate,
+                devicesToDisassociate,
+                notify
+        );
+
+        assertNotNull(response);
+        assertEquals(0, response.getResponse().status());
+        assertTrue(response.associations().isEmpty());
+        assertEquals(2, response.disassociations().size());
+        assertEquals("SERIAL3C", response.disassociations().getFirst().serialNumber());
+    }
+
+    @Test
+    void test_manageDeviceLicenses_apiError(WireMockRuntimeInfo wm) {
+        LegacyAppAndBookClient client = TestUtil.createClient(wm);
+        String sToken = TestUtil.getSToken();
+
+        String adamId = "appAdamIdXYZ";
+        Set<String> devicesToAssociate = Set.of("INELIGIBLE_SERIAL");
+        Set<String> devicesToDisassociate = Set.of();
+        boolean notify = false;
+
+        String expectedRequestBody = String.format("""
+                {
+                    "adamIdStr": "%s",
+                    "associateSerialNumbers": ["INELIGIBLE_SERIAL"],
+                    "disassociateSerialNumbers": [],
+                    "notifyDisassociation": %b,
+                    "sToken": "%s"
+                }""", adamId, notify, sToken);
+
+        String mockResponseBody = """
+                {
+                    "status": 9628, 
+                    "errorMessage": "License not eligible for device assignment.",
+                    "errorNumber": 9628,
+                    "uId": "uniqueErrorResponseId_Device"
+                }""";
+
+        stubFor(post(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv"))
+                .withRequestBody(equalToJson(expectedRequestBody, true, true))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeaders(headers)
+                        .withBody(mockResponseBody)));
+
+        VppManageLicensesByAdamIdResponse response = client.manageDeviceLicenses(
+                adamId,
+                devicesToAssociate,
+                devicesToDisassociate,
+                notify
+        );
+
+        assertNotNull(response);
+        assertEquals(9628, response.getResponse().status());
+        assertEquals("License not eligible for device assignment.", response.getResponse().errorMessage());
+        assertEquals(9628, response.getResponse().errorNumber());
+    }
+
+    // New test methods for disassociateLicenses:
+
+    @Test
+    void test_disassociateLicenses_success(WireMockRuntimeInfo wm) {
+        LegacyAppAndBookClient client = TestUtil.createClient(wm);
+        String sToken = TestUtil.getSToken();
+
+        String adamId = "bookAdamId001";
+        Set<String> licenseIdsToDisassociate = Set.of("licId001", "licId002");
+        boolean notify = true;
+
+        String expectedRequestBody = String.format("""
+                {
+                    "adamIdStr": "%s",
+                    "disassociateLicenseIdStrs": ["licId001", "licId002"],
+                    "notifyDisassociation": %b,
+                    "sToken": "%s"
+                }""", adamId, notify, sToken);
+
+        String mockResponseBody = String.format("""
+                {
+                    "status": 0,
+                    "uId": "uniqueResponseId_LicIdDisassoc",
+                    "eventId": "anotherEventId",
+                    "clientContext": "{\\"id\\":\\"somesever8910\\"}",
+                    "expirationMillis": 1776630125812,
+                    "location": {"locationId": 12345, "locationName": "Test Location"},
+                    "associations": [], 
+                    "disassociations": [
+                        {"licenseIdStr": "licId001", "adamIdStr": "%s"},
+                        {"licenseIdStr": "licId002", "adamIdStr": "%s"}
+                    ]
+                }""", adamId, adamId);
+
+        stubFor(post(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv"))
+                .withRequestBody(equalToJson(expectedRequestBody, true, true))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeaders(headers)
+                        .withBody(mockResponseBody)));
+
+        VppManageLicensesByAdamIdResponse response = client.disassociateLicenses(
+                adamId,
+                licenseIdsToDisassociate,
+                notify
+        );
+
+        assertNotNull(response);
+        assertEquals(0, response.getResponse().status());
+        assertNotNull(response.getResponse().uId());
+        assertTrue(response.associations().isEmpty());
+        assertEquals(2, response.disassociations().size());
+        assertEquals("licId001", response.disassociations().getFirst().licenseIdStr());
+
+        verify(postRequestedFor(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv"))
+                .withRequestBody(equalToJson(expectedRequestBody, true, true)));
+    }
+
+    @Test
+    void test_disassociateLicenses_apiError(WireMockRuntimeInfo wm) {
+        LegacyAppAndBookClient client = TestUtil.createClient(wm);
+        String sToken = TestUtil.getSToken();
+
+        String adamId = "bookAdamId002";
+        Set<String> licenseIdsToDisassociate = Set.of("nonExistentLicId");
+        boolean notify = false;
+
+        String expectedRequestBody = String.format("""
+                {
+                    "adamIdStr": "%s",
+                    "disassociateLicenseIdStrs": ["nonExistentLicId"],
+                    "notifyDisassociation": %b,
+                    "sToken": "%s"
+                }""", adamId, notify, sToken);
+
+        String mockResponseBody = """
+                {
+                    "status": 9610, 
+                    "errorMessage": "License not found.",
+                    "errorNumber": 9610,
+                    "uId": "uniqueErrorResponseId_LicId"
+                }""";
+
+        stubFor(post(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv"))
+                .withRequestBody(equalToJson(expectedRequestBody, true, true))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeaders(headers)
+                        .withBody(mockResponseBody)));
+
+        VppManageLicensesByAdamIdResponse response = client.disassociateLicenses(
+                adamId,
+                licenseIdsToDisassociate,
+                notify
+        );
+
+        assertNotNull(response);
+        assertEquals(9610, response.getResponse().status());
+        assertEquals("License not found.", response.getResponse().errorMessage());
+        assertEquals(9610, response.getResponse().errorNumber());
+    }
 }

@@ -255,35 +255,45 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	@Nonnull
 	@Override
 	public VppRegisterUserResponse registerUser(String clientUserId, String email, String managedAppleID) {
-		var params = params("clientUserIdStr", clientUserId, "email", email);
+		var paramsMap = new HashMap<String, Object>();
+		paramsMap.put("clientUserIdStr", clientUserId);
+		paramsMap.put("email", email);
+		paramsMap.put("sToken", this.serverToken.sToken()); // Assuming serverToken is accessible as a field
 
-		if (!managedAppleID.isBlank()) {
-			params("managedAppleIDStr", managedAppleID);
+		if (managedAppleID != null && !managedAppleID.isBlank()) {
+			paramsMap.put("managedAppleIDStr", managedAppleID);
 		}
 
 		return execute(
-				client.createRequestBuilder(serviceConfigSupplier.get().registerUserSrvUrl()).POST(ofBody(params)),
+				client.createRequestBuilder(serviceConfigSupplier.get().registerUserSrvUrl()).POST(ofBody(paramsMap)),
 				VppRegisterUserResponse.class);
 	}
 
 	@Nonnull
 	@Override
 	public VppEditUserResponse editUser(@Nonnull UserIdParam userIdParam, String email, String managedAppleID) {
-		var params = params();
+		var paramsMap = new HashMap<String, Object>();
 
+		// Add parameters based on UserIdParam
 		if (userIdParam.userId() > 0) {
-			params.put("userId", userIdParam.userId());
-		} else if (!userIdParam.clientUserId().isBlank()) {
-			params.put("clientUserIdStr", userIdParam.clientUserId());
+			paramsMap.put("userId", userIdParam.userId());
+		} else if (userIdParam.clientUserId() != null && !userIdParam.clientUserId().isBlank()) {
+			paramsMap.put("clientUserIdStr", userIdParam.clientUserId());
 		}
 
-		if (!managedAppleID.isBlank()) {
-			params("managedAppleIDStr", managedAppleID);
+		// Add email (assuming it's mandatory as per current method signature)
+		// If email were optional, it would need a null/blank check similar to managedAppleID.
+		paramsMap.put("email", email);
+
+		// Conditionally add managedAppleIDStr
+		if (managedAppleID != null && !managedAppleID.isBlank()) {
+			paramsMap.put("managedAppleIDStr", managedAppleID);
 		}
 
-		params.put("email", email);
+		// Add sToken
+		paramsMap.put("sToken", this.serverToken.sToken());
 
-		return execute(client.createRequestBuilder(serviceConfigSupplier.get().editUserSrvUrl()).POST(ofBody(params)),
+		return execute(client.createRequestBuilder(serviceConfigSupplier.get().editUserSrvUrl()).POST(ofBody(paramsMap)),
 				VppEditUserResponse.class);
 	}
 
