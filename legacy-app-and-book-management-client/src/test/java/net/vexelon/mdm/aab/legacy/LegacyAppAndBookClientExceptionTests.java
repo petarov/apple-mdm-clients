@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class LegacyAppAndBookClientExceptionTests {
 
@@ -22,7 +21,7 @@ public class LegacyAppAndBookClientExceptionTests {
 	void test_parsed_vpp_error() throws Exception {
 		var ex = new LegacyAppAndBookClientException(9602, "Invalid argument");
 		assertEquals(9602, ex.getCode());
-		assertNull(ex.getMessage());
+		assertEquals("(9602) Invalid argument", ex.getMessage());
 		assertEquals("Invalid argument", ex.getErrorMessage());
 	}
 }

@@ -1,10 +1,12 @@
 package net.vexelon.mdm.aab.legacy;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.annotation.Nonnull;
 import net.vexelon.mdm.aab.legacy.model.VppErrorCode;
 import net.vexelon.mdm.shared.http.HttpClientWrapperException;
 import net.vexelon.mdm.shared.util.JsonUtil;
-import jakarta.annotation.Nonnull;
+
+import java.util.Objects;
 
 public class LegacyAppAndBookClientException extends RuntimeException {
 
@@ -57,9 +59,7 @@ public class LegacyAppAndBookClientException extends RuntimeException {
 	}
 
 	@Override
-	public String toString() {
-		return getErrorMessage().isBlank() && getCode() == 0 ?
-				super.toString() :
-				super.toString() + ": (" + getCode() + ") " + getErrorMessage();
+	public String getMessage() {
+		return Objects.requireNonNullElse(super.getMessage(), "(" + getCode() + ") " + getErrorMessage());
 	}
 }

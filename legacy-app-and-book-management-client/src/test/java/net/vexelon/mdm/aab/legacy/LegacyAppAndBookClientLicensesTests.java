@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import java.util.Set;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -225,6 +227,7 @@ public class LegacyAppAndBookClientLicensesTests {
 		assertEquals("STDQ", assignments.assignments().getLast().pricingParam());
 		assertEquals("BNPT0GHHM7252", assignments.assignments().getLast().serialNumber());
 
+		// ---
 
 		stubFor(post(urlEqualTo("/mdm/getAssignments")).willReturn(
 				aResponse().withStatus(200).withHeaders(headers).withBody("""
@@ -270,5 +273,331 @@ public class LegacyAppAndBookClientLicensesTests {
 		assertEquals("389801252", assignments.assignments().getFirst().adamIdStr());
 		assertEquals("STDQ", assignments.assignments().getFirst().pricingParam());
 		assertEquals("B9FPP3Q6GMK7", assignments.assignments().getFirst().serialNumber());
+	}
+
+	@Test
+	void test_manageUserLicenses_associate(WireMockRuntimeInfo wm) {
+		String adamId = "389801252";
+
+		String expectedRequestBody = String.format("""
+				{
+				    "adamIdStr": "%s",
+				    "associateClientUserIdStrs": ["RZMSGlDjVbEoiajPy/gND9xXaevk3nILRo6NrAS25Jg=", "K7hgLqg3iBmEvEVEduqbweqjmkMYYGG+D0zwBmrh610="],
+				    "disassociateClientUserIdStrs": [],
+				    "notifyDisassociation": %b,
+				    "sToken": "%s"
+				}""", adamId, false, TestUtil.getSToken());
+
+		String mockResponseBody = """
+				{
+				    "status": 0,
+				    "uId": "9397866",
+				    "eventId": "someEventId",
+				    "clientContext": "{\\"id\\":\\"somesever8910\\"}",
+				    "expirationMillis": 1776630125812,
+				    "location": {"locationId": 12345, "locationName": "Test Location"},
+				    "associations": [
+				        {"clientUserIdStr": "RZMSGlDjVbEoiajPy/gND9xXaevk3nILRo6NrAS25Jg=", "licenseIdStr": "992d9d47b0f0b0d1"},
+				        {"clientUserIdStr": "K7hgLqg3iBmEvEVEduqbweqjmkMYYGG+D0zwBmrh610=", "licenseIdStr": "78e6ca16523eb83f"}
+				    ],
+				    "disassociations": []
+				}""";
+
+		stubFor(post(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv")).withRequestBody(
+						equalToJson(expectedRequestBody, true, true))
+				.willReturn(aResponse().withStatus(200).withHeaders(headers).withBody(mockResponseBody)));
+
+		var response = TestUtil.createClient(wm).manageUserLicenses(adamId,
+				Set.of("RZMSGlDjVbEoiajPy/gND9xXaevk3nILRo6NrAS25Jg=", "K7hgLqg3iBmEvEVEduqbweqjmkMYYGG+D0zwBmrh610="),
+				Set.of(), false);
+
+		assertNotNull(response);
+		assertEquals(0, response.getResponse().status());
+		assertEquals("9397866", response.getResponse().uId());
+		assertEquals(2, response.getAssociations().size());
+		assertEquals("RZMSGlDjVbEoiajPy/gND9xXaevk3nILRo6NrAS25Jg=",
+				response.getAssociations().getFirst().clientUserIdStr());
+		assertEquals("992d9d47b0f0b0d1", response.getAssociations().getFirst().licenseIdStr());
+		assertTrue(response.getDisassociations().isEmpty());
+
+		verify(postRequestedFor(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv")).withRequestBody(
+				equalToJson(expectedRequestBody, true, true)));
+	}
+
+	@Test
+	void test_manageUserLicenses_disassociate(WireMockRuntimeInfo wm) {
+		String adamId = "389801252";
+
+		String expectedRequestBody = String.format("""
+				{
+				    "adamIdStr": "%s",
+				    "associateClientUserIdStrs": [],
+				    "disassociateClientUserIdStrs": ["JSdHlZBo3QR9qJfpfEM4hE9G2Z+RXBH5ANOwEpDq+YI=", "cVQbeIAB5InRWYFuVHiEeEE01k/C9IX3D80mLyS3q+g="],
+				    "notifyDisassociation": %b,
+				    "sToken": "%s"
+				}""", adamId, true, TestUtil.getSToken());
+
+		String mockResponseBody = """
+				{
+				    "status": 0,
+				    "uId": "9397866",
+				    "associations": [],
+				    "disassociations": [
+				        {"clientUserIdStr": "JSdHlZBo3QR9qJfpfEM4hE9G2Z+RXBH5ANOwEpDq+YI="},
+				        {"clientUserIdStr": "cVQbeIAB5InRWYFuVHiEeEE01k/C9IX3D80mLyS3q+g="}
+				    ]
+				}""";
+
+		stubFor(post(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv")).withRequestBody(
+						equalToJson(expectedRequestBody, true, true))
+				.willReturn(aResponse().withStatus(200).withHeaders(headers).withBody(mockResponseBody)));
+
+		var response = TestUtil.createClient(wm).manageUserLicenses(adamId, Set.of(),
+				Set.of("JSdHlZBo3QR9qJfpfEM4hE9G2Z+RXBH5ANOwEpDq+YI=", "cVQbeIAB5InRWYFuVHiEeEE01k/C9IX3D80mLyS3q+g="),
+				true);
+
+		assertNotNull(response);
+		assertEquals(0, response.getResponse().status());
+		assertEquals("9397866", response.getResponse().uId());
+		assertTrue(response.getAssociations().isEmpty());
+		assertEquals(2, response.getDisassociations().size());
+		assertEquals("JSdHlZBo3QR9qJfpfEM4hE9G2Z+RXBH5ANOwEpDq+YI=",
+				response.getDisassociations().getFirst().clientUserIdStr());
+
+		verify(postRequestedFor(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv")).withRequestBody(
+				equalToJson(expectedRequestBody, true, true)));
+	}
+
+	@Test
+	void test_manageUserLicenses_error(WireMockRuntimeInfo wm) {
+		String adamId = "389801252";
+
+		String expectedRequestBody = String.format("""
+				{
+				    "adamIdStr": "%s",
+				    "associateClientUserIdStrs": ["unknownUser"],
+				    "disassociateClientUserIdStrs": [],
+				    "notifyDisassociation": %b,
+				    "sToken": "%s"
+				}""", adamId, false, TestUtil.getSToken());
+
+		String mockResponseBody = """
+				{
+				    "status": -1,
+				    "errorMessage": "Unable to find the registered user.",
+				    "errorNumber": 9609
+				}""";
+
+		stubFor(post(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv")).withRequestBody(
+						equalToJson(expectedRequestBody, true, true))
+				.willReturn(aResponse().withStatus(200).withHeaders(headers).withBody(mockResponseBody)));
+
+		var t = assertThrows(LegacyAppAndBookClientException.class,
+				() -> TestUtil.createClient(wm).manageUserLicenses(adamId, Set.of("unknownUser"), Set.of(), false));
+
+		assertEquals(9609, t.getCode());
+		assertEquals("Unable to find the registered user.", t.getErrorMessage());
+		assertEquals("(9609) Unable to find the registered user.", t.getMessage());
+		assertEquals(
+				"net.vexelon.mdm.aab.legacy.LegacyAppAndBookClientException: (9609) Unable to find the registered user.",
+				t.toString());
+	}
+
+	@Test
+	void test_manageDeviceLicenses_associate(WireMockRuntimeInfo wm) {
+		String adamId = "389801252";
+
+		String expectedRequestBody = String.format("""
+				{
+				    "adamIdStr": "%s",
+				    "associateSerialNumbers": ["B9FPP3Q6GMK7", "BNPT0GHHM7252"],
+				    "disassociateSerialNumbers": [],
+				    "notifyDisassociation": %b,
+				    "sToken": "%s"
+				}""", adamId, false, TestUtil.getSToken());
+
+		String mockResponseBody = """
+				{
+				    "status": 0,
+				    "uId": "9397866",
+				    "associations": [
+				        {"serialNumber": "B9FPP3Q6GMK7", "licenseIdStr": "8d35653c121c831c"},
+				        {"serialNumber": "BNPT0GHHM7252", "licenseIdStr": "26e67830a6218950"}
+				    ],
+				    "disassociations": []
+				}""";
+
+		stubFor(post(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv")).withRequestBody(
+						equalToJson(expectedRequestBody, true, true))
+				.willReturn(aResponse().withStatus(200).withHeaders(headers).withBody(mockResponseBody)));
+
+		var response = TestUtil.createClient(wm)
+				.manageDeviceLicenses(adamId, Set.of("B9FPP3Q6GMK7", "BNPT0GHHM7252"), Set.of(), false);
+
+		assertNotNull(response);
+		assertEquals(0, response.getResponse().status());
+		assertEquals(2, response.getAssociations().size());
+		assertEquals("B9FPP3Q6GMK7", response.getAssociations().getFirst().serialNumber());
+		assertEquals("8d35653c121c831c", response.getAssociations().getFirst().licenseIdStr());
+		assertTrue(response.getDisassociations().isEmpty());
+
+		verify(postRequestedFor(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv")).withRequestBody(
+				equalToJson(expectedRequestBody, true, true)));
+	}
+
+	@Test
+	void test_manageDeviceLicenses_disassociate(WireMockRuntimeInfo wm) {
+		String adamId = "389801252";
+
+		String expectedRequestBody = String.format("""
+				{
+				    "adamIdStr": "%s",
+				    "associateSerialNumbers": [],
+				    "disassociateSerialNumbers": ["B9FPP3Q6GMK7", "BNPT0GHHM7252"],
+				    "notifyDisassociation": %b,
+				    "sToken": "%s"
+				}""", adamId, true, TestUtil.getSToken());
+
+		String mockResponseBody = """
+				{
+				    "status": 0,
+				    "uId": "9397866",
+				    "associations": [],
+				    "disassociations": [
+				        {"serialNumber": "B9FPP3Q6GMK7"},
+				        {"serialNumber": "BNPT0GHHM7252"}
+				    ]
+				}""";
+
+		stubFor(post(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv")).withRequestBody(
+						equalToJson(expectedRequestBody, true, true))
+				.willReturn(aResponse().withStatus(200).withHeaders(headers).withBody(mockResponseBody)));
+
+		var response = TestUtil.createClient(wm)
+				.manageDeviceLicenses(adamId, Set.of(), Set.of("B9FPP3Q6GMK7", "BNPT0GHHM7252"), true);
+
+		assertNotNull(response);
+		assertEquals(0, response.getResponse().status());
+		assertTrue(response.getAssociations().isEmpty());
+		assertEquals(2, response.getDisassociations().size());
+		assertEquals("B9FPP3Q6GMK7", response.getDisassociations().getFirst().serialNumber());
+		assertEquals("BNPT0GHHM7252", response.getDisassociations().getLast().serialNumber());
+
+		verify(postRequestedFor(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv")).withRequestBody(
+				equalToJson(expectedRequestBody, true, true)));
+	}
+
+	@Test
+	void test_manageDeviceLicenses_error(WireMockRuntimeInfo wm) {
+		String adamId = "389801252";
+
+		String expectedRequestBody = String.format("""
+				{
+				    "adamIdStr": "%s",
+				    "associateSerialNumbers": ["INELIGIBLE_SERIAL"],
+				    "disassociateSerialNumbers": [],
+				    "notifyDisassociation": %b,
+				    "sToken": "%s"
+				}""", adamId, false, TestUtil.getSToken());
+
+		String mockResponseBody = """
+				{
+				    "status": -1,
+				    "errorMessage": "License not eligible for device assignment.",
+				    "errorNumber": 9628
+				}""";
+
+		stubFor(post(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv")).withRequestBody(
+						equalToJson(expectedRequestBody, true, true))
+				.willReturn(aResponse().withStatus(200).withHeaders(headers).withBody(mockResponseBody)));
+
+		var t = assertThrows(LegacyAppAndBookClientException.class, () -> TestUtil.createClient(wm)
+				.manageDeviceLicenses(adamId, Set.of("INELIGIBLE_SERIAL"), Set.of(), false));
+
+		assertEquals(9628, t.getCode());
+		assertEquals("License not eligible for device assignment.", t.getErrorMessage());
+		assertEquals("(9628) License not eligible for device assignment.", t.getMessage());
+		assertEquals(
+				"net.vexelon.mdm.aab.legacy.LegacyAppAndBookClientException: (9628) License not eligible for device assignment.",
+				t.toString());
+	}
+
+	@Test
+	void test_disassociateLicenses_success(WireMockRuntimeInfo wm) {
+		String adamId = "389801252";
+
+		String expectedRequestBody = String.format("""
+				{
+				    "adamIdStr": "%s",
+				    "disassociateLicenseIdStrs": ["992d9d47b0f0b0d1", "78e6ca16523eb83f"],
+				    "notifyDisassociation": %b,
+				    "sToken": "%s"
+				}""", adamId, true, TestUtil.getSToken());
+
+		String mockResponseBody = """
+				{
+				    "status": 0,
+				    "uId": "9397866",
+				    "eventId": "anotherEventId",
+				    "clientContext": "{\\"id\\":\\"somesever8910\\"}",
+				    "expirationMillis": 1776630125812,
+				    "location": {"locationId": 12345, "locationName": "Test Location"},
+				    "associations": [],
+				    "disassociations": [
+				        {"licenseIdStr": "992d9d47b0f0b0d1"},
+				        {"licenseIdStr": "78e6ca16523eb83f"}
+				    ]
+				}""";
+
+		stubFor(post(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv")).withRequestBody(
+						equalToJson(expectedRequestBody, true, true))
+				.willReturn(aResponse().withStatus(200).withHeaders(headers).withBody(mockResponseBody)));
+
+		var response = TestUtil.createClient(wm)
+				.disassociateLicenses(adamId, Set.of("992d9d47b0f0b0d1", "78e6ca16523eb83f"), true);
+
+		assertNotNull(response);
+		assertEquals(0, response.getResponse().status());
+		assertEquals("9397866", response.getResponse().uId());
+		assertTrue(response.getAssociations().isEmpty());
+		assertEquals(2, response.getDisassociations().size());
+		assertEquals("992d9d47b0f0b0d1", response.getDisassociations().getFirst().licenseIdStr());
+		assertEquals("78e6ca16523eb83f", response.getDisassociations().getLast().licenseIdStr());
+
+		verify(postRequestedFor(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv")).withRequestBody(
+				equalToJson(expectedRequestBody, true, true)));
+	}
+
+	@Test
+	void test_disassociateLicenses_error(WireMockRuntimeInfo wm) {
+		String adamId = "389801252";
+
+		String expectedRequestBody = String.format("""
+				{
+				    "adamIdStr": "%s",
+				    "disassociateLicenseIdStrs": ["nonExistentLicId"],
+				    "notifyDisassociation": %b,
+				    "sToken": "%s"
+				}""", adamId, false, TestUtil.getSToken());
+
+		String mockResponseBody = """
+				{
+				    "status": -1,
+				    "errorMessage": "License not found.",
+				    "errorNumber": 9610
+				}""";
+
+		stubFor(post(urlEqualTo("/mdm/manageVPPLicensesByAdamIdSrv")).withRequestBody(
+						equalToJson(expectedRequestBody, true, true))
+				.willReturn(aResponse().withStatus(200).withHeaders(headers).withBody(mockResponseBody)));
+
+		var t = assertThrows(LegacyAppAndBookClientException.class,
+				() -> TestUtil.createClient(wm).disassociateLicenses(adamId, Set.of("nonExistentLicId"), false));
+
+		assertEquals(9610, t.getCode());
+		assertEquals("License not found.", t.getErrorMessage());
+		assertEquals("(9610) License not found.", t.getMessage());
+		assertEquals("net.vexelon.mdm.aab.legacy.LegacyAppAndBookClientException: (9610) License not found.",
+				t.toString());
 	}
 }
