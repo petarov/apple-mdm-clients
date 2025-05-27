@@ -38,7 +38,9 @@ jobs:
       - name: Run build & test
         run: ./gradlew build --no-daemon
 
+      ## --- publish SNAPSHOTS but only for things added to the 'main' branch, no pull requests
       - name: Publish to packages
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         run: ./gradlew publishSnapshot --no-daemon
         env:
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
