@@ -7,7 +7,7 @@ wiremock = "3.13.0"
 jakarta-annotation-api = "3.0.0"
 slf4j-api = "2.0.17"
 jackson = "2.19.0"
-bouncycastle = "1.80"
+bouncycastle = "1.81"
 javax_mail = "1.6.2"
 
 [libraries]
