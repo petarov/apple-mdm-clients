@@ -25,4 +25,4 @@ javax_mail = { module = "com.sun.mail:javax.mail", version.ref = "javax_mail" }
 jackson = ["jackson-databind", "jackson-datatype-jsr310"]
 
 [plugins]
-versions = { id = "com.vanniktech.maven.publish", version = "0.32.0" }
+versions = { id = "com.vanniktech.maven.publish", version = "0.33.0" }
