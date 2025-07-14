@@ -23,7 +23,6 @@ println "--> Last commit time: ${gitCommitTime}"
 
 import com.vanniktech.maven.publish.JavaLibrary
 import com.vanniktech.maven.publish.JavadocJar
-import com.vanniktech.maven.publish.SonatypeHost
 
 allprojects {
     group 'net.vexelon.mdm'
@@ -60,7 +59,7 @@ subprojects {
 
     mavenPublishing {
         configure(new JavaLibrary(new JavadocJar.Javadoc(), true))
-        publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+        publishToMavenCentral()
         signAllPublications()
 
         pom {
