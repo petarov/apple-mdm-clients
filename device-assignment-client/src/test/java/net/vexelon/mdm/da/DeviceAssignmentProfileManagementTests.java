@@ -1,10 +1,10 @@
 package net.vexelon.mdm.da;
 
-import net.vexelon.mdm.da.model.Profile;
-import net.vexelon.mdm.da.model.ProfileSkipItem;
 import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import net.vexelon.mdm.da.model.Profile;
+import net.vexelon.mdm.da.model.ProfileSkipItem;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,8 +16,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @WireMockTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -48,6 +47,8 @@ public class DeviceAssignmentProfileManagementTests {
 						        "A9C1R3Q8KJA9",
 						        "B112R4L8KJC7"
 						    ],
+						    "do_not_use_profile_from_backup": false,
+						    "is_return_to_service": true,
 						    "is_mandatory": false,
 						    "is_mdm_removable": true,
 						    "is_multi_user": false,
@@ -76,7 +77,7 @@ public class DeviceAssignmentProfileManagementTests {
 		var response = TestUtil.createClient(wm).createProfile(
 				new Profile.ProfileBuilder().setProfileName("mdm-server-01-sales-profile")
 						.setUrl("https://mdm-server-01.local").setDepartment("Sales").setAwaitDeviceConfigured(true)
-						.setMdmRemovable(true).setSupportPhoneNumber("555-555-555")
+						.setReturnToService(true).setMdmRemovable(true).setSupportPhoneNumber("555-555-555")
 						.setSupportEmailAddress("sales-it@example.org").setSkipSetupItems(
 								EnumSet.of(ProfileSkipItem.ENABLE_LOCKDOWN_MODE, ProfileSkipItem.TAP_TO_SETUP,
 										ProfileSkipItem.ICLOUD_DIAGNOSTICS, ProfileSkipItem.ICLOUD_STORAGE))
@@ -103,7 +104,7 @@ public class DeviceAssignmentProfileManagementTests {
 						    "is_mdm_removable": true,
 						    "await_device_configured": true,
 						    "is_multi_user": true,
-						    "is_return_to_service": false,
+						    "is_return_to_service": true,
 						    "do_not_use_profile_from_backup": false,
 						    "auto_advance_setup": true,
 						    "skip_setup_items": [
@@ -164,6 +165,8 @@ public class DeviceAssignmentProfileManagementTests {
 		assertEquals("support@petarov.net", response.supportEmailAddress());
 		assertEquals("petarov GmbH", response.orgMagic());
 		assertEquals("https://node.petarov.net/srv/intra", response.url());
+		assertFalse(response.isDoNotUseProfileFromBackup());
+		assertTrue(response.isReturnToService());
 		assertTrue(response.isMandatory());
 		assertTrue(response.isMdmRemovable());
 		assertTrue(response.isAwaitDeviceConfigured());
