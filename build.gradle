@@ -112,7 +112,7 @@ subprojects {
     }
 
     tasks.withType(PublishToMavenRepository).configureEach {
-        if (repository.url.host.contains("oss.sonatype.org")) {
+        if (repository.url?.host?.contains("oss.sonatype.org")) {
             onlyIf { !project.version.toString().endsWith("-SNAPSHOT") }
         }
     }

@@ -23,9 +23,23 @@ The private key with which the token must be decrypted is also required.
 
 ### Getting the library
 
-**Releases**: _TBD_
+**Releases**:
 
-**Snapshots**: [latest SNAPSHOT](https://github.com/petarov/apple-mdm-clients/packages/2517819) built from the `main` branch. This requires an [authenticated](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry) GitHub user.
+    implementation 'net.vexelon.mdm:device-assignment-client:0.0.1'
+
+or
+
+```xml
+<dependency>
+    <groupId>net.vexelon.mdm</groupId>
+    <artifactId>device-assignment-client</artifactId>
+    <version>0.0.1</version>
+</dependency>
+```
+
+**Snapshots**: 
+
+ - Latest [SNAPSHOT](https://github.com/petarov/apple-mdm-clients/packages/2517819) built from the `main` branch. This requires an [authenticated](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry) GitHub user.
 
 ### Example 
 
@@ -67,9 +81,23 @@ deprecated by Apple, and it's no longer maintained.
 
 ### Getting the library
 
-**Releases**: _TBD_
+**Releases**:
 
-**Snapshots**: [latest SNAPSHOT](https://github.com/petarov/apple-mdm-clients/packages/2517820) built from the `main` branch. This requires an [authenticated](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry) GitHub user.
+    implementation 'net.vexelon.mdm:legacy-app-and-book-management-client:0.0.1'
+
+or
+
+```xml
+<dependency>
+    <groupId>net.vexelon.mdm</groupId>
+    <artifactId>legacy-app-and-book-management-client</artifactId>
+    <version>0.0.1</version>
+</dependency>
+```
+
+**Snapshots**: 
+
+ - Latest [SNAPSHOT](https://github.com/petarov/apple-mdm-clients/packages/2517820) built from the `main` branch. This requires an [authenticated](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry) GitHub user.
 
 ### Example 
 
