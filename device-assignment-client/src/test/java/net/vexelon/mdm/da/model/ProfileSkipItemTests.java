@@ -22,5 +22,11 @@ public class ProfileSkipItemTests {
 		assertFalse(ProfileSkipItem.TV_ROOM.isIos());
 		assertFalse(ProfileSkipItem.TV_ROOM.isMacOS());
 		assertTrue(ProfileSkipItem.TV_ROOM.isTvOS());
+
+		assertFalse(ProfileSkipItem.TIPS.isIos());
+		assertTrue(ProfileSkipItem.TIPS.isVisionOS());
+
+		assertTrue(ProfileSkipItem.ZOOM.isDeprecated());
+		assertTrue(ProfileSkipItem.WALLPAPER.isDeprecated());
 	}
 }

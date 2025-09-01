@@ -70,7 +70,7 @@ public enum ProfileSkipItem {
 	 * <p>
 	 * Availability: iOS 8.3+
 	 */
-	@Deprecated(since = "iOS 17", forRemoval = true) ZOOM("Zoom", OsType.IOS),
+	@Deprecated(since = "iOS 17", forRemoval = true) ZOOM("Zoom", true, OsType.IOS),
 
 	/**
 	 * If the Restore pane is not skipped, removes the Move from Android option in the Restore pane on iOS.
@@ -322,7 +322,42 @@ public enum ProfileSkipItem {
 	 * <p>
 	 * Availability: macOS 14.1+
 	 */
-	WALLPAPER("Wallpaper", OsType.MACOS),
+	@Deprecated(since = "macOS 26", forRemoval = true) WALLPAPER("Wallpaper", true, OsType.MACOS),
+
+	/**
+	 * Skips the "Unlock with Apple Watch" screen.
+	 * <p>
+	 * Availability: macOS 15+
+	 */
+	UNLOCK_WITH_WATCH("UnlockWithWatch", OsType.MACOS),
+
+	/**
+	 * Skips the Additional Privacy Settings pane.
+	 * <p>
+	 * Availability: macOS 26+
+	 */
+	ADDITIONAL_PRIVACY_SETTINGS("AdditionalPrivacySettings", OsType.MACOS),
+
+	/**
+	 * Skips the Multitasking pane.
+	 * <p>
+	 * Availability: iOS 26+
+	 */
+	MULTITASKING("Multitasking", OsType.IOS),
+
+	/**
+	 * Skips the OS Showcase pane.
+	 * <p>
+	 * Availability: iOS 26+ and macOS 26+
+	 */
+	OS_SHOWCASE("OSShowcase", OsType.IOS, OsType.MACOS),
+
+	/**
+	 * Skips the Tips pane.
+	 * <p>
+	 * Availability: visionOS 26+
+	 */
+	TIPS("Tips", OsType.VISIONOS),
 
 	// ---
 	;
@@ -334,7 +369,8 @@ public enum ProfileSkipItem {
 	private enum OsType {
 		IOS(1),
 		MACOS(2),
-		TVOS(4);
+		TVOS(4),
+		VISIONOS(8);
 
 		private final int mask;
 
@@ -376,5 +412,9 @@ public enum ProfileSkipItem {
 
 	public boolean isTvOS() {
 		return (this.os & OsType.TVOS.mask()) == OsType.TVOS.mask();
+	}
+
+	public boolean isVisionOS() {
+		return (this.os & OsType.VISIONOS.mask()) == OsType.VISIONOS.mask();
 	}
 }
