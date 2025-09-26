@@ -1,16 +1,17 @@
 package net.vexelon.mdm.da.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import net.vexelon.mdm.shared.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ProfileSkipItemTests {
 
 	@Test
-	void verify_os_types() {
+	void test_os_types() {
 		assertTrue(ProfileSkipItem.ANDROID.isIos());
 		assertFalse(ProfileSkipItem.ANDROID.isMacOS());
 		assertFalse(ProfileSkipItem.ANDROID.isTvOS());
@@ -28,5 +29,20 @@ public class ProfileSkipItemTests {
 
 		assertTrue(ProfileSkipItem.ZOOM.isDeprecated());
 		assertTrue(ProfileSkipItem.WALLPAPER.isDeprecated());
+	}
+
+	@Test
+	void test_unknown_skip_items() throws JsonProcessingException {
+		var json = "{ \"skip_setup_items\": [\"MESSAGING_ACTIVATION_USING_PHONE_NUMBER\", \"OS_SHOWCASE\", \"DISPLAY_TONE\"] }";
+		var profile = JsonUtil.createObjectMapper().readValue(json, Profile.class);
+
+		assertEquals(2, profile.skipSetupItems().size());
+
+		assertEquals(ProfileSkipItem.MESSAGING_ACTIVATION_USING_PHONE_NUMBER,
+				profile.skipSetupItems().iterator().next());
+
+		var it = profile.skipSetupItems().iterator();
+		it.next();
+		assertEquals(ProfileSkipItem.OS_SHOWCASE, it.next());
 	}
 }

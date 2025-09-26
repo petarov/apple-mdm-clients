@@ -2,8 +2,10 @@ package net.vexelon.mdm.da.model;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.da.util.ProfileSkipItemSetDeserializer;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -80,7 +82,8 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> a
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String orgMagic,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String profileName,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String profileUuid,
-                      @JsonSetter(nulls = Nulls.AS_EMPTY) String region, @Nonnull Set<ProfileSkipItem> skipSetupItems,
+                      @JsonSetter(nulls = Nulls.AS_EMPTY) String region, @JsonDeserialize(
+		using = ProfileSkipItemSetDeserializer.class) @Nonnull Set<ProfileSkipItem> skipSetupItems,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> supervisingHostCerts,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String supportEmailAddress,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String supportPhoneNumber,
