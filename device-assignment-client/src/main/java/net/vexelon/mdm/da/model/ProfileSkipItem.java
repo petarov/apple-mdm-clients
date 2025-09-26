@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.annotation.Nonnull;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * The list of setup panes to skip.
@@ -391,6 +392,19 @@ public enum ProfileSkipItem {
 
 	ProfileSkipItem(String key, OsType... os) {
 		this(key, false, os);
+	}
+
+	/**
+	 * @return {@link ProfileSkipItem} corresponding to the specified {@code key}, wrapped in an {@link Optional}
+	 */
+	public static Optional<ProfileSkipItem> ofKey(@Nonnull String key) {
+		for (var item : ProfileSkipItem.values()) {
+			if (item.getKey().equals(key)) {
+				return Optional.of(item);
+			}
+		}
+
+		return Optional.empty();
 	}
 
 	@JsonValue

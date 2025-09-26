@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import net.vexelon.mdm.da.model.ProfileSkipItem;
 
 import java.io.IOException;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -21,19 +21,10 @@ public class ProfileSkipItemSetDeserializer extends JsonDeserializer<Set<Profile
 			throws IOException, JacksonException {
 
 		if (parser.getCodec().readTree(parser) instanceof ArrayNode arrayNode) {
-			return StreamSupport.stream(arrayNode.spliterator(), false).map(JsonNode::asText).map(this::safeValueOf)
-					.filter(Objects::nonNull).collect(Collectors.toSet());
+			return StreamSupport.stream(arrayNode.spliterator(), false).map(JsonNode::asText)
+					.map(ProfileSkipItem::ofKey).flatMap(Optional::stream).collect(Collectors.toSet());
 		}
 
 		return Set.of();
-	}
-
-	private ProfileSkipItem safeValueOf(String enumValue) {
-		try {
-			return ProfileSkipItem.valueOf(enumValue);
-		} catch (IllegalArgumentException e) {
-			// nulls will be filtered out above
-			return null;
-		}
 	}
 }

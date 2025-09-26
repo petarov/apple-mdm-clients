@@ -33,7 +33,7 @@ public class ProfileSkipItemTests {
 
 	@Test
 	void test_unknown_skip_items() throws JsonProcessingException {
-		var json = "{ \"skip_setup_items\": [\"MESSAGING_ACTIVATION_USING_PHONE_NUMBER\", \"OS_SHOWCASE\", \"DISPLAY_TONE\"] }";
+		var json = "{ \"skip_setup_items\": [\"MessagingActivationUsingPhoneNumber\", \"OSShowcase\", \"DisplayTone\"] }";
 		var profile = JsonUtil.createObjectMapper().readValue(json, Profile.class);
 
 		assertEquals(2, profile.skipSetupItems().size());
