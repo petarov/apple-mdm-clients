@@ -114,12 +114,53 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> a
 		private       String               language                    = "";
 		private       String               orgMagic                    = "";
 		private       String               profileName                 = "";
+		private       String               profileUuid                 = "";
 		private       String               region                      = "";
 		private final Set<ProfileSkipItem> skipSetupItems              = new HashSet<>();
 		private final Set<String>          supervisingHostCerts        = new HashSet<>();
 		private       String               supportEmailAddress         = "";
 		private       String               supportPhoneNumber          = "";
 		private       String               url                         = "";
+
+		/**
+		 * Sets all builder fields from the {@code sourceProfile} profile. The {@code sourceProfile} remains unchanged.
+		 * Any previous builder field values will be overwritten.
+		 */
+		public ProfileBuilder withProfile(@Nonnull Profile sourceProfile) {
+			this.anchorCerts.clear();
+			this.anchorCerts.addAll(sourceProfile.anchorCerts());
+
+			this.isAutoAdvanceSetup = sourceProfile.isAutoAdvanceSetup();
+			this.isAwaitDeviceConfigured = sourceProfile.isAwaitDeviceConfigured();
+			this.configurationWebUrl = sourceProfile.configurationWebUrl();
+			this.department = sourceProfile.department();
+
+			this.devices.clear();
+			this.devices.addAll(sourceProfile.devices());
+
+			this.isDoNotUseProfileFromBackup = sourceProfile.isDoNotUseProfileFromBackup();
+			this.isReturnToService = sourceProfile.isReturnToService();
+			this.isMandatory = sourceProfile.isMandatory();
+			this.isMdmRemovable = sourceProfile.isMdmRemovable();
+			this.isMultiUser = sourceProfile.isMultiUser();
+			this.language = sourceProfile.language();
+			this.orgMagic = sourceProfile.orgMagic();
+			this.profileName = sourceProfile.profileName();
+			this.profileUuid = sourceProfile.profileUuid();
+			this.region = sourceProfile.region();
+
+			this.skipSetupItems.clear();
+			this.skipSetupItems.addAll(sourceProfile.skipSetupItems());
+
+			this.supervisingHostCerts.clear();
+			this.supervisingHostCerts.addAll(sourceProfile.supervisingHostCerts());
+
+			this.supportEmailAddress = sourceProfile.supportEmailAddress();
+			this.supportPhoneNumber = sourceProfile.supportPhoneNumber();
+			this.url = sourceProfile.url();
+
+			return this;
+		}
 
 		/**
 		 * @see #anchorCerts()
@@ -297,8 +338,8 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> a
 
 			return new Profile(anchorCerts, isAutoAdvanceSetup, isAwaitDeviceConfigured, configurationWebUrl,
 					department, devices, isDoNotUseProfileFromBackup, isReturnToService, isMandatory, isMdmRemovable,
-					isMultiUser, language, orgMagic, profileName, "", region, skipSetupItems, supervisingHostCerts,
-					supportEmailAddress, supportPhoneNumber, url);
+					isMultiUser, language, orgMagic, profileName, profileUuid, region, skipSetupItems,
+					supervisingHostCerts, supportEmailAddress, supportPhoneNumber, url);
 		}
 	}
 }
