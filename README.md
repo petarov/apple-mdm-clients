@@ -131,7 +131,7 @@ builder.setProxyOptions(MdmClientProxyOptions.ofHttp("proxy-host", 3128, "user",
 The libraries use SLF4J, so you can plug debug and trace logs into your own logger. Here is a simple `log4j2.xml` example:
 
 ```xml
-<logger name="com.github.petarov.mdm" level="debug" additivity="false">
+<logger name="net.vexelon.mdm" level="debug" additivity="false">
     <AppenderRef ref="console"/>
 </logger>
 ```  
