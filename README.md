@@ -10,16 +10,16 @@
 
 Java clients for Apple's Mobile Device Management (MDM) services.
 
-`Java 21` required, with the goal to use as few external dependencies as possible.
+`Java 21` is required, with the goal to use as [few dependencies](gradle/libs.versions.toml) as possible.
 
 ## Device Assignment client
 
 Manage your organization's Apple Business Manager (`ABM`) devices. Automated Device Enrollment `(ADE)`, previously known 
-as "The Device Enrollment Program" `(DEP)` allows for creating device enrollment profiles and assigning them to your 
+as "The Device Enrollment Program" `(DEP)`, allows you to create device enrollment profiles and assign them to your 
 organization's devices.
 
-To use the Java client, it is required that you already have created a valid device assignment token on ABM.
-The private key with which the token must be decrypted is also required.
+To use the Java client, you must already have a valid device assignment token created in ABM. The private key required 
+to decrypt the token is also needed.
 
 ### Getting the library
 
@@ -72,12 +72,12 @@ var response = client.createProfile(new Profile.ProfileBuilder()
 System.out.println(response.profileUuid());
 ```
 
-See the complete list of service API calls on Apple's [Device Assignment](https://developer.apple.com/documentation/devicemanagement/device-assignment) web page.
+See the complete list of service API calls on Apple's [Device Assignment](https://developer.apple.com/documentation/devicemanagement/device-assignment) page.
 
 ## Legacy App and Book Management client
 
-Manage apps and books for students and employees. This API is still perfectly functional, however, it has been 
-deprecated by Apple, and it's no longer maintained.
+Manage apps and books for students and employees. This API is still functional, however, Apple has deprecated it and 
+no longer maintains it.
 
 ### Getting the library
 
@@ -118,8 +118,8 @@ System.out.println(client.retireUser(UserIdParam.of("MTY6MzAgZXN0YXIgbm8gbG9jYWw
 
 # Proxy support
 
-Only HTTP tunneling i.e. [HTTP CONNECT](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods/CONNECT) type of proxy servers connections are supported.
-To enable proxy support just add the proxy options to the client builder.
+Only HTTP tunneling i.e. [HTTP CONNECT](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods/CONNECT) type of proxy servers are supported.
+To enable proxy support, simply add the proxy options to the client builder.
 
 ```java
 builder.setProxyOptions(MdmClientProxyOptions.ofHttp("proxy-host", 3128));
@@ -128,7 +128,7 @@ builder.setProxyOptions(MdmClientProxyOptions.ofHttp("proxy-host", 3128, "user",
 
 # Logging
 
-The libraries use SLF4J, so you can plug debug and trace logs into your own logger. Here is a simple `log4j2.xml` example:
+The libraries use SLF4J, so you can route debug and trace logs into your own logger. Here is a simple `log4j2.xml` example:
 
 ```xml
 <logger name="net.vexelon.mdm" level="debug" additivity="false">
