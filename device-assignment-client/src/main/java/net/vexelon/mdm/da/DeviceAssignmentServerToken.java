@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.annotation.Nonnull;
 import net.vexelon.mdm.shared.http.HttpClientWrapperException;
 import net.vexelon.mdm.shared.util.JsonUtil;
+import net.vexelon.mdm.shared.util.ParseUtil;
 import org.bouncycastle.cms.CMSEnvelopedData;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.jcajce.JceKeyTransEnvelopedRecipient;
@@ -98,8 +99,11 @@ public record DeviceAssignmentServerToken(String consumerKey, String consumerSec
 		}
 	}
 
+	/**
+	 * @return {@link DeviceAssignmentServerToken#accessTokenExpiry()} parsed to {@link OffsetDateTime}
+	 */
 	@Nonnull
 	public OffsetDateTime accessTokenExpiryTime() {
-		return OffsetDateTime.parse(accessTokenExpiry);
+		return ParseUtil.parseAppleDateTime(accessTokenExpiry);
 	}
 }

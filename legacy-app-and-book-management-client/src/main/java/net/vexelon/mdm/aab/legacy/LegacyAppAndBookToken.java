@@ -1,10 +1,10 @@
 package net.vexelon.mdm.aab.legacy;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
-import net.vexelon.mdm.shared.util.JsonUtil;
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.shared.util.JsonUtil;
+import net.vexelon.mdm.shared.util.ParseUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,6 +41,15 @@ public record LegacyAppAndBookToken(String sToken, @Nonnull AppAndBookTokenDetai
 	}
 
 	public record AppAndBookTokenDetails(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull String token,
-	                                     @JsonSetter(nulls = Nulls.AS_EMPTY) @JsonProperty("expDate") @Nonnull OffsetDateTime expiryDateTime,
-	                                     @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull String orgName) {}
+	                                     @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull String expDate,
+	                                     @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull String orgName) {
+
+		/**
+		 * @return {@link AppAndBookTokenDetails#expDate()} parsed to {@link OffsetDateTime}
+		 */
+		@Nonnull
+		public OffsetDateTime expiryDateTime() {
+			return ParseUtil.parseAppleDateTime(expDate);
+		}
+	}
 }

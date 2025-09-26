@@ -29,6 +29,7 @@ public class LegacyAppAndBookTokenTests {
 		Assertions.assertEquals(
 				"VGhpcyBpcyBhIHNhbXBsZSB0ZXh0IHdoaWNoIHdhcyB1c2VkIHRvIGNyZWF0ZSB0aGUgc2ltdWxhdG9yIHRva2VuCg==",
 				serverToken.details().token());
+		Assertions.assertEquals("2020-12-31T13:57:19+02:00", serverToken.details().expDate());
 		Assertions.assertEquals(OffsetDateTime.parse("2020-12-31T13:57:19+02:00"),
 				serverToken.details().expiryDateTime());
 		Assertions.assertEquals("blabla GmbH", serverToken.details().orgName());
