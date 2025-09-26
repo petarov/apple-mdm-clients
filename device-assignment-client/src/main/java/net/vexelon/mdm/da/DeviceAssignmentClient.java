@@ -1,7 +1,9 @@
 package net.vexelon.mdm.da;
 
 import jakarta.annotation.Nonnull;
-import net.vexelon.mdm.da.model.*;
+import net.vexelon.mdm.da.model.AccountDetail;
+import net.vexelon.mdm.da.model.Device;
+import net.vexelon.mdm.da.model.Profile;
 import net.vexelon.mdm.da.model.response.*;
 
 import java.util.Optional;
@@ -14,6 +16,9 @@ import java.util.Set;
  * be synchronized externally. It is recommended to use a new client instance per thread.
  */
 public interface DeviceAssignmentClient {
+
+	int DEFAULT_FETCH_LIMIT = 100;
+	int MAX_FETCH_LIMIT     = 1000;
 
 	/**
 	 * @return new {@link DeviceAssignmentClientBuilder} instance
@@ -56,7 +61,7 @@ public interface DeviceAssignmentClient {
 	 */
 	@Nonnull
 	default DevicesResponse fetchDevices() {
-		return fetchDevices("", 100);
+		return fetchDevices("", DEFAULT_FETCH_LIMIT);
 	}
 
 	/**
@@ -99,7 +104,7 @@ public interface DeviceAssignmentClient {
 	 */
 	@Nonnull
 	default DevicesResponse syncDevices(String cursor) {
-		return syncDevices(cursor, 100);
+		return syncDevices(cursor, DEFAULT_FETCH_LIMIT);
 	}
 
 	/**
