@@ -8,7 +8,6 @@ jakarta-annotation-api = "3.0.0"
 slf4j-api = "2.0.17"
 jackson = "2.20.0"
 bouncycastle = "1.82"
-javax_mail = "1.6.2"
 
 [libraries]
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
@@ -18,8 +17,7 @@ slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j-api" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
 jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
 bcprov-jdk18on = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
-bcmail-jdk18on = { module = "org.bouncycastle:bcmail-jdk18on", version.ref = "bouncycastle" }
-javax_mail = { module = "com.sun.mail:javax.mail", version.ref = "javax_mail" }
+bcpkix-jdk18on = { module = "org.bouncycastle:bcpkix-jdk18on", version.ref = "bouncycastle" }
 
 [bundles]
 jackson = ["jackson-databind", "jackson-datatype-jsr310"]

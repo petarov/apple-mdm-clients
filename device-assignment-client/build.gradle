@@ -3,9 +3,7 @@ description = "Device Assignment client for Apple's MDM services"
 
 dependencies {
     implementation project(':shared-apple-client')
-    implementation libs.bcprov.jdk18on,
-            libs.bcmail.jdk18on,
-            libs.javax.mail
+    implementation libs.bcprov.jdk18on, libs.bcpkix.jdk18on
 
     testImplementation libs.junit.jupiter, libs.wiremock
 
