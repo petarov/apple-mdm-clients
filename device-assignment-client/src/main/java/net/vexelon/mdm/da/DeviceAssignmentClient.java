@@ -17,8 +17,22 @@ import java.util.Set;
  */
 public interface DeviceAssignmentClient {
 
-	int DEFAULT_FETCH_LIMIT = 100;
-	int MAX_FETCH_LIMIT     = 1000;
+	int FETCH_DEFAULT_LIMIT = 100;
+	int FETCH_MAX_LIMIT     = 1000;
+
+	String DEVICE_OP_TYPE_ADDED    = "added";
+	String DEVICE_OP_TYPE_MODIFIED = "modified";
+	String DEVICE_OP_TYPE_DELETED  = "deleted";
+
+	String DEVICE_RESPONSE_STATUS_SUCCESS        = "SUCCESS";
+	String DEVICE_RESPONSE_STATUS_NOT_ACCESSIBLE = "NOT_ACCESSIBLE";
+	String DEVICE_RESPONSE_STATUS_NOT_FOUND      = "NOT_FOUND";
+	String DEVICE_RESPONSE_STATUS_FAILED         = "FAILED";
+
+	String PROFILE_STATUS_EMPTY    = "empty";
+	String PROFILE_STATUS_ASSIGNED = "assigned";
+	String PROFILE_STATUS_PUSHED   = "pushed";
+	String PROFILE_STATUS_REMOVED  = "removed";
 
 	/**
 	 * @return new {@link DeviceAssignmentClientBuilder} instance
@@ -61,7 +75,7 @@ public interface DeviceAssignmentClient {
 	 */
 	@Nonnull
 	default DevicesResponse fetchDevices() {
-		return fetchDevices("", DEFAULT_FETCH_LIMIT);
+		return fetchDevices("", FETCH_DEFAULT_LIMIT);
 	}
 
 	/**
@@ -104,7 +118,7 @@ public interface DeviceAssignmentClient {
 	 */
 	@Nonnull
 	default DevicesResponse syncDevices(String cursor) {
-		return syncDevices(cursor, DEFAULT_FETCH_LIMIT);
+		return syncDevices(cursor, FETCH_DEFAULT_LIMIT);
 	}
 
 	/**
