@@ -11,6 +11,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * @param token the token to use when requesting the beta build
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/seedbuildtoken">SeedBuildToken</a>
  */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public record SeedBuildToken(String os, String title, String token) {}

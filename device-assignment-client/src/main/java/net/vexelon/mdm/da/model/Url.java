@@ -1,5 +1,7 @@
 package net.vexelon.mdm.da.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -14,6 +16,8 @@ import java.util.List;
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/url">Url</a>
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public record Url(@JsonSetter(nulls = Nulls.AS_EMPTY) List<String> httpMethod,
                   @JsonSetter(nulls = Nulls.AS_EMPTY) Limit limit, @JsonSetter(nulls = Nulls.AS_EMPTY) String uri) {
 
