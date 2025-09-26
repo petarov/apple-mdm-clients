@@ -38,11 +38,16 @@ public class ProfileSkipItemTests {
 
 		assertEquals(2, profile.skipSetupItems().size());
 
-		assertEquals(ProfileSkipItem.MESSAGING_ACTIVATION_USING_PHONE_NUMBER,
-				profile.skipSetupItems().iterator().next());
+		assertTrue(profile.skipSetupItems().contains(ProfileSkipItem.MESSAGING_ACTIVATION_USING_PHONE_NUMBER));
+		assertTrue(profile.skipSetupItems().contains(ProfileSkipItem.OS_SHOWCASE));
+	}
 
-		var it = profile.skipSetupItems().iterator();
-		it.next();
-		assertEquals(ProfileSkipItem.OS_SHOWCASE, it.next());
+	@Test
+	void test_no_skip_items() throws JsonProcessingException {
+		var profile = JsonUtil.createObjectMapper().readValue("{ \"skip_setup_items\": [] }", Profile.class);
+		assertEquals(0, profile.skipSetupItems().size());
+
+		profile = JsonUtil.createObjectMapper().readValue("{}", Profile.class);
+		assertEquals(0, profile.skipSetupItems().size());
 	}
 }
