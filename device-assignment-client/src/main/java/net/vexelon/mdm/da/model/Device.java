@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import net.vexelon.mdm.da.DeviceAssignmentClient;
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.da.DeviceAssignmentClient;
 
 import java.time.OffsetDateTime;
 import java.util.Set;
@@ -59,6 +59,14 @@ public record Device(@JsonSetter(nulls = Nulls.AS_EMPTY) String assetTag,
                      @JsonSetter(nulls = Nulls.AS_EMPTY) String profileUuid,
                      @JsonSetter(nulls = Nulls.AS_EMPTY) String serialNumber,
                      @JsonSetter(nulls = Nulls.AS_EMPTY) String responseStatus) {
+
+	/**
+	 * @return an empty {@link Device} with empty field values
+	 */
+	@Nonnull
+	public static Device ofEmpty() {
+		return new Device("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "");
+	}
 
 	/**
 	 * @return parsed {@link #deviceAssignedDate()} or {@link OffsetDateTime#MIN} if no date-time is available

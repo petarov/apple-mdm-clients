@@ -35,4 +35,13 @@ public record AccountDetail(@JsonSetter(nulls = Nulls.AS_EMPTY) String adminId,
                             @JsonSetter(nulls = Nulls.AS_EMPTY) String orgVersion,
                             @JsonSetter(nulls = Nulls.AS_EMPTY) String serverName,
                             @JsonSetter(nulls = Nulls.AS_EMPTY) String serverUuid,
-                            @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<Url> urls) {}
+                            @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull List<Url> urls) {
+
+	/**
+	 * @return an empty {@link AccountDetail} with empty field values
+	 */
+	@Nonnull
+	public static AccountDetail ofEmpty() {
+		return new AccountDetail("", "", "", "", "", "", "", "", "", "", "", List.of());
+	}
+}

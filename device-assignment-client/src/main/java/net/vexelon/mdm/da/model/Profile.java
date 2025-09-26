@@ -87,6 +87,15 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> a
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String url) {
 
 	/**
+	 * @return an empty {@link Profile} with default and empty field values
+	 */
+	@Nonnull
+	public static Profile ofEmpty() {
+		return new Profile(Set.of(), false, false, "", "", Set.of(), false, false, false, true, false, "", "", "", "",
+				"", Set.of(), Set.of(), "", "", "");
+	}
+
+	/**
 	 * Profile builder.
 	 */
 	public static class ProfileBuilder {
