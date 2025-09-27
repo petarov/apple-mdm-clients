@@ -48,6 +48,9 @@ import java.util.Set;
  *                                    iPad minimum requirements do not honor this command. With iOS devices,
  *                                    {@code com.apple.mdm.per-user-connections} must be added to the MDM enrollment
  *                                    profile's Server Capabilities.</p>
+ * @param isSupervised                If {@code true}, the device must be supervised. Default is {@code true}. Starting
+ *                                    from iOS 13, all DEP devices will be supervised and the OS will ignore this flag
+ *                                    completely.
  * @param language                    a language designator is a code that represents a language. ISO 639-1 or ISO 639-2
  *                                    standard. Available on <i>tvOS</i>.<p>Example two-letter: {@code en}, {@code fr},
  *                                    {@code ja}</p><p>Example three-letter: {@code eng}, {@code fre}, {@code jpn},
@@ -78,7 +81,8 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> a
                       @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> devices,
                       @JsonProperty("do_not_use_profile_from_backup") boolean isDoNotUseProfileFromBackup,
                       @JsonProperty("is_return_to_service") boolean isReturnToService, boolean isMandatory,
-                      boolean isMdmRemovable, boolean isMultiUser, @JsonSetter(nulls = Nulls.AS_EMPTY) String language,
+                      boolean isMdmRemovable, boolean isMultiUser, @Deprecated boolean isSupervised,
+                      @JsonSetter(nulls = Nulls.AS_EMPTY) String language,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String orgMagic,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String profileName,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String profileUuid,
@@ -94,8 +98,8 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> a
 	 */
 	@Nonnull
 	public static Profile ofEmpty() {
-		return new Profile(Set.of(), false, false, "", "", Set.of(), false, false, false, true, false, "", "", "", "",
-				"", Set.of(), Set.of(), "", "", "");
+		return new Profile(Set.of(), false, false, "", "", Set.of(), false, false, false, true, false, true, "", "", "",
+				"", "", Set.of(), Set.of(), "", "", "");
 	}
 
 	/**
@@ -114,6 +118,7 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> a
 		private       boolean              isMandatory                 = false;
 		private       boolean              isMdmRemovable              = true;
 		private       boolean              isMultiUser                 = false;
+		private       boolean              isSupervised                = true;
 		private       String               language                    = "";
 		private       String               orgMagic                    = "";
 		private       String               profileName                 = "";
@@ -146,6 +151,7 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> a
 			this.isMandatory = sourceProfile.isMandatory();
 			this.isMdmRemovable = sourceProfile.isMdmRemovable();
 			this.isMultiUser = sourceProfile.isMultiUser();
+			this.isSupervised = sourceProfile.isSupervised();
 			this.language = sourceProfile.language();
 			this.orgMagic = sourceProfile.orgMagic();
 			this.profileName = sourceProfile.profileName();
@@ -256,6 +262,14 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> a
 		}
 
 		/**
+		 * @see #isSupervised()
+		 */
+		public ProfileBuilder setSupervised(boolean supervised) {
+			isSupervised = supervised;
+			return this;
+		}
+
+		/**
 		 * @see #language()
 		 */
 		public ProfileBuilder setLanguage(String language) {
@@ -341,7 +355,7 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> a
 
 			return new Profile(anchorCerts, isAutoAdvanceSetup, isAwaitDeviceConfigured, configurationWebUrl,
 					department, devices, isDoNotUseProfileFromBackup, isReturnToService, isMandatory, isMdmRemovable,
-					isMultiUser, language, orgMagic, profileName, profileUuid, region, skipSetupItems,
+					isMultiUser, isSupervised, language, orgMagic, profileName, profileUuid, region, skipSetupItems,
 					supervisingHostCerts, supportEmailAddress, supportPhoneNumber, url);
 		}
 	}

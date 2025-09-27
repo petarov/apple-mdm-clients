@@ -52,6 +52,7 @@ public class DeviceAssignmentProfileManagementTests {
 						    "is_mandatory": false,
 						    "is_mdm_removable": true,
 						    "is_multi_user": false,
+						    "is_supervised": true,
 						    "profile_name": "mdm-server-01-sales-profile",
 						    "skip_setup_items": [
 						        "TapToSetup",
@@ -171,6 +172,7 @@ public class DeviceAssignmentProfileManagementTests {
 		assertTrue(response.isMdmRemovable());
 		assertTrue(response.isAwaitDeviceConfigured());
 		assertTrue(response.isMultiUser());
+		assertTrue(response.isSupervised()); // default must be `true`
 		assertTrue(response.isAutoAdvanceSetup());
 		assertEquals(43, response.skipSetupItems().size());
 		assertEquals("95C2189CB0EFB3192BC7B3C555091D22", response.profileUuid());
