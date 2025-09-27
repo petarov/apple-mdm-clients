@@ -38,7 +38,8 @@ import java.util.Set;
  *                                    Default is {@code false}. Available in <i>iOS 26</i> and later,
  *                                    and <i>visionOS 26</i> and later; otherwise ignored by devices.
  * @param isMandatory                 if {@code true}, the user cannot skip applying the profile returned by the MDM server.
- *                                    Default is {@code false}. In iOS 13 and later, all DEP enrollments are mandatory.
+ *                                    Default is {@code true}. Starting from iOS 13 and later, all DEP enrollments are
+ *                                    mandatory and the OS will ignore this flag completely.
  * @param isMdmRemovable              if {@code false}, the MDM payload delivered by the configuration URL cannot be removed
  *                                    by the user via the user interface on the device; that is, the MDM payload is locked
  *                                    onto the device.
@@ -80,7 +81,7 @@ public record Profile(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> a
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String department,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Set<String> devices,
                       @JsonProperty("do_not_use_profile_from_backup") boolean isDoNotUseProfileFromBackup,
-                      @JsonProperty("is_return_to_service") boolean isReturnToService, boolean isMandatory,
+                      @JsonProperty("is_return_to_service") boolean isReturnToService, @Deprecated boolean isMandatory,
                       boolean isMdmRemovable, boolean isMultiUser, @Deprecated boolean isSupervised,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String language,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String orgMagic,
