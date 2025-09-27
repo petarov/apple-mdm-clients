@@ -4,7 +4,6 @@
 [![Dependabot Updates](https://github.com/petarov/apple-mdm-clients/actions/workflows/dependabot/dependabot-updates/badge.svg?branch=main)](https://github.com/petarov/apple-mdm-clients/actions/workflows/dependabot/dependabot-updates)
 [![Unit Tests](https://camo.githubusercontent.com/12c55bccdcc683a709bf6db4c18d0cc3b421f1302e7b2168638ae2e07c4cd7c8/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f756e697425323074657374732d33372532307061737365642d73756363657373)](https://github.com/petarov/apple-mdm-clients/actions)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=petarov_apple-mdm-clients&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=petarov_apple-mdm-clients)
-[![License](https://img.shields.io/github/license/petarov/apple-mdm-clients?style=square)](https://github.com/petarov/apple-mdm-clients/blob/main/LICENSE)
 
 # Apple MDM clients for Java
 
