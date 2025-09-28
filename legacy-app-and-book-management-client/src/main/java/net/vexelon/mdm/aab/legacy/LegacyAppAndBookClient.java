@@ -7,6 +7,18 @@ import java.util.Set;
 
 public interface LegacyAppAndBookClient {
 
+	String USER_STATUS_REGISTERED = "Registered";
+	String USER_STATUS_ASSOCIATED = "Associated";
+	String USER_STATUS_RETIRED    = "Retired";
+	String USER_STATUS_DELETED    = "Deleted";
+
+	String LICENSE_STATUS_ASSOCIATED = "Associated";
+	String LICENSE_STATUS_AVAILABLE  = "Available";
+	String LICENSE_STATUS_REFUNDED   = "Refunded";
+
+	String PRICING_PARAM_STANDARD_QUALITY = "STDQ";
+	String PRICING_PARAM_HIGH_QUALITY     = "PLUS";
+
 	/**
 	 * @return new {@link LegacyAppAndBookClientBuilder} instance
 	 */
