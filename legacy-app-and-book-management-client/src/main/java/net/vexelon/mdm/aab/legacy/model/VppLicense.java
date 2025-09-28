@@ -1,8 +1,6 @@
 package net.vexelon.mdm.aab.legacy.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
@@ -40,6 +38,8 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/vpplicense">VppLicense</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public record VppLicense(long adamId, @JsonSetter(nulls = Nulls.AS_EMPTY) String adamIdStr,
                          @JsonSetter(nulls = Nulls.AS_EMPTY) String clientUserIdStr,
                          @JsonProperty("irrevocable") boolean isIrrevocable,

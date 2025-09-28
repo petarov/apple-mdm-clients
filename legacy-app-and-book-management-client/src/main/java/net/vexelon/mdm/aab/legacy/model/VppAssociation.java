@@ -1,9 +1,12 @@
 package net.vexelon.mdm.aab.legacy.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import jakarta.annotation.Nonnull;
 
 /**
  * An association between a license and a user or device.
@@ -16,7 +19,15 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/vppassociation">VppAssociation</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public record VppAssociation(@JsonSetter(nulls = Nulls.AS_EMPTY) String clientUserIdStr,
                              @JsonSetter(nulls = Nulls.AS_EMPTY) String errorMessage, int errorNumber,
                              @JsonSetter(nulls = Nulls.AS_EMPTY) String licenseIdStr,
-                             @JsonSetter(nulls = Nulls.AS_EMPTY) String serialNumber) {}
+                             @JsonSetter(nulls = Nulls.AS_EMPTY) String serialNumber) {
+
+	@Nonnull
+	public static VppAssociation ofEmpty() {
+		return new VppAssociation("", "", 0, "", "");
+	}
+}

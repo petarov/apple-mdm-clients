@@ -1,9 +1,12 @@
 package net.vexelon.mdm.aab.legacy.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import jakarta.annotation.Nonnull;
 
 import java.util.List;
 
@@ -39,10 +42,18 @@ import java.util.List;
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/vppuser">VppUser</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public record VppUser(@JsonSetter(nulls = Nulls.AS_EMPTY) String clientUserIdStr,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String email,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String itsIdHash,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) List<VppLicense> licenses,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String inviteCode,
                       @JsonSetter(nulls = Nulls.AS_EMPTY) String inviteUrl,
-                      @JsonSetter(nulls = Nulls.AS_EMPTY) String status, long userId) {}
+                      @JsonSetter(nulls = Nulls.AS_EMPTY) String status, long userId) {
+
+	@Nonnull
+	public static VppUser ofEmpty() {
+		return new VppUser("", "", "", List.of(), "", "", "", 0);
+	}
+}
