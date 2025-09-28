@@ -245,7 +245,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 		if (options.includeRetiredOnly()) {
 			params.put("includeRetiredOnly", true);
 		} else if (options.includeRetired()) {
-			params.put("includeRetired", true);
+			params.put("includeRetired", 1);
 		}
 
 		return execute(client.createRequestBuilder(serviceConfigSupplier.get().getUsersSrvUrl()).POST(ofBody(params)),
