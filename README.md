@@ -143,5 +143,5 @@ Requires [JDK 21](https://adoptium.net/temurin/releases/) or later
 
 # License
 
-[MIT License](LICENSE)
+[Apache 2.0](LICENSE)
 

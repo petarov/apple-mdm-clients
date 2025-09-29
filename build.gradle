@@ -26,7 +26,7 @@ import com.vanniktech.maven.publish.JavadocJar
 
 allprojects {
     group 'net.vexelon.mdm'
-    ext.copyright = 'MIT License, Copyright (c) 2025 Petar Petrov'
+    ext.copyright = 'Apache License, Version 2.0, Copyright (c) 2025 Petar Petrov'
 
     repositories {
         mavenCentral()
@@ -70,8 +70,8 @@ subprojects {
 
             licenses {
                 license {
-                    name = 'The MIT License'
-                    url = 'http://opensource.org/licenses/MIThttp://opensource.org/licenses/MIT'
+                    name = 'Apache License, Version 2.0'
+                    url = 'https://opensource.org/license/apache-2-0'
                 }
             }
             developers {
