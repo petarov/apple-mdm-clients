@@ -1,4 +1,4 @@
-version '0.0.2-SNAPSHOT'
+version '0.0.2'
 description = "Shared http client code for Apple's MDM services"
 
 dependencies {
