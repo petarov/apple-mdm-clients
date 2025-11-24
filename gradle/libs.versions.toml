@@ -3,7 +3,7 @@
 
 [versions]
 junit-jupiter = "6.0.1"
-wiremock = "3.13.1"
+wiremock = "3.13.2"
 jakarta-annotation-api = "3.0.0"
 slf4j-api = "2.0.17"
 jackson = "2.20.1"
