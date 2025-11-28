@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * The list of setup panes to skip.
+ * The list of skip keys for setup panes.
  *
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/skipkeys">SkipKeys</a>
  */
@@ -15,58 +15,58 @@ public enum ProfileSkipItem {
 	/**
 	 * Skips the Accessibility pane.
 	 * <p>
-	 * Availability: macOS 11.0+
+	 * Availability: macOS 11+
 	 */
 	ACCESSIBILITY("Accessibility", OsType.IOS),
 
 	/**
-	 * Skips Apple ID setup.
+	 * Skips Apple Account setup.
 	 * <p>
-	 * Availability: iOS 7.0+, tvOS 10.2+, and macOS 10.9+
+	 * Availability: iOS 7+, tvOS 10.2+, macOS 10.9+, visionOS 26+
 	 */
-	APPLE_ID("AppleID", OsType.IOS, OsType.MACOS, OsType.TVOS),
+	APPLE_ID("AppleID", OsType.IOS, OsType.MACOS, OsType.TVOS, OsType.VISIONOS),
 
 	/**
 	 * Skips the App Analytics pane.
 	 * <p>
-	 * Availability: iOS 7.0+, tvOS 10.2+, and macOS 10.9+
+	 * Availability: iOS 7+, tvOS 10.2, macOS 10.9+, visionOS 26+
 	 */
-	DIAGNOSTICS("Diagnostics", OsType.IOS, OsType.MACOS, OsType.TVOS),
+	DIAGNOSTICS("Diagnostics", OsType.IOS, OsType.MACOS, OsType.TVOS, OsType.VISIONOS),
 
 	/**
 	 * Hides and disables the passcode pane.
 	 * <p>
-	 * Availability: iOS 7.0+
+	 * Availability: iOS 7+, macOS 10.9+, visionOS 26+
 	 */
-	PASSCODE("Passcode", OsType.IOS),
+	PASSCODE("Passcode", OsType.IOS, OsType.MACOS, OsType.VISIONOS),
 
 	/**
 	 * Disables restoring from backup.
 	 * <p>
-	 * Availability: iOS 7.0+ and macOS 10.9+
+	 * Availability: iOS 7+ and macOS 10.9+
 	 */
 	RESTORE("Restore", OsType.IOS, OsType.MACOS),
 
 	/**
 	 * Skips Terms and Conditions.
 	 * <p>
-	 * Availability: iOS 7.0+, tvOS 10.2+, and macOS 10.9+
+	 * Availability: iOS 7+, tvOS 10.2+, macOS 10.9+, visionOS 26+
 	 */
-	TOS("TOS", OsType.IOS, OsType.MACOS, OsType.TVOS),
+	TOS("TOS", OsType.IOS, OsType.MACOS, OsType.TVOS, OsType.VISIONOS),
 
 	/**
 	 * Skips biometric setup.
 	 * <p>
-	 * Availability: iOS 8.1+ and macOS 10.12.4+
+	 * Availability: iOS 8.1+, macOS 10.12.4+, visionOS 26+
 	 */
-	BIOMETRIC("Biometric", OsType.IOS, OsType.MACOS),
+	BIOMETRIC("Biometric", OsType.IOS, OsType.MACOS, OsType.VISIONOS),
 
 	/**
 	 * Skips Apple Pay setup.
 	 * <p>
-	 * Availability: iOS 8.1+ and macOS 10.12.4+
+	 * Availability: iOS 8.1+ and macOS 10.12.4+, visionOS 26+
 	 */
-	PAYMENT("Payment", OsType.IOS, OsType.MACOS),
+	PAYMENT("Payment", OsType.IOS, OsType.MACOS, OsType.VISIONOS),
 
 	/**
 	 * Skips zoom setup.
@@ -76,86 +76,86 @@ public enum ProfileSkipItem {
 	@Deprecated(since = "iOS 17", forRemoval = true) ZOOM("Zoom", true, OsType.IOS),
 
 	/**
-	 * If the Restore pane is not skipped, removes the Move from Android option in the Restore pane on iOS.
+	 * If the Restore pane is not skipped, removes the Move from Android option in the Restore pane.
 	 * <p>
-	 * Availability: iOS 9.0+
+	 * Availability: iOS 9+
 	 */
 	ANDROID("Android", OsType.IOS),
 
 	/**
 	 * Skips the iMessage pane.
 	 * <p>
-	 * Availability: iOS 10.0+
+	 * Availability: iOS 10+
 	 */
 	MESSAGING_ACTIVATION_USING_PHONE_NUMBER("MessagingActivationUsingPhoneNumber", OsType.IOS),
 
 	/**
-	 * Skip Keyboard pane.
+	 * Skips the Keyboard pane.
 	 * <p>
-	 * Availability: iOS 11.0+
+	 * Availability: iOS 13+
 	 */
 	KEYBOARD("Keyboard", OsType.IOS),
 
 	/**
 	 * Skips the screen for watch migration.
 	 * <p>
-	 * Availability: iOS 11.0+
+	 * Availability: iOS 11+
 	 */
 	WATCH_MIGRATION("WatchMigration", OsType.IOS),
 
 	/**
 	 * Skips the privacy pane.
 	 * <p>
-	 * Availability: iOS 11.13+, tvOS 11.13+, and macOS 10.13.4+
+	 * Availability: iOS 11.3+, tvOS 11.3+, macOS 10.13.4+, visionOS 26+
 	 */
-	PRIVACY("Privacy", OsType.IOS, OsType.MACOS, OsType.TVOS),
+	PRIVACY("Privacy", OsType.IOS, OsType.MACOS, OsType.TVOS, OsType.VISIONOS),
 
 	/**
-	 * Skips the iMessage and FaceTime screen in iOS.
+	 * Skips the iMessage and FaceTime screen.
 	 * <p>
-	 * Availability: iOS 12.0+
+	 * Availability: iOS 12+
 	 */
 	IMESSAGE_AND_FACETIME("iMessageAndFaceTime", OsType.IOS),
 
 	/**
 	 * Skips the Screen Time pane.
 	 * <p>
-	 * Availability: iOS 12.0+ and macOS 10.15+
+	 * Availability: iOS 12+, macOS 10.15+, visionOS 26+
 	 */
-	SCREEN_TIME("ScreenTime", OsType.IOS, OsType.MACOS),
+	SCREEN_TIME("ScreenTime", OsType.IOS, OsType.MACOS, OsType.VISIONOS),
 
 	/**
 	 * Skips the add cellular plan pane.
 	 * <p>
-	 * Availability: iOS 12.0+
+	 * Availability: iOS 12+
 	 */
 	SIM_SETUP("SIMSetup", OsType.IOS),
 
 	/**
 	 * Disables Location services.
 	 * <p>
-	 * Availability: iOS 7.0+, macOS 10.11+, tvOS 10.2+, visionOS 26.0+
+	 * Availability: iOS 7+, macOS 10.11+, tvOS 10.2+, visionOS 26+
 	 */
 	LOCATION("Location", OsType.IOS, OsType.MACOS),
 
 	/**
-	 * Skips the mandatory software update screen in iOS.
+	 * Skips the mandatory software update screen.
 	 * <p>
-	 * Availability: iOS 12.0+
+	 * Availability: iOS 12+, macOS 15.4+, visionOS 26+
 	 */
 	SOFTWARE_UPDATE("SoftwareUpdate", OsType.IOS),
 
 	/**
 	 * Skips the Choose Your Look screen.
 	 * <p>
-	 * Availability: iOS 13.0+ and macOS 10.14+
+	 * Availability: iOS 13+ and macOS 10.14+
 	 */
 	APPEARANCE("Appearance", OsType.IOS, OsType.MACOS),
 
 	/**
 	 * Skips Device to Device Migration pane.
 	 * <p>
-	 * Availability: iOS 13.0+
+	 * Availability: iOS 12.4+
 	 */
 	DEVICE_TO_DEVICE_MIGRATION("DeviceToDeviceMigration", OsType.IOS),
 
@@ -163,28 +163,28 @@ public enum ProfileSkipItem {
 	 * Skips the Dictation pane. This pane isn’t always skippable because it appears before the device retrieves the
 	 * Cloud Configuration from the server.
 	 * <p>
-	 * Availability: iOS 13.0+
+	 * Availability: iOS 13+
 	 */
 	SPOKEN_LANGUAGE("SpokenLanguage", OsType.IOS),
 
 	/**
 	 * Skips the Get Started pane.
 	 * <p>
-	 * Availability: iOS 13.0+
+	 * Availability: iOS 13+, macOS 15+, visionOS 26+
 	 */
-	WELCOME("Welcome", OsType.IOS, OsType.MACOS),
+	WELCOME("Welcome", OsType.IOS, OsType.MACOS, OsType.VISIONOS),
 
 	/**
 	 * Skips the Restore Completed pane.
 	 * <p>
-	 * Availability: iOS 14.0+
+	 * Availability: iOS 14+
 	 */
 	RESTORE_COMPLETED("RestoreCompleted", OsType.IOS),
 
 	/**
 	 * Skips the Software Update Complete pane.
 	 * <p>
-	 * Availability: iOS 14.0+, macOS 26.1+
+	 * Availability: iOS 14+, macOS 26.1+
 	 */
 	UPDATE_COMPLETED("UpdateCompleted", OsType.IOS),
 
@@ -212,7 +212,7 @@ public enum ProfileSkipItem {
 	/**
 	 * Skips the Action Button configuration pane.
 	 * <p>
-	 * Availability: iOS 17.0+
+	 * Availability: iOS 17+
 	 */
 	ACTION_BUTTON("ActionButton", OsType.IOS),
 
@@ -226,23 +226,23 @@ public enum ProfileSkipItem {
 	/**
 	 * Disables Siri.
 	 * <p>
-	 * Availability: iOS 7.0+, tvOS 10.2+, macOS 10.12+, visionOS 26.0+
+	 * Availability: iOS 7+, tvOS 10.2+, macOS 10.12+, visionOS 26+
 	 */
 	SIRI("Siri", OsType.IOS, OsType.MACOS, OsType.TVOS, OsType.VISIONOS),
 
 	/**
 	 * Skips the Camera Button pane.
 	 * <p>
-	 * Availability: iOS 18.0+
+	 * Availability: iOS 18+
 	 */
 	CAMERA_BUTTON("CameraButton", OsType.IOS),
 
 	/**
 	 * Skips the Intelligence pane.
 	 * <p>
-	 * Availability: iOS 18+ and macOS 15+
+	 * Availability: iOS 18+, macOS 15+, visionOS 26+
 	 */
-	INTELLIGENCE("Intelligence", OsType.IOS, OsType.MACOS),
+	INTELLIGENCE("Intelligence", OsType.IOS, OsType.MACOS, OsType.VISIONOS),
 
 	/**
 	 * Skips web content filtering pane.
@@ -260,8 +260,6 @@ public enum ProfileSkipItem {
 	 * server.
 	 */
 	SAFETY_AND_HANDLING("SafetyAndHandling", OsType.IOS),
-
-	// — non-iOS items
 
 	/**
 	 * The key to disable the FileVault Setup Assistant screen in macOS.
@@ -301,14 +299,14 @@ public enum ProfileSkipItem {
 	/**
 	 * Skips Apple TV home screen layout sync screen.
 	 * <p>
-	 * Availability: tvOS 11.0+
+	 * Availability: tvOS 11+
 	 */
 	TV_HOMESCREEN_SYNC("TVHomeScreenSync", OsType.TVOS),
 
 	/**
 	 * Skips the TV provider sign in screen.
 	 * <p>
-	 * Availability: tvOS 11.0+
+	 * Availability: tvOS 11+
 	 */
 	TV_PROVIDER_SIGNIN("TVProviderSignIn", OsType.TVOS),
 
@@ -362,7 +360,7 @@ public enum ProfileSkipItem {
 	TIPS("Tips", OsType.VISIONOS),
 
 	/**
-	 * Skips the Additional Privacy Settings pane.
+	 * Skips the Age Based Safety Settings pane.
 	 * <p>
 	 * Availability: iOS 26.1+
 	 */
