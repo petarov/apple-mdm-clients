@@ -1,4 +1,6 @@
 rootProject.name = 'apple-mdm-clients'
 
 include 'examples'
+project(':examples').projectDir.mkdirs()
+
 include 'shared-apple-client', 'device-assignment-client', 'legacy-app-and-book-management-client'
