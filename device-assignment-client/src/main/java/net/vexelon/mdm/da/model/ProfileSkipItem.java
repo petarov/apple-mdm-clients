@@ -14,6 +14,8 @@ import java.util.Optional;
 public enum ProfileSkipItem {
 	/**
 	 * Skips the Accessibility pane.
+	 * <p>
+	 * Availability: macOS 11.0+
 	 */
 	ACCESSIBILITY("Accessibility", OsType.IOS),
 
@@ -131,10 +133,8 @@ public enum ProfileSkipItem {
 
 	/**
 	 * Disables Location services.
-	 * Availability: iOS 7.0+ and macOS 10.11+
-	 * Skips the add cellular plan pane.
 	 * <p>
-	 * Availability: iOS 12.0+
+	 * Availability: iOS 7.0+, macOS 10.11+, tvOS 10.2+, visionOS 26.0+
 	 */
 	LOCATION("Location", OsType.IOS, OsType.MACOS),
 
@@ -184,7 +184,7 @@ public enum ProfileSkipItem {
 	/**
 	 * Skips the Software Update Complete pane.
 	 * <p>
-	 * Availability: iOS 14.0+
+	 * Availability: iOS 14.0+, macOS 26.1+
 	 */
 	UPDATE_COMPLETED("UpdateCompleted", OsType.IOS),
 
@@ -225,12 +225,10 @@ public enum ProfileSkipItem {
 
 	/**
 	 * Disables Siri.
-	 * Availability: iOS 7.0+, tvOS 10.2+, and macOS 10.12+
-	 * Skips the Camera Button pane.
 	 * <p>
-	 * Availability: iOS 18.0+
+	 * Availability: iOS 7.0+, tvOS 10.2+, macOS 10.12+, visionOS 26.0+
 	 */
-	SIRI("Siri", OsType.IOS, OsType.MACOS, OsType.TVOS),
+	SIRI("Siri", OsType.IOS, OsType.MACOS, OsType.TVOS, OsType.VISIONOS),
 
 	/**
 	 * Skips the Camera Button pane.
@@ -254,9 +252,12 @@ public enum ProfileSkipItem {
 	WEB_CONTENT_FILTERING("WebContentFiltering", OsType.IOS),
 
 	/**
-	 * Skips Safety and Handling pane
+	 * Skips Safety and Handling pane.
 	 * <p>
 	 * Availability: iOS 18.4+
+	 * <p>
+	 * This pane isn't always skippable because it appears before the device retrieves the Cloud Configuration from the
+	 * server.
 	 */
 	SAFETY_AND_HANDLING("SafetyAndHandling", OsType.IOS),
 
@@ -349,7 +350,7 @@ public enum ProfileSkipItem {
 	/**
 	 * Skips the OS Showcase pane.
 	 * <p>
-	 * Availability: iOS 26+ and macOS 26+
+	 * Availability: iOS 26+ and macOS 26.1+
 	 */
 	OS_SHOWCASE("OSShowcase", OsType.IOS, OsType.MACOS),
 
@@ -359,6 +360,13 @@ public enum ProfileSkipItem {
 	 * Availability: visionOS 26+
 	 */
 	TIPS("Tips", OsType.VISIONOS),
+
+	/**
+	 * Skips the Additional Privacy Settings pane.
+	 * <p>
+	 * Availability: iOS 26.1+
+	 */
+	AGE_BASED_SAFETY_SETTINGS("AgeBasedSafetySettings", OsType.IOS),
 
 	// ---
 	;
