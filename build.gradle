@@ -3,13 +3,9 @@ plugins {
 }
 
 def gitExec = { List<String> args ->
-    var out = new ByteArrayOutputStream()
-    exec {
-        commandLine = ['git'] + args
-        standardOutput = out
-        ignoreExitValue = true
-    }
-    return out.toString().trim()
+    providers.exec {
+        commandLine(['git'] + args)
+    }.standardOutput.asText.get().trim()
 }
 
 ext {
@@ -25,7 +21,7 @@ import com.vanniktech.maven.publish.JavaLibrary
 import com.vanniktech.maven.publish.JavadocJar
 
 allprojects {
-    group 'net.vexelon.mdm'
+    group = 'net.vexelon.mdm'
     ext.copyright = 'Apache License, Version 2.0, Copyright (c) 2025 Petar Petrov'
 
     repositories {
