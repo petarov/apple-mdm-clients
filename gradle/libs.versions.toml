@@ -7,7 +7,7 @@ wiremock = "3.13.2"
 jakarta-annotation-api = "3.0.0"
 slf4j-api = "2.0.17"
 jackson = "2.20.1"
-bouncycastle = "1.82"
+bouncycastle = "1.83"
 
 [libraries]
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
