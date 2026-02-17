@@ -366,6 +366,13 @@ public enum ProfileSkipItem {
 	 */
 	AGE_BASED_SAFETY_SETTINGS("AgeBasedSafetySettings", OsType.IOS),
 
+	/**
+	 * Skips the Age Assurance pane.
+	 * <p>
+	 * Availability: iOS 26.2+
+	 */
+	AGE_ASSURANCE("AgeAssurance", OsType.IOS),
+
 	// ---
 	;
 
