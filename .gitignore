@@ -16,6 +16,7 @@ replay_pid*
 # Test sources
 Main.java
 examples
+*.txt
 
 # Ignore Gradle project-specific cache directory
 .gradle
