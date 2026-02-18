@@ -75,7 +75,7 @@ public class DeviceAssignmentClientTests {
 		// verify the headers are right
 		verify(getRequestedFor(urlEqualTo("/account")).withHeader("x-adm-auth-session",
 						equalTo("1745786035268O1O789F19CF078867E47DC9D9BF4682D021O75CA72ECB87046A1B2239D9CFA4D6771O420397O11Op1OB123AA978976E390FF7693C640C92D3F8F6FE7F6O81E6CAAC7816AD3E12D531496695CF5A"))
-				.withHeader("x-server-protocol-version", equalTo("3"))
+				.withHeader("x-server-protocol-version", equalTo("8"))
 				.withHeader(HttpConsts.HEADER_CONTENT_TYPE, equalTo("application/json;charset=UTF8"))
 				.withHeader(HttpConsts.HEADER_USER_AGENT, equalTo("apple-mdm-device-assignment-v1")));
 

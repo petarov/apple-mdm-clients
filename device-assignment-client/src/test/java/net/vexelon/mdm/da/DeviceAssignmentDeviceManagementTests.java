@@ -11,11 +11,11 @@ import org.junit.jupiter.api.TestInstance;
 
 import java.security.Security;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @WireMockTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -65,7 +65,8 @@ public class DeviceAssignmentDeviceManagementTests {
 				            "color": "MIDNIGHT",
 				            "profile_uuid": "714081EC2F9D9F6CAC4152A79E1006B1",
 				            "profile_status": "",
-				            "device_assigned_by": "max.mustermann@petarov.appleid.com"
+				            "device_assigned_by": "max.mustermann@petarov.appleid.com",
+				            "mdm_migration_deadline":"2026-03-02T09:00:00Z"
 				        }
 				    ],
 				    "fetched_until": "2025-04-28T08:03:42Z",
@@ -94,6 +95,8 @@ public class DeviceAssignmentDeviceManagementTests {
 		assertEquals("pushed", devices.getFirst().profileStatus());
 		assertEquals("max-muster-work@petarov.net", devices.getFirst().deviceAssignedBy());
 		assertEquals("2022-03-03T08:16:27Z", devices.getFirst().deviceAssignedDate());
+		assertTrue(devices.getFirst().mdmMigrationDeadline().isEmpty());
+		assertEquals(OffsetDateTime.MIN, devices.getFirst().mdmMigrationDeadlineDateTime());
 
 		assertEquals("M1525642873", devices.getLast().serialNumber());
 		assertEquals("IPHONE 14 MIDNIGHT 128GB-ZDD", devices.getLast().description());
@@ -107,6 +110,9 @@ public class DeviceAssignmentDeviceManagementTests {
 		assertEquals(OffsetDateTime.MIN, devices.getLast().profileAssignDateTime());
 		assertEquals("", devices.getLast().deviceAssignedDate());
 		assertEquals(OffsetDateTime.MIN, devices.getLast().deviceAssignedDateTime());
+		assertEquals("2026-03-02T09:00:00Z", devices.getLast().mdmMigrationDeadline());
+		assertEquals(OffsetDateTime.of(2026, 3, 2, 9, 0, 0, 0, ZoneOffset.UTC),
+				devices.getLast().mdmMigrationDeadlineDateTime());
 
 		// --- sync test #1
 

@@ -3,7 +3,8 @@ package net.vexelon.mdm.da;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nonnull;
-import net.vexelon.mdm.da.model.*;
+import net.vexelon.mdm.da.model.AccountDetail;
+import net.vexelon.mdm.da.model.Profile;
 import net.vexelon.mdm.da.model.response.*;
 import net.vexelon.mdm.da.util.OAuth1a;
 import net.vexelon.mdm.shared.http.HttpClientWrapper;
@@ -25,7 +26,7 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 
 	private static final String HEADER_X_ADM_AUTH_SESSION              = "X-ADM-Auth-Session";
 	private static final String HEADER_X_SERVER_PROTOCOL_VERSION       = "X-Server-Protocol-Version";
-	private static final String HEADER_X_SERVER_PROTOCOL_VERSION_VALUE = "3";
+	private static final String HEADER_X_SERVER_PROTOCOL_VERSION_VALUE = "8";
 
 	private final HttpClientWrapper           client;
 	private final DeviceAssignmentServerToken serverToken;
