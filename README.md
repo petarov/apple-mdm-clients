@@ -2,7 +2,7 @@
 
 [![Build CI](https://github.com/petarov/apple-mdm-clients/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/petarov/apple-mdm-clients/actions/workflows/build.yml)
 [![Dependabot Updates](https://github.com/petarov/apple-mdm-clients/actions/workflows/dependabot/dependabot-updates/badge.svg?branch=main)](https://github.com/petarov/apple-mdm-clients/actions/workflows/dependabot/dependabot-updates)
-[![Unit Tests](https://camo.githubusercontent.com/12c55bccdcc683a709bf6db4c18d0cc3b421f1302e7b2168638ae2e07c4cd7c8/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f756e697425323074657374732d33372532307061737365642d73756363657373)](https://github.com/petarov/apple-mdm-clients/actions)
+[![Unit Tests](https://camo.githubusercontent.com/6f00c03e994509f40c86b6a78890b0386ef4bb6ec6121bf93b31ec07711a4b27/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f756e697425323074657374732d33392532307061737365642d73756363657373)](https://github.com/petarov/apple-mdm-clients/actions)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=petarov_apple-mdm-clients&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=petarov_apple-mdm-clients)
 
 # Apple MDM clients for Java
@@ -24,7 +24,7 @@ to decrypt the token is also needed.
 
 **Releases**:
 
-    implementation 'net.vexelon.mdm:device-assignment-client:0.0.2'
+    implementation 'net.vexelon.mdm:device-assignment-client:0.0.3'
 
 or
 
@@ -32,7 +32,7 @@ or
 <dependency>
     <groupId>net.vexelon.mdm</groupId>
     <artifactId>device-assignment-client</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
 </dependency>
 ```
 
@@ -82,7 +82,7 @@ no longer maintains it.
 
 **Releases**:
 
-    implementation 'net.vexelon.mdm:legacy-app-and-book-management-client:0.0.2'
+    implementation 'net.vexelon.mdm:legacy-app-and-book-management-client:0.0.3'
 
 or
 
@@ -90,7 +90,7 @@ or
 <dependency>
     <groupId>net.vexelon.mdm</groupId>
     <artifactId>legacy-app-and-book-management-client</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
 </dependency>
 ```
 
