@@ -1,6 +1,20 @@
 CHANGELOG
 ===========
 
+[v0.0.4 (pre-release)](https://github.com/petarov/apple-mdm-clients/releases/tag/0.0.4)
+* Renamed boolean DEP profile fields: drop the `is_` prefix.
+    ```
+    is_return_to_service -> return_to_service
+    is_mandatory -> mandatory
+    is_mdm_removable -> mdm_removable
+    is_multi_user -> multi_user
+    is_supervised -> supervised
+    ```
+* Mark DEP profile `isMandatory` and `isSupervised` as deprecated and `forRemoval`.
+* Bump Jackson from 2.21.0 to 2.21.1
+* Bump Gradle from 9.3.1 to 9.4.0
+* Full Changelog: https://github.com/petarov/apple-mdm-clients/compare/0.0.3...0.0.4
+
 [v0.0.3 (pre-release)](https://github.com/petarov/apple-mdm-clients/releases/tag/0.0.3)
 
 * DEP device: added support for `mdm_migration_deadline` field.
