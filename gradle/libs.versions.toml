@@ -21,6 +21,7 @@ bcpkix-jdk18on = { module = "org.bouncycastle:bcpkix-jdk18on", version.ref = "bo
 
 [bundles]
 jackson = ["jackson-databind", "jackson-datatype-jsr310"]
+bc = ["bcprov-jdk18on", "bcpkix-jdk18on"]
 
 [plugins]
 versions = { id = "com.vanniktech.maven.publish", version = "0.36.0" }
