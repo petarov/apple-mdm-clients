@@ -109,7 +109,7 @@ builder.setServerToken(LegacyAppAndBookToken.create(
 var client = builder.build();
 		
 // Display all assets assigned to this token in ABM
-System.out.println(client.client.fetchAssets(false));
+System.out.println(client.fetchAssets(false));
 
 // Retire a user by its unique id
 System.out.println(client.retireUser(UserIdParam.of("MTY6MzAgZXN0YXIgbm8gbG9jYWwgZGV0ZXJtaW5hZG8=")));
