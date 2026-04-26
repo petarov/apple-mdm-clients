@@ -17,7 +17,7 @@ public enum ProfileSkipItem {
 	 * <p>
 	 * Availability: macOS 11+
 	 */
-	ACCESSIBILITY("Accessibility", OsType.IOS),
+	ACCESSIBILITY("Accessibility", OsType.MACOS),
 
 	/**
 	 * Skips Apple Account setup.
@@ -136,7 +136,7 @@ public enum ProfileSkipItem {
 	 * <p>
 	 * Availability: iOS 7+, macOS 10.11+, tvOS 10.2+, visionOS 26+
 	 */
-	LOCATION("Location", OsType.IOS, OsType.MACOS),
+	LOCATION("Location", OsType.IOS, OsType.MACOS, OsType.TVOS, OsType.VISIONOS),
 
 	/**
 	 * Skips the mandatory software update screen.
@@ -316,13 +316,6 @@ public enum ProfileSkipItem {
 	 * Availability: tvOS 11.4+
 	 */
 	TV_ROOM("TVRoom", OsType.TVOS),
-
-	/**
-	 * Skips Wallpaper setup.
-	 * <p>
-	 * Availability: macOS 14.1+
-	 */
-	@Deprecated(since = "macOS 26", forRemoval = true) WALLPAPER("Wallpaper", true, OsType.MACOS),
 
 	/**
 	 * Skips the "Unlock with Apple Watch" screen.

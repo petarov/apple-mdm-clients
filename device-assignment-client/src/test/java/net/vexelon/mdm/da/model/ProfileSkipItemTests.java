@@ -28,12 +28,11 @@ public class ProfileSkipItemTests {
 		assertTrue(ProfileSkipItem.TIPS.isVisionOS());
 
 		assertTrue(ProfileSkipItem.ZOOM.isDeprecated());
-		assertTrue(ProfileSkipItem.WALLPAPER.isDeprecated());
 	}
 
 	@Test
-	void test_unknown_skip_items() throws JsonProcessingException {
-		var json = "{ \"skip_setup_items\": [\"MessagingActivationUsingPhoneNumber\", \"OSShowcase\", \"DisplayTone\"] }";
+	void test_deprecated_skip_items() throws JsonProcessingException {
+		var json = "{ \"skip_setup_items\": [\"MessagingActivationUsingPhoneNumber\", \"OSShowcase\", \"DisplayTone\", \"HomeButtonSensitivity\"] }";
 		var profile = JsonUtil.createObjectMapper().readValue(json, Profile.class);
 
 		assertEquals(2, profile.skipSetupItems().size());
@@ -43,7 +42,7 @@ public class ProfileSkipItemTests {
 	}
 
 	@Test
-	void test_no_skip_items() throws JsonProcessingException {
+	void test_empty_skip_items() throws JsonProcessingException {
 		var profile = JsonUtil.createObjectMapper().readValue("{ \"skip_setup_items\": [] }", Profile.class);
 		assertEquals(0, profile.skipSetupItems().size());
 
