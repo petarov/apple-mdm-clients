@@ -150,9 +150,7 @@ public class DeviceAssignmentProfileManagementTests {
 								"WatchMigration",
 								"WebContentFiltering",
 								"Welcome",
-								"SafetyAndHandling",
-								"AgeBasedSafetySettings",
-								"AgeAssurance"
+								"SafetyAndHandling"
 						    ],
 						    "profile_uuid": "95C2189CB0EFB3192BC7B3C555091D22",
 						    "profile_name": "MDM petarov"
@@ -175,7 +173,7 @@ public class DeviceAssignmentProfileManagementTests {
 		assertTrue(response.isMultiUser());
 		assertTrue(response.isSupervised()); // default must be `true`
 		assertTrue(response.isAutoAdvanceSetup());
-		assertEquals(44, response.skipSetupItems().size());
+		assertEquals(42, response.skipSetupItems().size());
 		assertEquals("95C2189CB0EFB3192BC7B3C555091D22", response.profileUuid());
 		assertEquals("MDM petarov", response.profileName());
 
