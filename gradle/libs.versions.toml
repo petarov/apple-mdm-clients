@@ -6,7 +6,7 @@ junit-jupiter = "6.1.0"
 wiremock = "3.13.2"
 jakarta-annotation-api = "3.0.0"
 slf4j-api = "2.0.18"
-jackson = "2.21.3"
+jackson = "2.22.0"
 bouncycastle = "1.84"
 
 [libraries]
