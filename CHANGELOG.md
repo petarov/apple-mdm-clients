@@ -1,6 +1,21 @@
 CHANGELOG
 ===========
 
+[v1.0.0](https://github.com/petarov/apple-mdm-clients/releases/tag/1.0.0)
+
+* DEP skip items: removed `AgeAssurance`.
+* DEP skip items: removed `AgeBasedSafetySettings`.
+* DEP skip items: removed deprecated `Wallpaper`.
+* DEP skip items: `Accessibility` now scoped to macOS.
+* DEP skip items: `Location` extended to tvOS and visionOS.
+* Fixed a broken code example in the README.
+* Bump Jackson from 2.21.1 to 2.21.4
+* Bump Bouncycastle from 1.83 to 1.84
+* Bump SLF4J API from 2.0.17 to 2.0.18
+* Bump JUnit Jupiter from 6.0.3 to 6.1.0
+* Bump Gradle from 9.4.0 to 9.5.1
+* Full Changelog: https://github.com/petarov/apple-mdm-clients/compare/0.0.4...1.0.0
+
 [v0.0.4 (pre-release)](https://github.com/petarov/apple-mdm-clients/releases/tag/0.0.4)
 * Renamed boolean DEP profile fields: drop the `is_` prefix.
     ```

@@ -24,7 +24,7 @@ to decrypt the token is also needed.
 
 **Releases**:
 
-    implementation 'net.vexelon.mdm:device-assignment-client:0.0.4'
+    implementation 'net.vexelon.mdm:device-assignment-client:1.0.0'
 
 or
 
@@ -32,7 +32,7 @@ or
 <dependency>
     <groupId>net.vexelon.mdm</groupId>
     <artifactId>device-assignment-client</artifactId>
-    <version>0.0.4</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
@@ -82,7 +82,7 @@ no longer maintains it.
 
 **Releases**:
 
-    implementation 'net.vexelon.mdm:legacy-app-and-book-management-client:0.0.4'
+    implementation 'net.vexelon.mdm:legacy-app-and-book-management-client:1.0.0'
 
 or
 
@@ -90,7 +90,7 @@ or
 <dependency>
     <groupId>net.vexelon.mdm</groupId>
     <artifactId>legacy-app-and-book-management-client</artifactId>
-    <version>0.0.4</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
