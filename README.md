@@ -11,7 +11,9 @@ Java clients for Apple's Mobile Device Management (MDM) services.
 
 `Java 21` is required, with the goal to use as [few dependencies](gradle/libs.versions.toml) as possible.
 
-## Device Assignment client
+## Device Assignment client 
+
+[![MvnRepository](https://badges.mvnrepository.com/badge/net.vexelon.mdm/device-assignment-client/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.vexelon.mdm/device-assignment-client)
 
 Manage your organization's Apple Business Manager (`ABM`) devices. Automated Device Enrollment `(ADE)`, previously known 
 as "The Device Enrollment Program" `(DEP)`, allows you to create device enrollment profiles and assign them to your 
@@ -20,13 +22,9 @@ organization's devices.
 To use the Java client, you must already have a valid device assignment token created in ABM. The private key required 
 to decrypt the token is also needed.
 
-### Getting the library
-
-**Releases**:
+### Releases
 
     implementation 'net.vexelon.mdm:device-assignment-client:1.0.0'
-
-or
 
 ```xml
 <dependency>
@@ -36,11 +34,11 @@ or
 </dependency>
 ```
 
-**Snapshots**: 
+### Snapshots
 
- - Latest [SNAPSHOT](https://github.com/petarov/apple-mdm-clients/packages/2517819) built from the `main` branch. This requires an [authenticated](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry) GitHub user.
+Latest [SNAPSHOT](https://github.com/petarov/apple-mdm-clients/packages/2517819) built from the `main` branch. This requires an [authenticated](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry) GitHub user.
 
-### Example 
+### Code Example 
 
 ```java
 var builder = DeviceAssignmentClient.newBuilder();
@@ -75,16 +73,14 @@ See the complete list of service API calls on Apple's [Device Assignment](https:
 
 ## Legacy App and Book Management client
 
+[![MvnRepository](https://badges.mvnrepository.com/badge/net.vexelon.mdm/legacy-app-and-book-management-client/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.vexelon.mdm/legacy-app-and-book-management-client)
+
 Manage apps and books for students and employees. This API is still functional, however, Apple has deprecated it and 
 no longer maintains it.
 
-### Getting the library
-
-**Releases**:
+### Releases
 
     implementation 'net.vexelon.mdm:legacy-app-and-book-management-client:1.0.0'
-
-or
 
 ```xml
 <dependency>
@@ -94,11 +90,11 @@ or
 </dependency>
 ```
 
-**Snapshots**: 
+### Snapshots
 
- - Latest [SNAPSHOT](https://github.com/petarov/apple-mdm-clients/packages/2517820) built from the `main` branch. This requires an [authenticated](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry) GitHub user.
+Latest [SNAPSHOT](https://github.com/petarov/apple-mdm-clients/packages/2517820) built from the `main` branch. This requires an [authenticated](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry) GitHub user.
 
-### Example 
+### Code Example 
 
 ```java
 var builder = LegacyAppAndBookClient.newBuilder();
