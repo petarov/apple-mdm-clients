@@ -224,4 +224,15 @@ public interface DeviceAssignmentClient {
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/assign-account-driven-enrollment-profile">Assign Account-Driven Enrollment Service Discovery</a>
 	 */
 	void assignAccountDrivenEnrollmentProfile(String mdmServiceDiscoveryUrl);
+
+	/**
+	 * Fetches the Account-Driven Enrollment profile of the MDM server, which includes information about service
+	 * discovery for account-driven enrollment.
+	 *
+	 * @return optional-wrapped {@link GetAccountDrivenEnrollmentProfileResponse}, or empty if no profile has been
+	 * assigned
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/fetch-account-driven-enrollment-profile">Fetch Account-Driven Enrollment Service Discovery</a>
+	 */
+	@Nonnull
+	Optional<GetAccountDrivenEnrollmentProfileResponse> fetchAccountDrivenEnrollmentProfile();
 }

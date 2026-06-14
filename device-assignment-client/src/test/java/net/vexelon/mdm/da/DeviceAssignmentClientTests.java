@@ -13,7 +13,8 @@ import org.junit.jupiter.api.TestInstance;
 import java.security.Security;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 @WireMockTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -120,6 +121,33 @@ public class DeviceAssignmentClientTests {
 		verify(postRequestedFor(urlEqualTo("/account-driven-enrollment/profile")).withRequestBody(equalToJson("""
 				{"mdm_service_discovery_url": "https://node.petarov.net/discovery"}
 				""")));
+	}
+
+	@Test
+	void test_fetch_account_driven_enrollment_profile(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlEqualTo("/account-driven-enrollment/profile")).willReturn(
+				aResponse().withStatus(200).withHeaders(headers).withBody("""
+						{
+						    "mdm_service_discovery_url": "https://mdm.example.com/discovery",
+						    "last_updated_timestamp": "2026-06-14T17:00:00Z"
+						}
+						""".stripIndent())));
+
+		var profile = TestUtil.createClient(wm).fetchAccountDrivenEnrollmentProfile();
+
+		assertTrue(profile.isPresent());
+		assertEquals("https://mdm.example.com/discovery", profile.get().mdmServiceDiscoveryUrl());
+		assertEquals("2026-06-14T17:00:00Z", profile.get().lastUpdatedTimestamp());
+	}
+
+	@Test
+	void test_fetch_account_driven_enrollment_profile_not_found(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlEqualTo("/account-driven-enrollment/profile")).willReturn(
+				aResponse().withStatus(404).withHeaders(headers).withBody("NOT_FOUND")));
+
+		var profile = TestUtil.createClient(wm).fetchAccountDrivenEnrollmentProfile();
+
+		assertFalse(profile.isPresent());
 	}
 
 	@Test

@@ -210,4 +210,19 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 		execute(client.createRequestBuilder(client.complementURI("/account-driven-enrollment/profile"))
 				.POST(ofBody(Map.of("mdm_service_discovery_url", mdmServiceDiscoveryUrl))));
 	}
+
+	@Nonnull
+	@Override
+	public Optional<GetAccountDrivenEnrollmentProfileResponse> fetchAccountDrivenEnrollmentProfile() {
+		try {
+			return Optional.of(
+					execute(client.createRequestBuilder(client.complementURI("/account-driven-enrollment/profile"))
+							.GET(), GetAccountDrivenEnrollmentProfileResponse.class));
+		} catch (DeviceAssignmentException e) {
+			if (e.getCode() == HttpConsts.STATUS_NOT_FOUND) {
+				return Optional.empty();
+			}
+			throw e;
+		}
+	}
 }
