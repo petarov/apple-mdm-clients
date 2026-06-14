@@ -1,9 +1,9 @@
 package net.vexelon.mdm.shared.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.Nonnull;
 import net.vexelon.mdm.shared.config.MdmClientBuilder;
 import net.vexelon.mdm.shared.util.JsonUtil;
-import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -156,6 +156,37 @@ public class HttpClientWrapper {
 			case "deflate" -> new DeflaterInputStream(response.body());
 			default -> Objects.requireNonNullElse(response.body(), InputStream.nullInputStream());
 		};
+	}
+
+	public void send(@Nonnull HttpRequest request) {
+		HttpResponse<InputStream> response;
+		try {
+			debugReqHeaders(request);
+			response = getClient().send(request, HttpResponse.BodyHandlers.ofInputStream());
+		} catch (IOException e) {
+			throw new HttpClientWrapperException("I/O error while sending request", e);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new HttpClientWrapperException("Send request interrupted", e);
+		}
+
+		try {
+			if (isResponseOk(response.statusCode())) {
+				try (var __ = decodeResponseBody(response)) {
+					debugRespHeaders(response, "");
+				}
+			} else {
+				debugRespHeaders(response, "");
+				try (var input = decodeResponseBody(response)) {
+					throw new HttpClientWrapperException(getRequestResponseLine(request, response),
+							response.statusCode(), new String(input.readAllBytes(), StandardCharsets.UTF_8),
+							response.headers().map().entrySet().stream().collect(
+									Collectors.toMap(Map.Entry::getKey, entry -> new ArrayList<>(entry.getValue()))));
+				}
+			}
+		} catch (IOException e) {
+			throw new HttpClientWrapperException("Error reading response", e);
+		}
 	}
 
 	@Nonnull

@@ -60,7 +60,7 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 		sessionId = sessionResponse.authSessionToken();
 	}
 
-	private <T> T execute(HttpRequest.Builder requestBuilder, Class<T> clazz) {
+	private <T> T executeFn(HttpRequest.Builder requestBuilder, java.util.function.Function<HttpRequest, T> sender) {
 		if (sessionId == null) {
 			refreshSessionId();
 		}
@@ -72,7 +72,7 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 		for (; ; ) {
 			try {
 				requestBuilder.setHeader(HEADER_X_ADM_AUTH_SESSION, sessionId);
-				return client.send(requestBuilder.build(), clazz);
+				return sender.apply(requestBuilder.build());
 			} catch (HttpClientWrapperException e) {
 				if (client.isResponseUnauthorized(e.getStatusCode()) && !retry) {
 					logger.info("Refreshing expired auth token ...");
@@ -85,6 +85,17 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 				}
 			}
 		}
+	}
+
+	private <T> T execute(HttpRequest.Builder requestBuilder, Class<T> clazz) {
+		return executeFn(requestBuilder, req -> client.send(req, clazz));
+	}
+
+	private void execute(HttpRequest.Builder requestBuilder) {
+		executeFn(requestBuilder, req -> {
+			client.send(req);
+			return null;
+		});
 	}
 
 	private <T> HttpRequest.BodyPublisher ofBody(T obj) {
@@ -192,5 +203,11 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	public SeedBuildTokenResponse fetchBetaEnrollmentTokens() {
 		return execute(client.createRequestBuilder(client.complementURI("/os-beta-enrollment/tokens")).GET(),
 				SeedBuildTokenResponse.class);
+	}
+
+	@Override
+	public void assignAccountDrivenEnrollmentProfile(String mdmServiceDiscoveryUrl) {
+		execute(client.createRequestBuilder(client.complementURI("/account-driven-enrollment/profile"))
+				.POST(ofBody(Map.of("mdm_service_discovery_url", mdmServiceDiscoveryUrl))));
 	}
 }

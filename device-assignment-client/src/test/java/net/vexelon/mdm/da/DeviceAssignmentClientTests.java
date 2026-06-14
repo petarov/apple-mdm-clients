@@ -111,6 +111,18 @@ public class DeviceAssignmentClientTests {
 	}
 
 	@Test
+	void test_assign_account_driven_enrollment_profile(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(post(urlEqualTo("/account-driven-enrollment/profile")).willReturn(
+				aResponse().withStatus(200).withHeaders(headers)));
+
+		TestUtil.createClient(wm).assignAccountDrivenEnrollmentProfile("https://node.petarov.net/discovery");
+
+		verify(postRequestedFor(urlEqualTo("/account-driven-enrollment/profile")).withRequestBody(equalToJson("""
+				{"mdm_service_discovery_url": "https://node.petarov.net/discovery"}
+				""")));
+	}
+
+	@Test
 	void test_fetch_beta_enrollment_tokens(WireMockRuntimeInfo wm) throws Exception {
 		stubFor(get(urlEqualTo("/os-beta-enrollment/tokens")).willReturn(
 				aResponse().withStatus(200).withHeaders(headers).withBody("""

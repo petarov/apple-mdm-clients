@@ -215,4 +215,13 @@ public interface DeviceAssignmentClient {
 	 */
 	@Nonnull
 	SeedBuildTokenResponse fetchBetaEnrollmentTokens();
+
+	/**
+	 * Assigns the Account-Driven Enrollment profile, defining the MDM Service Discovery URL the system
+	 * redirects the user to during account-driven enrollment.
+	 *
+	 * @param mdmServiceDiscoveryUrl the MDM Service Discovery URL (must use the HTTPS scheme)
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/assign-account-driven-enrollment-profile">Assign Account-Driven Enrollment Service Discovery</a>
+	 */
+	void assignAccountDrivenEnrollmentProfile(String mdmServiceDiscoveryUrl);
 }
