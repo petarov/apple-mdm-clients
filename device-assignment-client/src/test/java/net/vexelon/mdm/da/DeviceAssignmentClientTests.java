@@ -124,6 +124,16 @@ public class DeviceAssignmentClientTests {
 	}
 
 	@Test
+	void test_remove_account_driven_enrollment_profile(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(delete(urlEqualTo("/account-driven-enrollment/profile")).willReturn(
+				aResponse().withStatus(200).withHeaders(headers)));
+
+		TestUtil.createClient(wm).removeAccountDrivenEnrollmentProfile();
+
+		verify(deleteRequestedFor(urlEqualTo("/account-driven-enrollment/profile")));
+	}
+
+	@Test
 	void test_fetch_account_driven_enrollment_profile(WireMockRuntimeInfo wm) throws Exception {
 		stubFor(get(urlEqualTo("/account-driven-enrollment/profile")).willReturn(
 				aResponse().withStatus(200).withHeaders(headers).withBody("""

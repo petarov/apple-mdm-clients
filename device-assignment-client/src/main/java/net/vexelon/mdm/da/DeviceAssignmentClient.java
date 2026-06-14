@@ -217,8 +217,8 @@ public interface DeviceAssignmentClient {
 	SeedBuildTokenResponse fetchBetaEnrollmentTokens();
 
 	/**
-	 * Assigns the Account-Driven Enrollment profile, defining the MDM Service Discovery URL the system
-	 * redirects the user to during account-driven enrollment.
+	 * Assigns the Account-Driven Enrollment profile, defining the MDM Service Discovery URL the system redirects the
+	 * user to during account-driven enrollment.
 	 *
 	 * @param mdmServiceDiscoveryUrl the MDM Service Discovery URL (must use the HTTPS scheme)
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/assign-account-driven-enrollment-profile">Assign Account-Driven Enrollment Service Discovery</a>
@@ -235,4 +235,12 @@ public interface DeviceAssignmentClient {
 	 */
 	@Nonnull
 	Optional<GetAccountDrivenEnrollmentProfileResponse> fetchAccountDrivenEnrollmentProfile();
+
+	/**
+	 * Removes the Account-Driven Enrollment profile of the MDM server, which includes information about service
+	 * discovery for account-driven enrollment.
+	 *
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/remove-account-driven-enrollment-profile">Remove Account-Driven Enrollment Profile</a>
+	 */
+	void removeAccountDrivenEnrollmentProfile();
 }

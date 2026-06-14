@@ -225,4 +225,10 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 			throw e;
 		}
 	}
+
+	@Override
+	public void removeAccountDrivenEnrollmentProfile() {
+		execute(client.createRequestBuilder(client.complementURI("/account-driven-enrollment/profile"))
+				.method("DELETE", HttpRequest.BodyPublishers.noBody()));
+	}
 }
