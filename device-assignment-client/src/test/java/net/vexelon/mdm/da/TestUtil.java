@@ -12,7 +12,7 @@ public final class TestUtil {
 		var privateKeyInput = TestUtil.class.getResourceAsStream("/apple-mdm-client-tests-1.der");
 
 		var builder = DeviceAssignmentClient.newBuilder();
-		builder.setAppleHost(wm.getHttpBaseUrl());
+		builder.setAppleServiceUrl(wm.getHttpBaseUrl());
 		builder.setUserAgent("apple-mdm-device-assignment-v1");
 		builder.setServerToken(DeviceAssignmentServerToken.create(serverTokenInput,
 				DeviceAssignmentPrivateKey.createFromDER(privateKeyInput)));

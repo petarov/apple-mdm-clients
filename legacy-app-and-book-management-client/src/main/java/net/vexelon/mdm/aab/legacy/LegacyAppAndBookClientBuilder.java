@@ -1,8 +1,8 @@
 package net.vexelon.mdm.aab.legacy;
 
+import jakarta.annotation.Nonnull;
 import net.vexelon.mdm.shared.config.MdmClientBuilder;
 import net.vexelon.mdm.shared.http.HttpClientWrapper;
-import jakarta.annotation.Nonnull;
 
 import java.security.SecureRandom;
 import java.util.Objects;
@@ -12,7 +12,6 @@ public class LegacyAppAndBookClientBuilder
 
 	private static final String DEFAULT_APPLE_PRODUCTION_HOST = "https://vpp.itunes.apple.com/mdm";
 
-	private String                appleHost;
 	private LegacyAppAndBookToken serverToken;
 
 	LegacyAppAndBookClientBuilder() {
@@ -22,8 +21,8 @@ public class LegacyAppAndBookClientBuilder
 	 * Sets an Apple host other than the default {@link LegacyAppAndBookClientBuilder#DEFAULT_APPLE_PRODUCTION_HOST}.
 	 */
 	@Nonnull
-	public LegacyAppAndBookClientBuilder setAppleHost(String appleHost) {
-		return this.setServiceUrl(appleHost);
+	public LegacyAppAndBookClientBuilder setAppleServiceUrl(String serviceUrl) {
+		return this.setServiceUrl(serviceUrl);
 	}
 
 	/**

@@ -17,7 +17,7 @@ public final class TestUtil {
 		var sTokenInput = TestUtil.class.getResourceAsStream("/apple-mdm-client-tests-stoken-1.stoken");
 
 		var builder = LegacyAppAndBookClient.newBuilder();
-		builder.setAppleHost(wm.getHttpBaseUrl());
+		builder.setAppleServiceUrl(wm.getHttpBaseUrl());
 		builder.setUserAgent("apple-mdm-legacy-aab-v1");
 		builder.setServerToken(LegacyAppAndBookToken.create(sTokenInput));
 

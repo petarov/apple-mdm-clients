@@ -1,8 +1,8 @@
 package net.vexelon.mdm.da;
 
+import jakarta.annotation.Nonnull;
 import net.vexelon.mdm.shared.config.MdmClientBuilder;
 import net.vexelon.mdm.shared.http.HttpClientWrapper;
-import jakarta.annotation.Nonnull;
 
 import java.security.SecureRandom;
 import java.util.Objects;
@@ -12,7 +12,6 @@ public class DeviceAssignmentClientBuilder
 
 	private static final String DEFAULT_APPLE_PRODUCTION_HOST = "https://mdmenrollment.apple.com";
 
-	private String                      appleHost;
 	private DeviceAssignmentServerToken serverToken;
 
 	DeviceAssignmentClientBuilder() {
@@ -22,8 +21,8 @@ public class DeviceAssignmentClientBuilder
 	 * Sets an Apple host other than the default {@link DeviceAssignmentClientBuilder#DEFAULT_APPLE_PRODUCTION_HOST}.
 	 */
 	@Nonnull
-	public DeviceAssignmentClientBuilder setAppleHost(String appleHost) {
-		return this.setServiceUrl(appleHost);
+	public DeviceAssignmentClientBuilder setAppleServiceUrl(String serviceUrl) {
+		return this.setServiceUrl(serviceUrl);
 	}
 
 	/**
