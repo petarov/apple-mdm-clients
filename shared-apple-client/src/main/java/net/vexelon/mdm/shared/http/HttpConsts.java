@@ -16,5 +16,6 @@ public final class HttpConsts {
 	public static final String HEADER_ACCEPT_ENCODING     = "accept-encoding";
 	public static final String HEADER_PROXY_AUTHORIZATION = "proxy-authorization";
 
-	public static final String HEADER_VALUE_APPLICATION_JSON_UTF8 = "application/json;charset=UTF8";
+	public static final String HEADER_VALUE_APPLICATION_JSON_UTF8        = "application/json;charset=UTF8";
+	public static final String HEADER_VALUE_APPLICATION_FORM_URL_ENCODED = "application/x-www-form-urlencoded";
 }
