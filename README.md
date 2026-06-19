@@ -2,7 +2,6 @@
 
 [![Build CI](https://github.com/petarov/apple-mdm-clients/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/petarov/apple-mdm-clients/actions/workflows/build.yml)
 [![Dependabot Updates](https://github.com/petarov/apple-mdm-clients/actions/workflows/dependabot/dependabot-updates/badge.svg?branch=main)](https://github.com/petarov/apple-mdm-clients/actions/workflows/dependabot/dependabot-updates)
-[![Unit Tests](https://camo.githubusercontent.com/6f00c03e994509f40c86b6a78890b0386ef4bb6ec6121bf93b31ec07711a4b27/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f756e697425323074657374732d33392532307061737365642d73756363657373)](https://github.com/petarov/apple-mdm-clients/actions)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=petarov_apple-mdm-clients&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=petarov_apple-mdm-clients)
 
 # Apple MDM clients for Java
@@ -11,137 +10,15 @@ Java clients for Apple's Mobile Device Management (MDM) services.
 
 `Java 21` is required, with the goal to use as [few dependencies](gradle/libs.versions.toml) as possible.
 
-## Device Assignment client 
+## Libraries
 
-[![MvnRepository](https://badges.mvnrepository.com/badge/net.vexelon.mdm/device-assignment-client/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.vexelon.mdm/device-assignment-client)
+| Library | Latest version | Artifact | Status |
+|---|---|---|---|
+| [Device Assignment client](device-assignment-client/README.md) | `1.0.0` | [![MvnRepository](https://badges.mvnrepository.com/badge/net.vexelon.mdm/device-assignment-client/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.vexelon.mdm/device-assignment-client) | Stable |
+| [Legacy App and Book Management client](legacy-app-and-book-management-client/README.md) | `1.0.0` | [![MvnRepository](https://badges.mvnrepository.com/badge/net.vexelon.mdm/legacy-app-and-book-management-client/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.vexelon.mdm/legacy-app-and-book-management-client) | Stable |
+| [Apple Business client](apple-business-client/README.md) | _snapshot only_ | — | In development |
 
-Manage your organization's Apple Business Manager (`ABM`) devices. Automated Device Enrollment `(ADE)`, previously known 
-as "The Device Enrollment Program" `(DEP)`, allows you to create device enrollment profiles and assign them to your 
-organization's devices.
-
-To use the Java client, you must already have a valid device assignment token created in ABM. The private key required 
-to decrypt the token is also needed.
-
-### Releases
-
-    implementation 'net.vexelon.mdm:device-assignment-client:1.0.0'
-
-```xml
-<dependency>
-    <groupId>net.vexelon.mdm</groupId>
-    <artifactId>device-assignment-client</artifactId>
-    <version>1.0.0</version>
-</dependency>
-```
-
-### Snapshots
-
-Latest [SNAPSHOT](https://github.com/petarov/apple-mdm-clients/packages/2517819) built from the `main` branch. This requires an [authenticated](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry) GitHub user.
-
-### Code Example 
-
-```java
-var builder = DeviceAssignmentClient.newBuilder();
-builder.setUserAgent("my-mdm-app-dep-v1");
-builder.setServerToken(DeviceAssignmentServerToken.create(
-		Path.of("<path-to-token>/token_file_smime.p7m"), 
-		DeviceAssignmentPrivateKey.createFromDER(
-				Path.of("<path-to-private-key>/private.der"))
-
-var client = builder.build();
-		
-// Display account information
-System.out.println(client.fetchAccount());
-
-// Create a new profile and assign 2 device serial numbers to it
-var response = client.createProfile(new Profile.ProfileBuilder()
-    .setProfileName("mdm-server-01-sales-profile")
-    .setUrl("https://mdm-server-01.local")
-    .setDepartment("Sales")
-    .setAwaitDeviceConfigured(true)
-    .setMdmRemovable(true)
-    .setSupportPhoneNumber("555-555-555")
-    .setSupportEmailAddress("sales-it@example.org")
-    .setDevices(Set.of("A9C1R3Q8KJA9", "B112R4L8KJC7"))
-    .setSkipSetupItems(EnumSet.of(ProfileSkipItem.ENABLE_LOCKDOWN_MODE, 
-        ProfileSkipItem.TAP_TO_SETUP, ProfileSkipItem.ICLOUD_DIAGNOSTICS, 
-        ProfileSkipItem.ICLOUD_STORAGE)).build());
-System.out.println(response.profileUuid());
-```
-
-See the complete list of service API calls on Apple's [Device Assignment](https://developer.apple.com/documentation/devicemanagement/device-assignment) page.
-
-## Legacy App and Book Management client
-
-[![MvnRepository](https://badges.mvnrepository.com/badge/net.vexelon.mdm/legacy-app-and-book-management-client/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.vexelon.mdm/legacy-app-and-book-management-client)
-
-Manage apps and books for students and employees. This API is still functional, however, Apple has deprecated it and 
-no longer maintains it.
-
-### Releases
-
-    implementation 'net.vexelon.mdm:legacy-app-and-book-management-client:1.0.0'
-
-```xml
-<dependency>
-    <groupId>net.vexelon.mdm</groupId>
-    <artifactId>legacy-app-and-book-management-client</artifactId>
-    <version>1.0.0</version>
-</dependency>
-```
-
-### Snapshots
-
-Latest [SNAPSHOT](https://github.com/petarov/apple-mdm-clients/packages/2517820) built from the `main` branch. This requires an [authenticated](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry) GitHub user.
-
-### Code Example 
-
-```java
-var builder = LegacyAppAndBookClient.newBuilder();
-builder.setUserAgent("my-mdm-app-vpp-v1");
-builder.setServerToken(LegacyAppAndBookToken.create(
-        Path.of("<path-to-token>/sToken_for_your_company.vpptoken")));
-
-var client = builder.build();
-		
-// Display all assets assigned to this token in ABM
-System.out.println(client.fetchAssets(false));
-
-// Retire a user by its unique id
-System.out.println(client.retireUser(UserIdParam.of("MTY6MzAgZXN0YXIgbm8gbG9jYWwgZGV0ZXJtaW5hZG8=")));
-```
-
-## Apple Business client
-
-Automate device management activities, view device information, and manage users and user groups in Apple Business.
-
-See Apple's [Apple Business API](https://developer.apple.com/documentation/applebusinessapi) documentation for the full list of supported API calls.
-
-### Snapshots
-
-Latest [SNAPSHOT](https://github.com/petarov/apple-mdm-clients/packages) built from the `main` branch. This requires an [authenticated](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry) GitHub user.
-
-### Code Example
-
-```java
-var builder = AppleBusinessClient.newBuilder();
-builder.setClientId("BUSINESSAPI.<your-client-id>");
-builder.setKeyId("<your-key-id>");
-builder.setPrivateKey(AppleBusinessPrivateKey.createFromPEM(
-        Path.of("<path-to-private-key>/private_key.pem")));
-
-var client = builder.build();
-
-// Display all devices in the organization
-var response = client.fetchOrgDevices();
-response.data().forEach(device -> System.out.println(
-        device.id() + " | " + device.attributes().productFamily() + " | " + device.attributes().status()));
-
-var paging = response.meta().paging();
-if (!paging.nextCursor().isBlank()) {
-    System.out.println("Next cursor: " + paging.nextCursor());
-}
-```
+> Snapshot builds are published to GitHub Packages. See each library's README for the package link and authentication requirements.
 
 # Proxy support
 
@@ -172,4 +49,3 @@ Requires [JDK 21](https://adoptium.net/temurin/releases/) or later
 # License
 
 [Apache 2.0](LICENSE)
-
