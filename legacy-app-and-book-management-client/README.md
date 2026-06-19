@@ -1,4 +1,4 @@
-# Legacy App and Book Management client
+# Legacy App and Book Management Client
 
 [![MvnRepository](https://badges.mvnrepository.com/badge/net.vexelon.mdm/legacy-app-and-book-management-client/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.vexelon.mdm/legacy-app-and-book-management-client)
 

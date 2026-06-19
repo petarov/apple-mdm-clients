@@ -1,4 +1,4 @@
-# Apple Business client
+# Apple Business Client
 
 Automate device management activities, view device information, and manage users and user groups using the Apple Business API.
 

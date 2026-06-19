@@ -1,4 +1,4 @@
-# Device Assignment client
+# Device Assignment Client
 
 [![MvnRepository](https://badges.mvnrepository.com/badge/net.vexelon.mdm/device-assignment-client/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.vexelon.mdm/device-assignment-client)
 
