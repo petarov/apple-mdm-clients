@@ -1,4 +1,4 @@
-package net.vexelon.mdm.ab.model;
+package net.vexelon.mdm.ab.model.devices;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;

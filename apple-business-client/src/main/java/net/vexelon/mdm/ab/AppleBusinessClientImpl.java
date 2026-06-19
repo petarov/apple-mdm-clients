@@ -3,7 +3,7 @@ package net.vexelon.mdm.ab;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nonnull;
-import net.vexelon.mdm.ab.model.response.OrgDevicesResponse;
+import net.vexelon.mdm.ab.model.response.device.OrgDevicesResponse;
 import net.vexelon.mdm.shared.http.HttpClientWrapper;
 import net.vexelon.mdm.shared.http.HttpClientWrapperException;
 import net.vexelon.mdm.shared.http.HttpConsts;

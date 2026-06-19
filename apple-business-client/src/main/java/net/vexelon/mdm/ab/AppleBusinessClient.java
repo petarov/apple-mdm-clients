@@ -1,7 +1,7 @@
 package net.vexelon.mdm.ab;
 
 import jakarta.annotation.Nonnull;
-import net.vexelon.mdm.ab.model.response.OrgDevicesResponse;
+import net.vexelon.mdm.ab.model.response.device.OrgDevicesResponse;
 
 import java.util.List;
 
