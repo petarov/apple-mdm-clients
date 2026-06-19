@@ -24,12 +24,11 @@ public interface AppleBusinessClient {
 	}
 
 	/**
-	 * Returns a paginated list of devices enrolled in the organization via Automated Device Enrollment.
+	 * Fetches a list of devices in an organization that enroll using Automated Device Enrollment.
 	 *
-	 * @param fields sparse field set - when non-empty only the listed attribute names are returned;
-	 *               pass an empty list to receive all fields
+	 * @param fields the fields to return for included related types; pass an empty list to receive all fields
 	 * @param limit  maximum number of devices per page (1–1000); pass {@code 0} to use the server default
-	 * @return the response containing the device list and paging metadata
+	 * @return response that contains a list of organization device resources
 	 * @see <a href="https://developer.apple.com/documentation/applebusinessapi/get-org-devices">Get Organization Devices</a>
 	 */
 	@Nonnull
