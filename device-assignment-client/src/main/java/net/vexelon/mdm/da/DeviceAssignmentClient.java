@@ -10,10 +10,16 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Device assignment client interface that abstracts the implementation.
+ * Client interface for Apple's Device Assignment API (Automated Device Enrollment / ADE).
  * <p>
- * The underlying implementation is not thread-safe. If multiple threads access the client concurrently, it <i>must</i>
- * be synchronized externally. It is recommended to use a new client instance per thread.
+ * Allows creating and managing enrollment profiles, assigning them to devices, and querying the set of
+ * devices assigned to the MDM server. Authenticates using an OAuth 1.0a server token obtained from
+ * Apple Business Manager.
+ * <p>
+ * The underlying implementation is not thread-safe. Concurrent access from multiple threads requires
+ * external synchronization.
+ *
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/device-assignment">Device Assignment</a>
  */
 public interface DeviceAssignmentClient {
 
@@ -35,7 +41,9 @@ public interface DeviceAssignmentClient {
 	String PROFILE_STATUS_REMOVED  = "removed";
 
 	/**
-	 * @return new {@link DeviceAssignmentClientBuilder} instance
+	 * Creates a new builder for configuring and constructing a {@link DeviceAssignmentClient}.
+	 *
+	 * @return a new {@link DeviceAssignmentClientBuilder} instance
 	 */
 	@Nonnull
 	static DeviceAssignmentClientBuilder newBuilder() {
@@ -71,6 +79,10 @@ public interface DeviceAssignmentClient {
 	DevicesResponse fetchDevices(String cursor, int limit);
 
 	/**
+	 * Fetches all assigned devices starting from the beginning, using the default limit of
+	 * {@link #FETCH_DEFAULT_LIMIT}.
+	 *
+	 * @return {@link DevicesResponse} object
 	 * @see #fetchDevices(String, int)
 	 */
 	@Nonnull
@@ -114,6 +126,10 @@ public interface DeviceAssignmentClient {
 	DevicesResponse syncDevices(String cursor, int limit);
 
 	/**
+	 * Fetches device updates since the given cursor, using the default limit of {@link #FETCH_DEFAULT_LIMIT}.
+	 *
+	 * @param cursor hex string representing the starting position; must not be older than 7 days
+	 * @return {@link DevicesResponse} object
 	 * @see #syncDevices(String, int)
 	 */
 	@Nonnull
@@ -201,6 +217,10 @@ public interface DeviceAssignmentClient {
 	ActivationLockStatusResponse enableActivationLock(String serialNumber, String escrowKey, String lostMessage);
 
 	/**
+	 * Enables activation lock on a remote device without an escrow key or lost message.
+	 *
+	 * @param serialNumber serial number of the device
+	 * @return {@link ActivationLockStatusResponse} object
 	 * @see #enableActivationLock(String, String, String)
 	 */
 	@Nonnull

@@ -13,13 +13,18 @@ public class AppleBusinessClientBuilder extends MdmClientBuilder<AppleBusinessCl
 	private static final String DEFAULT_APPLE_OAUTH_URL       = "https://account.apple.com/auth/oauth2/token";
 	private static final String DEFAULT_APPLE_PRODUCTION_HOST = "https://api-business.apple.com/v1";
 
-	public static final Duration MIN_TOKEN_VALIDITY     = Duration.ofHours(1);
+	/**
+	 * Minimum allowed by this library JWT client-assertion validity (1 minute).
+	 */
+	public static final Duration MIN_TOKEN_VALIDITY     = Duration.ofMinutes(1);
 	/**
 	 * Maximum allowed JWT client-assertion validity per Apple's documentation (180 days).
 	 */
 	public static final Duration MAX_TOKEN_VALIDITY     = Duration.ofDays(180);
-	public static final Duration DEFAULT_TOKEN_VALIDITY = Duration.ofHours(2);
-
+	/**
+	 * Default JWT client-assertion validity (1 hour).
+	 */
+	public static final Duration DEFAULT_TOKEN_VALIDITY = Duration.ofHours(1);
 
 	private String                  clientId;
 	private String                  keyId;

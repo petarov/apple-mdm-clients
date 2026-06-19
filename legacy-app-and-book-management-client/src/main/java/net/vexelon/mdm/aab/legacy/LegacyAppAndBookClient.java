@@ -5,6 +5,19 @@ import net.vexelon.mdm.aab.legacy.model.response.*;
 
 import java.util.Set;
 
+/**
+ * Client interface for Apple's Legacy App and Book Management API (formerly VPP).
+ * <p>
+ * Manages app and book licenses and the users they are assigned to. Authenticates using a content
+ * token (sToken) obtained from Apple Business Manager.
+ * <p>
+ * <b>Note:</b> this API has been deprecated by Apple and is no longer maintained.
+ * <p>
+ * The underlying implementation is not thread-safe. Concurrent access from multiple threads requires
+ * external synchronization.
+ *
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/app-and-book-management-legacy">App and Book Management (Legacy)</a>
+ */
 public interface LegacyAppAndBookClient {
 
 	String USER_STATUS_REGISTERED = "Registered";
@@ -20,7 +33,9 @@ public interface LegacyAppAndBookClient {
 	String PRICING_PARAM_HIGH_QUALITY     = "PLUS";
 
 	/**
-	 * @return new {@link LegacyAppAndBookClientBuilder} instance
+	 * Creates a new builder for configuring and constructing a {@link LegacyAppAndBookClient}.
+	 *
+	 * @return a new {@link LegacyAppAndBookClientBuilder} instance
 	 */
 	@Nonnull
 	static LegacyAppAndBookClientBuilder newBuilder() {
@@ -66,6 +81,10 @@ public interface LegacyAppAndBookClient {
 	VppGetAssetResponse fetchAssets(boolean includeLicenseCounts, String pricingParam);
 
 	/**
+	 * Fetches the set of assets managed by your organization without filtering by pricing parameter.
+	 *
+	 * @param includeLicenseCounts if {@code true}, returns total, assigned, and unassigned license counts per asset
+	 * @return {@link VppGetAssetResponse} object
 	 * @see #fetchAssets(boolean, String)
 	 */
 	@Nonnull
@@ -191,6 +210,10 @@ public interface LegacyAppAndBookClient {
 	VppGetUsersResponse fetchUsers(String batchToken, @Nonnull FetchUsersOptions options);
 
 	/**
+	 * Fetches a batch of users starting at the given batch token, with no additional options.
+	 *
+	 * @param batchToken a token that signifies which batch is being returned, or empty string for the first batch
+	 * @return {@link VppGetUsersResponse} object
 	 * @see #fetchUsers(String, FetchUsersOptions)
 	 */
 	@Nonnull
@@ -223,6 +246,11 @@ public interface LegacyAppAndBookClient {
 	VppRegisterUserResponse registerUser(String clientUserId, String email, String managedAppleID);
 
 	/**
+	 * Registers a user with the volume-purchase program without a Managed Apple ID.
+	 *
+	 * @param clientUserId required identifier supplied by the client; must be unique within the organization
+	 * @param email        the user's email address
+	 * @return {@link VppRegisterUserResponse} object
 	 * @see #registerUser(String, String, String)
 	 */
 	@Nonnull

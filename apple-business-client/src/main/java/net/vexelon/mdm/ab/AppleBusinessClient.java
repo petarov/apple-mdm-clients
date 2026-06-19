@@ -6,10 +6,24 @@ import net.vexelon.mdm.ab.model.response.device.OrgDevicesResponse;
 
 import java.util.List;
 
+/**
+ * Client interface for the Apple Business Manager API.
+ * <p>
+ * Automates device management activities, retrieves device information, and manages users and user
+ * groups in Apple Business Manager. Authenticates using OAuth 2.0 client credentials with a JWT
+ * client assertion signed with an EC private key (ES256).
+ * <p>
+ * The underlying implementation is not thread-safe. Concurrent access from multiple threads requires
+ * external synchronization.
+ *
+ * @see <a href="https://developer.apple.com/documentation/applebusinessapi">Apple Business API</a>
+ */
 public interface AppleBusinessClient {
 
 	/**
-	 * @return new {@link AppleBusinessClientBuilder} instance
+	 * Creates a new builder for configuring and constructing an {@link AppleBusinessClient}.
+	 *
+	 * @return a new {@link AppleBusinessClientBuilder} instance
 	 */
 	@Nonnull
 	static AppleBusinessClientBuilder newBuilder() {
@@ -17,6 +31,9 @@ public interface AppleBusinessClient {
 	}
 
 	/**
+	 * Fetches all organization devices using the server default field set and page size.
+	 *
+	 * @return response that contains a list of organization device resources
 	 * @see #fetchOrgDevices(List, int)
 	 */
 	@Nonnull
@@ -36,6 +53,10 @@ public interface AppleBusinessClient {
 	OrgDevicesResponse fetchOrgDevices(@Nonnull List<String> fields, int limit);
 
 	/**
+	 * Fetches information about a single device using the server default field set.
+	 *
+	 * @param id the unique identifier of the device
+	 * @return response that contains a single organization device resource
 	 * @see #fetchOrgDevice(String, List)
 	 */
 	@Nonnull
