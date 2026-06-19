@@ -12,11 +12,11 @@ Java clients for Apple's Mobile Device Management (MDM) services.
 
 ## Libraries
 
-| Library | Latest version | Artifact | Status |
-|---|---|---|---|
-| [Device Assignment client](device-assignment-client/README.md) | `1.0.0` | [![MvnRepository](https://badges.mvnrepository.com/badge/net.vexelon.mdm/device-assignment-client/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.vexelon.mdm/device-assignment-client) | Stable |
-| [Legacy App and Book Management client](legacy-app-and-book-management-client/README.md) | `1.0.0` | [![MvnRepository](https://badges.mvnrepository.com/badge/net.vexelon.mdm/legacy-app-and-book-management-client/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.vexelon.mdm/legacy-app-and-book-management-client) | Stable |
-| [Apple Business client](apple-business-client/README.md) | _snapshot only_ | — | In development |
+| Library | Latest version | Artifact | Status | API Docs |
+|---|---|---|---|---|
+| [Device Assignment client](device-assignment-client/README.md) | `1.0.0` | [![MvnRepository](https://badges.mvnrepository.com/badge/net.vexelon.mdm/device-assignment-client/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.vexelon.mdm/device-assignment-client) | Stable | [Javadoc](https://petarov.github.io/apple-mdm-clients/device-assignment-client/) |
+| [Legacy App and Book Management client](legacy-app-and-book-management-client/README.md) | `1.0.0` | [![MvnRepository](https://badges.mvnrepository.com/badge/net.vexelon.mdm/legacy-app-and-book-management-client/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.vexelon.mdm/legacy-app-and-book-management-client) | Stable | [Javadoc](https://petarov.github.io/apple-mdm-clients/legacy-app-and-book-management-client/) |
+| [Apple Business client](apple-business-client/README.md) | _snapshot only_ | — | In development | [Javadoc](https://petarov.github.io/apple-mdm-clients/apple-business-client/) |
 
 > Snapshot builds are published to GitHub Packages. See each library's README for the package link and authentication requirements.
 

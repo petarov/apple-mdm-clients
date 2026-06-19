@@ -130,3 +130,26 @@ subprojects {
         }
     }
 }
+
+// ---------------------------------------------------------------------------
+// Aggregate Javadoc for the public client modules (used by the docs workflow)
+// ---------------------------------------------------------------------------
+def docModules = ['device-assignment-client', 'legacy-app-and-book-management-client', 'apple-business-client']
+
+tasks.register('aggregateJavadoc') {
+    group = 'documentation'
+    description = "Aggregates the public client modules' Javadoc into one staging dir for GitHub Pages."
+    dependsOn docModules.collect { ":$it:javadoc" }
+    def outDir = layout.buildDirectory.dir('docs/aggregateJavadoc')
+    outputs.dir(outDir)
+    doLast {
+        def out = outDir.get().asFile
+        out.deleteDir()
+        docModules.each { m ->
+            copy {
+                from project(":$m").layout.buildDirectory.dir('docs/javadoc')
+                into new File(out, m)
+            }
+        }
+    }
+}
