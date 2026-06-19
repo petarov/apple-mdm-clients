@@ -3,6 +3,7 @@ package net.vexelon.mdm.ab;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.ab.model.response.device.OrgDeviceResponse;
 import net.vexelon.mdm.ab.model.response.device.OrgDevicesResponse;
 import net.vexelon.mdm.shared.http.HttpClientWrapper;
 import net.vexelon.mdm.shared.http.HttpClientWrapperException;
@@ -84,6 +85,19 @@ class AppleBusinessClientImpl implements AppleBusinessClient {
 		}
 		return execute(client.createRequestBuilder(client.complementURI(path.toString())).GET(),
 				OrgDevicesResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public OrgDeviceResponse fetchOrgDevice(@Nonnull String id, @Nonnull List<String> fields) {
+		var path = new StringBuilder("/orgDevices/").append(URLEncoder.encode(id, StandardCharsets.UTF_8));
+		if (!fields.isEmpty()) {
+			path.append("?fields%5BorgDevices%5D=").append(
+					fields.stream().map(f -> URLEncoder.encode(f, StandardCharsets.UTF_8))
+							.collect(Collectors.joining(",")));
+		}
+		return execute(client.createRequestBuilder(client.complementURI(path.toString())).GET(),
+				OrgDeviceResponse.class);
 	}
 
 	<T> HttpRequest.BodyPublisher ofBody(T obj) {

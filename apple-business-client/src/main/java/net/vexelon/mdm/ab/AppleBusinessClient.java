@@ -1,6 +1,7 @@
 package net.vexelon.mdm.ab;
 
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.ab.model.response.device.OrgDeviceResponse;
 import net.vexelon.mdm.ab.model.response.device.OrgDevicesResponse;
 
 import java.util.List;
@@ -33,4 +34,23 @@ public interface AppleBusinessClient {
 	 */
 	@Nonnull
 	OrgDevicesResponse fetchOrgDevices(@Nonnull List<String> fields, int limit);
+
+	/**
+	 * @see #fetchOrgDevice(String, List)
+	 */
+	@Nonnull
+	default OrgDeviceResponse fetchOrgDevice(@Nonnull String id) {
+		return fetchOrgDevice(id, List.of());
+	}
+
+	/**
+	 * Fetches information about a single device in an organization.
+	 *
+	 * @param id     the unique identifier of the device
+	 * @param fields the fields to return for included related types; pass an empty list to receive all fields
+	 * @return response that contains a single organization device resource
+	 * @see <a href="https://developer.apple.com/documentation/applebusinessapi/get-orgdevice-information">Get Device Information</a>
+	 */
+	@Nonnull
+	OrgDeviceResponse fetchOrgDevice(@Nonnull String id, @Nonnull List<String> fields);
 }
