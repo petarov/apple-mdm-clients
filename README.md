@@ -111,6 +111,38 @@ System.out.println(client.fetchAssets(false));
 System.out.println(client.retireUser(UserIdParam.of("MTY6MzAgZXN0YXIgbm8gbG9jYWwgZGV0ZXJtaW5hZG8=")));
 ```
 
+## Apple Business client
+
+Automate device management activities, view device information, and manage users and user groups in Apple Business.
+
+See Apple's [Apple Business API](https://developer.apple.com/documentation/applebusinessapi) documentation for the full list of supported API calls.
+
+### Snapshots
+
+Latest [SNAPSHOT](https://github.com/petarov/apple-mdm-clients/packages) built from the `main` branch. This requires an [authenticated](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry) GitHub user.
+
+### Code Example
+
+```java
+var builder = AppleBusinessClient.newBuilder();
+builder.setClientId("BUSINESSAPI.<your-client-id>");
+builder.setKeyId("<your-key-id>");
+builder.setPrivateKey(AppleBusinessPrivateKey.createFromPEM(
+        Path.of("<path-to-private-key>/private_key.pem")));
+
+var client = builder.build();
+
+// Display all devices in the organization
+var response = client.fetchOrgDevices();
+response.data().forEach(device -> System.out.println(
+        device.id() + " | " + device.attributes().productFamily() + " | " + device.attributes().status()));
+
+var paging = response.meta().paging();
+if (!paging.nextCursor().isBlank()) {
+    System.out.println("Next cursor: " + paging.nextCursor());
+}
+```
+
 # Proxy support
 
 Only HTTP tunneling i.e. [HTTP CONNECT](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods/CONNECT) type of proxy servers are supported.
