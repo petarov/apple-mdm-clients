@@ -2,17 +2,16 @@ package net.vexelon.mdm.ab;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import net.vexelon.mdm.ab.model.devices.AppleCareCoverageAttributes;
+import net.vexelon.mdm.ab.model.devices.AppleCareCoverageField;
 import net.vexelon.mdm.ab.model.devices.OrgDeviceField;
-import net.vexelon.mdm.shared.config.MdmClientBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.security.SecureRandom;
 import java.security.Security;
-import java.time.Duration;
 import java.util.Objects;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -25,8 +24,11 @@ public class AppleBusinessClientTests {
 	private static final String CLIENT_ID = "BUSINESSAPI.9703f56c-10ce-4876-8f59-e78e5e23a152";
 	private static final String KEY_ID    = "d136aa66-0c3b-4bd4-9892-c20e8db024ab";
 
-	/** Simulates the base64url cursor Apple returns in meta.paging.nextCursor. */
-	private static final String NEXT_CURSOR = "MDowOjE3NDYxMTM4OTI1OTA=";
+	/**
+	 * Simulates the base64url cursor Apple returns in meta.paging.nextCursor.
+	 */
+	private static final String NEXT_CURSOR            = "MDowOjE3NDYxMTM4OTI1OTA=";
+	private static final String DEVICE_ID_FOR_COVERAGE = "XABC123X0ABC123X0";
 
 	private static final String TOKEN_RESPONSE = """
 			{
@@ -34,6 +36,66 @@ public class AppleBusinessClientTests {
 			    "token_type": "Bearer",
 			    "expires_in": 3600,
 			    "scope": "business.api"
+			}
+			""".stripIndent();
+
+	private static final String APPLECARE_COVERAGE_RESPONSE = """
+			{
+			    "data": [
+			        {
+			            "type": "appleCareCoverage",
+			            "id": "XABC123X0ABC123X0",
+			            "attributes": {
+			                "contractCancelDateTime": null,
+			                "startDateTime": "2025-02-02T00:00:00Z",
+			                "isRenewable": false,
+			                "isCanceled": false,
+			                "description": "Limited Warranty",
+			                "agreementNumber": null,
+			                "endDateTime": "2026-02-02T00:00:00Z",
+			                "status": "ACTIVE",
+			                "paymentType": "NONE"
+			            }
+			        },
+			        {
+			            "type": "appleCareCoverage",
+			            "id": "0000000001",
+			            "attributes": {
+			                "contractCancelDateTime": null,
+			                "startDateTime": "2025-04-17T00:00:00Z",
+			                "isRenewable": true,
+			                "isCanceled": false,
+			                "description": "AppleCare+",
+			                "agreementNumber": "0000000001",
+			                "endDateTime": "2026-04-17T00:00:00Z",
+			                "status": "ACTIVE",
+			                "paymentType": "SUBSCRIPTION"
+			            }
+			        },
+			        {
+			            "type": "appleCareCoverage",
+			            "id": "abe-XABC123X0ABC123X0",
+			            "attributes": {
+			                "contractCancelDateTime": null,
+			                "startDateTime": "2025-04-17T00:00:00Z",
+			                "isRenewable": true,
+			                "isCanceled": false,
+			                "description": "AppleCare+ for Business",
+			                "agreementNumber": null,
+			                "endDateTime": null,
+			                "status": "ACTIVE",
+			                "paymentType": "ABE_SUBSCRIPTION"
+			            }
+			        }
+			    ],
+			    "links": {
+			        "self": "https://api-business.apple.com/v1/orgDevices/XABC123X0ABC123X0/appleCareCoverage"
+			    },
+			    "meta": {
+			        "paging": {
+			            "limit": 100
+			        }
+			    }
 			}
 			""".stripIndent();
 
@@ -146,8 +208,7 @@ public class AppleBusinessClientTests {
 
 		var response = createClient(wm).fetchOrgDevices(OrgDeviceField.of(), 0, NEXT_CURSOR);
 
-		assertTrue(response.meta().paging().nextCursor().isEmpty(),
-				"last page should have an empty nextCursor");
+		assertTrue(response.meta().paging().nextCursor().isEmpty(), "last page should have an empty nextCursor");
 	}
 
 	@Test
@@ -199,6 +260,95 @@ public class AppleBusinessClientTests {
 		createClient(wm).fetchOrgDevices(OrgDeviceField.of(), 0, "");
 
 		verify(getRequestedFor(urlPathEqualTo("/orgDevices")).withoutQueryParam("fields[orgDevices]"));
+	}
+
+	@Test
+	void fetch_applecare_coverage_uses_correct_path(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlPathEqualTo("/orgDevices/" + DEVICE_ID_FOR_COVERAGE + "/appleCareCoverage")).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(APPLECARE_COVERAGE_RESPONSE)));
+
+		createClient(wm).fetchAppleCareCoverage(DEVICE_ID_FOR_COVERAGE);
+
+		verify(getRequestedFor(urlPathEqualTo("/orgDevices/" + DEVICE_ID_FOR_COVERAGE + "/appleCareCoverage")));
+	}
+
+	@Test
+	void fetch_applecare_coverage_with_fields_sends_comma_joined_wire_names_in_declaration_order(WireMockRuntimeInfo wm)
+			throws Exception {
+		stubFor(get(urlPathEqualTo("/orgDevices/" + DEVICE_ID_FOR_COVERAGE + "/appleCareCoverage")).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(APPLECARE_COVERAGE_RESPONSE)));
+
+		// STATUS and PAYMENT_TYPE — declaration order determines the joined string
+		createClient(wm).fetchAppleCareCoverage(DEVICE_ID_FOR_COVERAGE,
+				AppleCareCoverageField.of(AppleCareCoverageField.STATUS, AppleCareCoverageField.PAYMENT_TYPE), 0, "");
+
+		// WireMock automatically decodes %5B / %5D back to [ / ] when matching query params
+		verify(getRequestedFor(
+				urlPathEqualTo("/orgDevices/" + DEVICE_ID_FOR_COVERAGE + "/appleCareCoverage")).withQueryParam(
+				"fields[appleCareCoverage]", equalTo("status,paymentType")));
+	}
+
+	@Test
+	void fetch_applecare_coverage_with_empty_fields_omits_fields_param(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlPathEqualTo("/orgDevices/" + DEVICE_ID_FOR_COVERAGE + "/appleCareCoverage")).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(APPLECARE_COVERAGE_RESPONSE)));
+
+		createClient(wm).fetchAppleCareCoverage(DEVICE_ID_FOR_COVERAGE, AppleCareCoverageField.of(), 0, "");
+
+		verify(getRequestedFor(
+				urlPathEqualTo("/orgDevices/" + DEVICE_ID_FOR_COVERAGE + "/appleCareCoverage")).withoutQueryParam(
+				"fields[appleCareCoverage]"));
+	}
+
+	@Test
+	void fetch_applecare_coverage_with_limit_sends_limit_param(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlPathEqualTo("/orgDevices/" + DEVICE_ID_FOR_COVERAGE + "/appleCareCoverage")).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(APPLECARE_COVERAGE_RESPONSE)));
+
+		createClient(wm).fetchAppleCareCoverage(DEVICE_ID_FOR_COVERAGE, AppleCareCoverageField.of(), 5, "");
+
+		verify(getRequestedFor(
+				urlPathEqualTo("/orgDevices/" + DEVICE_ID_FOR_COVERAGE + "/appleCareCoverage")).withQueryParam("limit",
+				equalTo("5")));
+	}
+
+	@Test
+	void fetch_applecare_coverage_deserializes_status_paymenttype_and_booleans(WireMockRuntimeInfo wm)
+			throws Exception {
+		stubFor(get(urlPathEqualTo("/orgDevices/" + DEVICE_ID_FOR_COVERAGE + "/appleCareCoverage")).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(APPLECARE_COVERAGE_RESPONSE)));
+
+		var response = createClient(wm).fetchAppleCareCoverage(DEVICE_ID_FOR_COVERAGE);
+
+		assertEquals(3, response.data().size());
+
+		// Limited Warranty — NONE payment, not renewable, null fields mapped to empty string
+		var warranty = response.data().get(0).attributes();
+		assertEquals(AppleCareCoverageAttributes.Status.ACTIVE, warranty.status());
+		assertEquals(AppleCareCoverageAttributes.PaymentType.NONE, warranty.paymentType());
+		assertFalse(warranty.isRenewable());
+		assertFalse(warranty.isCanceled());
+		assertTrue(warranty.agreementNumber().isEmpty(), "null agreementNumber should map to empty string");
+		assertTrue(warranty.contractCancelDateTime().isEmpty(),
+				"null contractCancelDateTime should map to empty string");
+
+		// AppleCare+ — SUBSCRIPTION, renewable
+		var appleCarePlus = response.data().get(1).attributes();
+		assertEquals(AppleCareCoverageAttributes.PaymentType.SUBSCRIPTION, appleCarePlus.paymentType());
+		assertTrue(appleCarePlus.isRenewable());
+		assertEquals("0000000001", appleCarePlus.agreementNumber());
+
+		// AppleCare+ for Business — ABE_SUBSCRIPTION, no endDateTime
+		var abe = response.data().get(2).attributes();
+		assertEquals(AppleCareCoverageAttributes.PaymentType.ABE_SUBSCRIPTION, abe.paymentType());
+		assertTrue(abe.endDateTime().isEmpty(), "null endDateTime should map to empty string");
+
+		assertTrue(response.meta().paging().nextCursor().isEmpty(), "absent nextCursor should map to empty string");
 	}
 
 	private AppleBusinessClient createClient(WireMockRuntimeInfo wm) throws Exception {

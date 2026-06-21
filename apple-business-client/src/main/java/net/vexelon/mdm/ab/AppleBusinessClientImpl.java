@@ -3,7 +3,9 @@ package net.vexelon.mdm.ab;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.ab.model.devices.AppleCareCoverageField;
 import net.vexelon.mdm.ab.model.devices.OrgDeviceField;
+import net.vexelon.mdm.ab.model.response.device.AppleCareCoverageResponse;
 import net.vexelon.mdm.ab.model.response.device.OrgDeviceResponse;
 import net.vexelon.mdm.ab.model.response.device.OrgDevicesResponse;
 import net.vexelon.mdm.shared.http.HttpClientWrapper;
@@ -101,6 +103,32 @@ class AppleBusinessClientImpl implements AppleBusinessClient {
 		}
 		return execute(client.createRequestBuilder(client.complementURI(path.toString())).GET(),
 				OrgDeviceResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public AppleCareCoverageResponse fetchAppleCareCoverage(@Nonnull String id,
+			@Nonnull EnumSet<AppleCareCoverageField> fields, int limit, String cursor) {
+		var path = new StringBuilder("/orgDevices/").append(URLEncoder.encode(id, StandardCharsets.UTF_8))
+				.append("/appleCareCoverage");
+		var params = new ArrayList<String>();
+		if (!fields.isEmpty()) {
+			// fields[appleCareCoverage] — brackets must be percent-encoded in the URI
+			params.add("fields%5BappleCareCoverage%5D=" + fields.stream()
+					.map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
+					.collect(Collectors.joining(",")));
+		}
+		if (limit > 0) {
+			params.add("limit=" + limit);
+		}
+		if (cursor != null && !cursor.isEmpty()) {
+			params.add("cursor=" + URLEncoder.encode(cursor, StandardCharsets.UTF_8));
+		}
+		if (!params.isEmpty()) {
+			path.append("?").append(String.join("&", params));
+		}
+		return execute(client.createRequestBuilder(client.complementURI(path.toString())).GET(),
+				AppleCareCoverageResponse.class);
 	}
 
 	<T> HttpRequest.BodyPublisher ofBody(T obj) {
