@@ -1,6 +1,8 @@
 package net.vexelon.mdm.ab;
 
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import net.vexelon.mdm.ab.model.PagingInformation;
 import net.vexelon.mdm.ab.model.response.device.OrgDeviceResponse;
 import net.vexelon.mdm.ab.model.response.device.OrgDevicesResponse;
 
@@ -31,14 +33,23 @@ public interface AppleBusinessClient {
 	}
 
 	/**
-	 * Fetches all organization devices using the server default field set and page size.
+	 * Fetches the first page of organization devices using the server default field set and page size.
 	 *
-	 * @return response that contains a list of organization device resources
-	 * @see #fetchOrgDevices(List, int)
+	 * @see #fetchOrgDevices(List, int, String)
 	 */
 	@Nonnull
 	default OrgDevicesResponse fetchOrgDevices() {
-		return fetchOrgDevices(List.of(), 0);
+		return fetchOrgDevices(List.of(), 0, "");
+	}
+
+	/**
+	 * Fetches the first page of organization devices for the given fields and page size.
+	 *
+	 * @see #fetchOrgDevices(List, int, String)
+	 */
+	@Nonnull
+	default OrgDevicesResponse fetchOrgDevices(@Nonnull List<String> fields, int limit) {
+		return fetchOrgDevices(fields, limit, "");
 	}
 
 	/**
@@ -46,11 +57,14 @@ public interface AppleBusinessClient {
 	 *
 	 * @param fields the fields to return for included related types; pass an empty list to receive all fields
 	 * @param limit  maximum number of devices per page (1–1000); pass {@code 0} to use the server default
+	 * @param cursor the pagination cursor from a previous response's
+	 *               {@link PagingInformation.Paging#nextCursor()}; pass {@code ""} or {@code null} for the
+	 *               first page
 	 * @return response that contains a list of organization device resources
 	 * @see <a href="https://developer.apple.com/documentation/applebusinessapi/get-org-devices">Get Organization Devices</a>
 	 */
 	@Nonnull
-	OrgDevicesResponse fetchOrgDevices(@Nonnull List<String> fields, int limit);
+	OrgDevicesResponse fetchOrgDevices(@Nonnull List<String> fields, int limit, @Nullable String cursor);
 
 	/**
 	 * Fetches information about a single device using the server default field set.

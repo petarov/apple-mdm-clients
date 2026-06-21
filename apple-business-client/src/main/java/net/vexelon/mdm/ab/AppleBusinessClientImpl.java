@@ -67,7 +67,7 @@ class AppleBusinessClientImpl implements AppleBusinessClient {
 
 	@Nonnull
 	@Override
-	public OrgDevicesResponse fetchOrgDevices(@Nonnull List<String> fields, int limit) {
+	public OrgDevicesResponse fetchOrgDevices(@Nonnull List<String> fields, int limit, String cursor) {
 		var path = new StringBuilder("/orgDevices");
 		var params = new ArrayList<String>();
 		if (!fields.isEmpty()) {
@@ -79,6 +79,9 @@ class AppleBusinessClientImpl implements AppleBusinessClient {
 		}
 		if (limit > 0) {
 			params.add("limit=" + limit);
+		}
+		if (cursor != null && !cursor.isEmpty()) {
+			params.add("cursor=" + URLEncoder.encode(cursor, StandardCharsets.UTF_8));
 		}
 		if (!params.isEmpty()) {
 			path.append("?").append(String.join("&", params));
