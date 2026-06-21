@@ -6,6 +6,8 @@ Manage apps and books for students and employees. This API is still functional, 
 no longer maintains it.
 
 To use the Java client, you must already have a valid content token created in Apple Business Manager.
+See [Getting started with the management API](https://developer.apple.com/documentation/devicemanagement/getting-started-with-the-management-api#Authenticate)
+for help on setting things up.
 
 See Apple's [App and book management (Legacy)](https://developer.apple.com/documentation/devicemanagement/app-and-book-management-legacy) documentation for the full list of supported API calls.
 

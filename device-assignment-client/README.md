@@ -7,7 +7,8 @@ as "The Device Enrollment Program" `(DEP)`, allows you to create device enrollme
 organization's devices.
 
 To use the Java client, you must already have a valid device assignment token created in Apple Business Manager, 
-together with the private key required to decrypt the token.
+together with the private key required to decrypt the token. See [Get an Automated Device Enrollment program server token](https://developer.apple.com/documentation/devicemanagement/authenticating-with-the-automated-device-enrollment-program#Get-an-Automated-Device-Enrollment-program-server-token)
+for help on setting things up.
 
 See Apple's [Device Assignment](https://developer.apple.com/documentation/devicemanagement/device-assignment) documentation for the full list of supported API calls.
 
