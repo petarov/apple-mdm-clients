@@ -2,6 +2,7 @@ package net.vexelon.mdm.ab;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import net.vexelon.mdm.ab.model.devices.OrgDeviceField;
 import net.vexelon.mdm.shared.config.MdmClientBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
@@ -12,7 +13,6 @@ import org.junit.jupiter.api.TestInstance;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.time.Duration;
-import java.util.List;
 import java.util.Objects;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -132,7 +132,7 @@ public class AppleBusinessClientTests {
 				aResponse().withStatus(200).withHeader("content-type", "application/json")
 						.withBody(ORG_DEVICES_LAST_PAGE)));
 
-		createClient(wm).fetchOrgDevices(List.of(), 0, NEXT_CURSOR);
+		createClient(wm).fetchOrgDevices(OrgDeviceField.of(), 0, NEXT_CURSOR);
 
 		// cursor value contains '=' which must be percent-encoded as %3D
 		verify(getRequestedFor(urlPathEqualTo("/orgDevices")).withQueryParam("cursor", equalTo(NEXT_CURSOR)));
@@ -144,7 +144,7 @@ public class AppleBusinessClientTests {
 				aResponse().withStatus(200).withHeader("content-type", "application/json")
 						.withBody(ORG_DEVICES_LAST_PAGE)));
 
-		var response = createClient(wm).fetchOrgDevices(List.of(), 0, NEXT_CURSOR);
+		var response = createClient(wm).fetchOrgDevices(OrgDeviceField.of(), 0, NEXT_CURSOR);
 
 		assertTrue(response.meta().paging().nextCursor().isEmpty(),
 				"last page should have an empty nextCursor");
@@ -169,10 +169,36 @@ public class AppleBusinessClientTests {
 			if (next.isEmpty()) {
 				break;
 			}
-			response = client.fetchOrgDevices(List.of(), 0, next);
+			response = client.fetchOrgDevices(OrgDeviceField.of(), 0, next);
 		}
 
 		assertEquals(2, allDevices.size(), "paging loop should collect devices from both pages");
+	}
+
+	@Test
+	void fetch_with_fields_sends_comma_joined_wire_names_in_declaration_order(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlPathEqualTo("/orgDevices")).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(ORG_DEVICES_FIRST_PAGE)));
+
+		// SERIAL_NUMBER and DEVICE_MODEL — declaration order determines the joined string
+		createClient(wm).fetchOrgDevices(OrgDeviceField.of(OrgDeviceField.SERIAL_NUMBER, OrgDeviceField.DEVICE_MODEL),
+				0, "");
+
+		// WireMock automatically decodes %5B / %5D back to [ / ] when matching query params
+		verify(getRequestedFor(urlPathEqualTo("/orgDevices")).withQueryParam("fields[orgDevices]",
+				equalTo("serialNumber,deviceModel")));
+	}
+
+	@Test
+	void fetch_with_empty_fields_omits_fields_param(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlPathEqualTo("/orgDevices")).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(ORG_DEVICES_FIRST_PAGE)));
+
+		createClient(wm).fetchOrgDevices(OrgDeviceField.of(), 0, "");
+
+		verify(getRequestedFor(urlPathEqualTo("/orgDevices")).withoutQueryParam("fields[orgDevices]"));
 	}
 
 	private AppleBusinessClient createClient(WireMockRuntimeInfo wm) throws Exception {

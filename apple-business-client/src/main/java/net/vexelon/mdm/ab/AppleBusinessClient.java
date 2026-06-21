@@ -3,10 +3,11 @@ package net.vexelon.mdm.ab;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import net.vexelon.mdm.ab.model.PagingInformation;
+import net.vexelon.mdm.ab.model.devices.OrgDeviceField;
 import net.vexelon.mdm.ab.model.response.device.OrgDeviceResponse;
 import net.vexelon.mdm.ab.model.response.device.OrgDevicesResponse;
 
-import java.util.List;
+import java.util.EnumSet;
 
 /**
  * Client interface for the Apple Business Manager API.
@@ -35,27 +36,27 @@ public interface AppleBusinessClient {
 	/**
 	 * Fetches the first page of organization devices using the server default field set and page size.
 	 *
-	 * @see #fetchOrgDevices(List, int, String)
+	 * @see #fetchOrgDevices(EnumSet, int, String)
 	 */
 	@Nonnull
 	default OrgDevicesResponse fetchOrgDevices() {
-		return fetchOrgDevices(List.of(), 0, "");
+		return fetchOrgDevices(OrgDeviceField.of(), 0, "");
 	}
 
 	/**
 	 * Fetches the first page of organization devices for the given fields and page size.
 	 *
-	 * @see #fetchOrgDevices(List, int, String)
+	 * @see #fetchOrgDevices(EnumSet, int, String)
 	 */
 	@Nonnull
-	default OrgDevicesResponse fetchOrgDevices(@Nonnull List<String> fields, int limit) {
+	default OrgDevicesResponse fetchOrgDevices(@Nonnull EnumSet<OrgDeviceField> fields, int limit) {
 		return fetchOrgDevices(fields, limit, "");
 	}
 
 	/**
 	 * Fetches a list of devices in an organization that enroll using Automated Device Enrollment.
 	 *
-	 * @param fields the fields to return for included related types; pass an empty list to receive all fields
+	 * @param fields the fields to return for included related types; pass an empty set to receive all fields
 	 * @param limit  maximum number of devices per page (1–1000); pass {@code 0} to use the server default
 	 * @param cursor the pagination cursor from a previous response's
 	 *               {@link PagingInformation.Paging#nextCursor()}; pass {@code ""} or {@code null} for the
@@ -64,28 +65,28 @@ public interface AppleBusinessClient {
 	 * @see <a href="https://developer.apple.com/documentation/applebusinessapi/get-org-devices">Get Organization Devices</a>
 	 */
 	@Nonnull
-	OrgDevicesResponse fetchOrgDevices(@Nonnull List<String> fields, int limit, @Nullable String cursor);
+	OrgDevicesResponse fetchOrgDevices(@Nonnull EnumSet<OrgDeviceField> fields, int limit, @Nullable String cursor);
 
 	/**
 	 * Fetches information about a single device using the server default field set.
 	 *
 	 * @param id the unique identifier of the device
 	 * @return response that contains a single organization device resource
-	 * @see #fetchOrgDevice(String, List)
+	 * @see #fetchOrgDevice(String, EnumSet)
 	 */
 	@Nonnull
 	default OrgDeviceResponse fetchOrgDevice(@Nonnull String id) {
-		return fetchOrgDevice(id, List.of());
+		return fetchOrgDevice(id, OrgDeviceField.of());
 	}
 
 	/**
 	 * Fetches information about a single device in an organization.
 	 *
 	 * @param id     the unique identifier of the device
-	 * @param fields the fields to return for included related types; pass an empty list to receive all fields
+	 * @param fields the fields to return for included related types; pass an empty set to receive all fields
 	 * @return response that contains a single organization device resource
 	 * @see <a href="https://developer.apple.com/documentation/applebusinessapi/get-orgdevice-information">Get Device Information</a>
 	 */
 	@Nonnull
-	OrgDeviceResponse fetchOrgDevice(@Nonnull String id, @Nonnull List<String> fields);
+	OrgDeviceResponse fetchOrgDevice(@Nonnull String id, @Nonnull EnumSet<OrgDeviceField> fields);
 }

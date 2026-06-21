@@ -3,6 +3,7 @@ package net.vexelon.mdm.ab;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.ab.model.devices.OrgDeviceField;
 import net.vexelon.mdm.ab.model.response.device.OrgDeviceResponse;
 import net.vexelon.mdm.ab.model.response.device.OrgDevicesResponse;
 import net.vexelon.mdm.shared.http.HttpClientWrapper;
@@ -16,7 +17,7 @@ import java.net.URLEncoder;
 import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.EnumSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -67,15 +68,14 @@ class AppleBusinessClientImpl implements AppleBusinessClient {
 
 	@Nonnull
 	@Override
-	public OrgDevicesResponse fetchOrgDevices(@Nonnull List<String> fields, int limit, String cursor) {
+	public OrgDevicesResponse fetchOrgDevices(@Nonnull EnumSet<OrgDeviceField> fields, int limit, String cursor) {
 		var path = new StringBuilder("/orgDevices");
 		var params = new ArrayList<String>();
 		if (!fields.isEmpty()) {
 			// fields[orgDevices] — brackets must be percent-encoded in the URI
-			// TODO: this should really be some enum, i.e., typed list
-			params.add(
-					"fields%5BorgDevices%5D=" + fields.stream().map(f -> URLEncoder.encode(f, StandardCharsets.UTF_8))
-							.collect(Collectors.joining(",")));
+			params.add("fields%5BorgDevices%5D=" + fields.stream()
+					.map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
+					.collect(Collectors.joining(",")));
 		}
 		if (limit > 0) {
 			params.add("limit=" + limit);
@@ -92,11 +92,11 @@ class AppleBusinessClientImpl implements AppleBusinessClient {
 
 	@Nonnull
 	@Override
-	public OrgDeviceResponse fetchOrgDevice(@Nonnull String id, @Nonnull List<String> fields) {
+	public OrgDeviceResponse fetchOrgDevice(@Nonnull String id, @Nonnull EnumSet<OrgDeviceField> fields) {
 		var path = new StringBuilder("/orgDevices/").append(URLEncoder.encode(id, StandardCharsets.UTF_8));
 		if (!fields.isEmpty()) {
-			path.append("?fields%5BorgDevices%5D=").append(
-					fields.stream().map(f -> URLEncoder.encode(f, StandardCharsets.UTF_8))
+			path.append("?fields%5BorgDevices%5D=")
+					.append(fields.stream().map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
 							.collect(Collectors.joining(",")));
 		}
 		return execute(client.createRequestBuilder(client.complementURI(path.toString())).GET(),
