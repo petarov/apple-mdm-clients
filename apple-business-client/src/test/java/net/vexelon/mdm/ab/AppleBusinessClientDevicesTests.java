@@ -4,6 +4,8 @@ import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import net.vexelon.mdm.ab.model.devices.AppleCareCoverageAttributes;
 import net.vexelon.mdm.ab.model.devices.AppleCareCoverageField;
+import net.vexelon.mdm.ab.model.devices.MdmDeviceDetailAttributes;
+import net.vexelon.mdm.ab.model.devices.MdmDeviceDetailField;
 import net.vexelon.mdm.ab.model.devices.MdmDeviceField;
 import net.vexelon.mdm.ab.model.devices.OrgDeviceField;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -134,6 +136,35 @@ public class AppleBusinessClientDevicesTests {
 			    "meta": {
 			        "paging": {
 			            "limit": 100
+			        }
+			    }
+			}
+			""".stripIndent();
+
+	private static final String MDM_DEVICE_DETAIL_RESPONSE = """
+			{
+			    "data": {
+			        "type": "mdmDeviceDetails",
+			        "id": "XABC123X0ABC123X0",
+			        "attributes": {
+			            "serialNumber": "XABC123X0ABC123X0",
+			            "deviceName": "Peter's Mac",
+			            "deviceModel": "MacBook Pro (16-inch, M4 Max)",
+			            "osVersion": "15.4.1",
+			            "platform": "macOS",
+			            "wifiMacAddress": "aa:bb:cc:dd:ee:ff",
+			            "bluetoothMacAddress": "aa:bb:cc:dd:ee:00",
+			            "ethernetMacAddress": null,
+			            "lastCheckInDateTime": "2025-06-01T12:00:00Z",
+			            "imei": ["356938035643809", "356938035643810"],
+			            "meid": null,
+			            "isFirewallEnabled": true,
+			            "isFileVaultEnabled": true,
+			            "storageFreeCapacity": 123456789012,
+			            "storageTotalCapacity": 1000000000000,
+			            "deviceLockStatus": "UNLOCKED",
+			            "deviceEraseStatus": "NOT_ERASED",
+			            "lostModeStatus": "DISABLED"
 			        }
 			    }
 			}
@@ -412,6 +443,78 @@ public class AppleBusinessClientDevicesTests {
 		assertTrue(second.enrolledUserId().isEmpty(), "null enrolledUserId should map to empty string");
 
 		assertTrue(response.meta().paging().nextCursor().isEmpty(), "absent nextCursor should map to empty string");
+	}
+
+	// --- fetchMdmDeviceDetail ---
+
+	@Test
+	void fetch_mdm_device_detail_uses_correct_path(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlPathEqualTo("/mdmDevices/" + DEVICE_ID_FOR_COVERAGE + "/details")).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(MDM_DEVICE_DETAIL_RESPONSE)));
+
+		createClient(wm).fetchMdmDeviceDetail(DEVICE_ID_FOR_COVERAGE);
+
+		verify(getRequestedFor(urlPathEqualTo("/mdmDevices/" + DEVICE_ID_FOR_COVERAGE + "/details")));
+	}
+
+	@Test
+	void fetch_mdm_device_detail_with_fields_sends_comma_joined_wire_names_in_declaration_order(WireMockRuntimeInfo wm)
+			throws Exception {
+		stubFor(get(urlPathEqualTo("/mdmDevices/" + DEVICE_ID_FOR_COVERAGE + "/details")).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(MDM_DEVICE_DETAIL_RESPONSE)));
+
+		// SERIAL_NUMBER and DEVICE_NAME — declaration order determines the joined string
+		createClient(wm).fetchMdmDeviceDetail(DEVICE_ID_FOR_COVERAGE,
+				MdmDeviceDetailField.of(MdmDeviceDetailField.SERIAL_NUMBER, MdmDeviceDetailField.DEVICE_NAME));
+
+		// WireMock automatically decodes %5B / %5D back to [ / ] when matching query params
+		verify(getRequestedFor(urlPathEqualTo("/mdmDevices/" + DEVICE_ID_FOR_COVERAGE + "/details")).withQueryParam(
+				"fields[mdmDeviceDetails]", equalTo("serialNumber,deviceName")));
+	}
+
+	@Test
+	void fetch_mdm_device_detail_with_empty_fields_omits_fields_param(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlPathEqualTo("/mdmDevices/" + DEVICE_ID_FOR_COVERAGE + "/details")).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(MDM_DEVICE_DETAIL_RESPONSE)));
+
+		createClient(wm).fetchMdmDeviceDetail(DEVICE_ID_FOR_COVERAGE, MdmDeviceDetailField.of());
+
+		verify(getRequestedFor(urlPathEqualTo("/mdmDevices/" + DEVICE_ID_FOR_COVERAGE + "/details")).withoutQueryParam(
+				"fields[mdmDeviceDetails]"));
+	}
+
+	@Test
+	void fetch_mdm_device_detail_deserializes_attributes(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlPathEqualTo("/mdmDevices/" + DEVICE_ID_FOR_COVERAGE + "/details")).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(MDM_DEVICE_DETAIL_RESPONSE)));
+
+		var response = createClient(wm).fetchMdmDeviceDetail(DEVICE_ID_FOR_COVERAGE);
+
+		var attrs = response.data().attributes();
+		assertEquals("XABC123X0ABC123X0", attrs.serialNumber());
+		assertEquals("Peter's Mac", attrs.deviceName());
+		assertEquals("MacBook Pro (16-inch, M4 Max)", attrs.deviceModel());
+		assertEquals("macOS", attrs.platform());
+		// enums
+		assertEquals(MdmDeviceDetailAttributes.DeviceLockStatus.UNLOCKED, attrs.deviceLockStatus());
+		assertEquals(MdmDeviceDetailAttributes.DeviceEraseStatus.NOT_ERASED, attrs.deviceEraseStatus());
+		assertEquals(MdmDeviceDetailAttributes.LostModeStatus.DISABLED, attrs.lostModeStatus());
+		// booleans
+		assertTrue(attrs.isFirewallEnabled());
+		assertTrue(attrs.isFileVaultEnabled());
+		// long capacities
+		assertEquals(123456789012L, attrs.storageFreeCapacity());
+		assertEquals(1000000000000L, attrs.storageTotalCapacity());
+		// lists — imei populated, null meid → empty list
+		assertEquals(2, attrs.imei().size());
+		assertEquals("356938035643809", attrs.imei().getFirst());
+		assertTrue(attrs.meid().isEmpty(), "null meid should map to empty list");
+		// null ethernetMacAddress → empty string
+		assertTrue(attrs.ethernetMacAddress().isEmpty(), "null ethernetMacAddress should map to empty string");
 	}
 
 	private AppleBusinessClient createClient(WireMockRuntimeInfo wm) throws Exception {

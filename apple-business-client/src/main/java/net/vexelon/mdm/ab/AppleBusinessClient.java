@@ -4,12 +4,10 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import net.vexelon.mdm.ab.model.PagingInformation;
 import net.vexelon.mdm.ab.model.devices.AppleCareCoverageField;
+import net.vexelon.mdm.ab.model.devices.MdmDeviceDetailField;
 import net.vexelon.mdm.ab.model.devices.MdmDeviceField;
 import net.vexelon.mdm.ab.model.devices.OrgDeviceField;
-import net.vexelon.mdm.ab.model.response.device.AppleCareCoverageResponse;
-import net.vexelon.mdm.ab.model.response.device.MdmDevicesResponse;
-import net.vexelon.mdm.ab.model.response.device.OrgDeviceResponse;
-import net.vexelon.mdm.ab.model.response.device.OrgDevicesResponse;
+import net.vexelon.mdm.ab.model.response.device.*;
 
 import java.util.EnumSet;
 
@@ -167,4 +165,26 @@ public interface AppleBusinessClient {
 	 */
 	@Nonnull
 	MdmDevicesResponse fetchMdmDevices(@Nonnull EnumSet<MdmDeviceField> fields, int limit, @Nullable String cursor);
+
+	/**
+	 * Fetches details for a single device enrolled in Apple device management service, using the server default
+	 * field set.
+	 *
+	 * @see #fetchMdmDeviceDetail(String, EnumSet)
+	 */
+	@Nonnull
+	default MdmDeviceDetailResponse fetchMdmDeviceDetail(@Nonnull String id) {
+		return fetchMdmDeviceDetail(id, MdmDeviceDetailField.of());
+	}
+
+	/**
+	 * Fetches details for a single device enrolled in Apple device management service.
+	 *
+	 * @param id     the unique identifier of the device
+	 * @param fields the fields to return for included related types; pass an empty set to receive all fields
+	 * @return response that contains a single MDM device detail resource
+	 * @see <a href="https://developer.apple.com/documentation/applebusinessapi/get-the-details-for-apple-mdm-enrolled-device">Get Details for a Device Enrolled in Apple Device Management Service</a>
+	 */
+	@Nonnull
+	MdmDeviceDetailResponse fetchMdmDeviceDetail(@Nonnull String id, @Nonnull EnumSet<MdmDeviceDetailField> fields);
 }
