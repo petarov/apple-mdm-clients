@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import net.vexelon.mdm.ab.model.devices.AppleCareCoverageAttributes;
 import net.vexelon.mdm.ab.model.devices.AppleCareCoverageField;
+import net.vexelon.mdm.ab.model.devices.MdmDeviceField;
 import net.vexelon.mdm.ab.model.devices.OrgDeviceField;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
@@ -94,6 +95,42 @@ public class AppleBusinessClientTests {
 			    "meta": {
 			        "paging": {
 			            "limit": 100
+			        }
+			    }
+			}
+			""".stripIndent();
+
+	private static final String MDM_DEVICES_RESPONSE = """
+			{
+			    "data": [
+			        {
+			            "type": "mdmDevices",
+			            "id": "XABC123X0ABC123X0",
+			            "attributes": {
+			                "serialNumber": "XABC123X0ABC123X0",
+			                "deviceName": "Peter's iPhone",
+			                "productFamily": "iPhone",
+			                "enrolledUserId": "user-001"
+			            }
+			        },
+			        {
+			            "type": "mdmDevices",
+			            "id": "YABC456Y0ABC456Y0",
+			            "attributes": {
+			                "serialNumber": "YABC456Y0ABC456Y0",
+			                "deviceName": null,
+			                "productFamily": "Mac",
+			                "enrolledUserId": null
+			            }
+			        }
+			    ],
+			    "links": {
+			        "self": "https://api-business.apple.com/v1/mdmDevices"
+			    },
+			    "meta": {
+			        "paging": {
+			            "limit": 100,
+			            "total": 2
 			        }
 			    }
 			}
@@ -347,6 +384,69 @@ public class AppleBusinessClientTests {
 		var abe = response.data().get(2).attributes();
 		assertEquals(AppleCareCoverageAttributes.PaymentType.ABE_SUBSCRIPTION, abe.paymentType());
 		assertTrue(abe.endDateTime().isEmpty(), "null endDateTime should map to empty string");
+
+		assertTrue(response.meta().paging().nextCursor().isEmpty(), "absent nextCursor should map to empty string");
+	}
+
+	@Test
+	void fetch_mdm_devices_with_fields_sends_comma_joined_wire_names_in_declaration_order(WireMockRuntimeInfo wm)
+			throws Exception {
+		stubFor(get(urlPathEqualTo("/mdmDevices")).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(MDM_DEVICES_RESPONSE)));
+
+		// SERIAL_NUMBER and DEVICE_NAME — declaration order determines the joined string
+		createClient(wm).fetchMdmDevices(
+				MdmDeviceField.of(MdmDeviceField.SERIAL_NUMBER, MdmDeviceField.DEVICE_NAME), 0, "");
+
+		// WireMock automatically decodes %5B / %5D back to [ / ] when matching query params
+		verify(getRequestedFor(urlPathEqualTo("/mdmDevices")).withQueryParam("fields[mdmDevices]",
+				equalTo("serialNumber,deviceName")));
+	}
+
+	@Test
+	void fetch_mdm_devices_with_empty_fields_omits_fields_param(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlPathEqualTo("/mdmDevices")).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(MDM_DEVICES_RESPONSE)));
+
+		createClient(wm).fetchMdmDevices(MdmDeviceField.of(), 0, "");
+
+		verify(getRequestedFor(urlPathEqualTo("/mdmDevices")).withoutQueryParam("fields[mdmDevices]"));
+	}
+
+	@Test
+	void fetch_mdm_devices_with_limit_sends_limit_param(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlPathEqualTo("/mdmDevices")).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(MDM_DEVICES_RESPONSE)));
+
+		createClient(wm).fetchMdmDevices(MdmDeviceField.of(), 10, "");
+
+		verify(getRequestedFor(urlPathEqualTo("/mdmDevices")).withQueryParam("limit", equalTo("10")));
+	}
+
+	@Test
+	void fetch_mdm_devices_deserializes_attributes_and_maps_null_to_empty_string(WireMockRuntimeInfo wm)
+			throws Exception {
+		stubFor(get(urlPathEqualTo("/mdmDevices")).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(MDM_DEVICES_RESPONSE)));
+
+		var response = createClient(wm).fetchMdmDevices();
+
+		assertEquals(2, response.data().size());
+
+		var first = response.data().get(0).attributes();
+		assertEquals("XABC123X0ABC123X0", first.serialNumber());
+		assertEquals("Peter's iPhone", first.deviceName());
+		assertEquals("iPhone", first.productFamily());
+		assertEquals("user-001", first.enrolledUserId());
+
+		// null fields map to empty string
+		var second = response.data().get(1).attributes();
+		assertTrue(second.deviceName().isEmpty(), "null deviceName should map to empty string");
+		assertTrue(second.enrolledUserId().isEmpty(), "null enrolledUserId should map to empty string");
 
 		assertTrue(response.meta().paging().nextCursor().isEmpty(), "absent nextCursor should map to empty string");
 	}

@@ -10,7 +10,6 @@ import java.util.EnumSet;
  * when calling the Apple Business Manager AppleCare coverage endpoints.
  *
  * @see AppleCareCoverageAttributes
- * @see <a href="https://developer.apple.com/documentation/applebusinessapi/get-orgdevice-applecarecoverage">Get AppleCare Coverage Information for a Device</a>
  */
 public enum AppleCareCoverageField {
 	STATUS("status"),

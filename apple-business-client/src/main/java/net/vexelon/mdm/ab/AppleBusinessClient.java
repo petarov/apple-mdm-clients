@@ -4,8 +4,10 @@ import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import net.vexelon.mdm.ab.model.PagingInformation;
 import net.vexelon.mdm.ab.model.devices.AppleCareCoverageField;
+import net.vexelon.mdm.ab.model.devices.MdmDeviceField;
 import net.vexelon.mdm.ab.model.devices.OrgDeviceField;
 import net.vexelon.mdm.ab.model.response.device.AppleCareCoverageResponse;
+import net.vexelon.mdm.ab.model.response.device.MdmDevicesResponse;
 import net.vexelon.mdm.ab.model.response.device.OrgDeviceResponse;
 import net.vexelon.mdm.ab.model.response.device.OrgDevicesResponse;
 
@@ -129,4 +131,40 @@ public interface AppleBusinessClient {
 	@Nonnull
 	AppleCareCoverageResponse fetchAppleCareCoverage(@Nonnull String id,
 			@Nonnull EnumSet<AppleCareCoverageField> fields, int limit, @Nullable String cursor);
+
+	/**
+	 * Fetches the first page of devices enrolled in Apple device management service using the server
+	 * default field set and page size.
+	 *
+	 * @see #fetchMdmDevices(EnumSet, int, String)
+	 */
+	@Nonnull
+	default MdmDevicesResponse fetchMdmDevices() {
+		return fetchMdmDevices(MdmDeviceField.of(), 0, "");
+	}
+
+	/**
+	 * Fetches the first page of devices enrolled in Apple device management service for the given
+	 * fields and page size.
+	 *
+	 * @see #fetchMdmDevices(EnumSet, int, String)
+	 */
+	@Nonnull
+	default MdmDevicesResponse fetchMdmDevices(@Nonnull EnumSet<MdmDeviceField> fields, int limit) {
+		return fetchMdmDevices(fields, limit, "");
+	}
+
+	/**
+	 * Fetches a list of devices enrolled in Apple device management service.
+	 *
+	 * @param fields the fields to return for included related types; pass an empty set to receive all fields
+	 * @param limit  maximum number of devices per page (1–1000); pass {@code 0} to use the server default
+	 * @param cursor the pagination cursor from a previous response's
+	 *               {@link PagingInformation.Paging#nextCursor()}; pass {@code ""} or {@code null} for the
+	 *               first page
+	 * @return response that contains a list of MDM-enrolled device resources
+	 * @see <a href="https://developer.apple.com/documentation/applebusinessapi/get-apple-mdm-enrolled-devices">Get Devices Enrolled in Apple Device Management Service</a>
+	 */
+	@Nonnull
+	MdmDevicesResponse fetchMdmDevices(@Nonnull EnumSet<MdmDeviceField> fields, int limit, @Nullable String cursor);
 }
