@@ -8,6 +8,8 @@ import net.vexelon.mdm.ab.model.devices.MdmDeviceDetailAttributes;
 import net.vexelon.mdm.ab.model.devices.MdmDeviceDetailField;
 import net.vexelon.mdm.ab.model.devices.MdmDeviceField;
 import net.vexelon.mdm.ab.model.devices.OrgDeviceField;
+import net.vexelon.mdm.ab.model.servers.MdmServerAttributes;
+import net.vexelon.mdm.ab.model.servers.MdmServerField;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -202,6 +204,122 @@ public class AppleBusinessClientDevicesTests {
 			            "limit": 100,
 			            "total": 2
 			        }
+			    }
+			}
+			""".stripIndent();
+
+	private static final String MDM_SERVERS_RESPONSE = """
+			{
+			    "data": [
+			        {
+			            "type": "mdmServers",
+			            "id": "1F97349736CF4614A94F624E705841AD",
+			            "attributes": {
+			                "serverName": "Test Device Management Service",
+			                "serverType": "MDM",
+			                "status": "ACTIVE",
+			                "defaultProductFamilies": ["IPHONE", "IPAD"],
+			                "deviceCount": 42,
+			                "enableMdmDisownFlag": true,
+			                "lastConnectedDateTime": "2025-05-01T03:22:00.000Z",
+			                "lastConnectedIp": "192.0.2.1",
+			                "createdDateTime": "2025-05-01T03:21:44.685Z",
+			                "updatedDateTime": "2025-05-01T03:21:46.284Z"
+			            }
+			        },
+			        {
+			            "type": "mdmServers",
+			            "id": "2F97349736CF4614A94F624E705841AE",
+			            "attributes": {
+			                "serverName": null,
+			                "serverType": "FUTURE_SERVER_TYPE",
+			                "status": "FUTURE_STATUS",
+			                "defaultProductFamilies": null,
+			                "deviceCount": 0,
+			                "enableMdmDisownFlag": false,
+			                "lastConnectedDateTime": null,
+			                "lastConnectedIp": null,
+			                "createdDateTime": null,
+			                "updatedDateTime": null
+			            }
+			        },
+			        {
+			            "type": "mdmServers",
+			            "id": "3F97349736CF4614A94F624E705841AF",
+			            "attributes": {
+			                "serverName": "Minimal Service",
+			                "createdDateTime": "2025-05-01T03:21:44.685Z",
+			                "updatedDateTime": "2025-05-01T03:21:46.284Z"
+			            }
+			        },
+			        {
+			            "type": "mdmServers",
+			            "id": "4F97349736CF4614A94F624E705841BF",
+			            "attributes": {
+			                "serverName": "Explicit Null Enums",
+			                "serverType": null,
+			                "status": null,
+			                "createdDateTime": "2025-05-01T03:21:44.685Z",
+			                "updatedDateTime": "2025-05-01T03:21:46.284Z"
+			            }
+			        }
+			    ],
+			    "included": [
+			        {
+			            "type": "orgDevices",
+			            "id": "XABC123X0ABC123X0",
+			            "attributes": {
+			                "serialNumber": "XABC123X0ABC123X0",
+			                "deviceModel": "iPhone 15 Pro",
+			                "productFamily": "iPhone",
+			                "status": "ASSIGNED"
+			            }
+			        }
+			    ],
+			    "links": {
+			        "self": "https://api-business.apple.com/v1/mdmServers"
+			    },
+			    "meta": {
+			        "paging": {
+			            "limit": 100,
+			            "total": 4
+			        }
+			    }
+			}
+			""".stripIndent();
+
+	private static final String MDM_SERVER_RESPONSE = """
+			{
+			    "data": {
+			        "type": "mdmServers",
+			        "id": "1F97349736CF4614A94F624E705841AD",
+			        "attributes": {
+			            "serverName": "Production MDM",
+			            "serverType": "MDM",
+			            "status": "ACTIVE",
+			            "defaultProductFamilies": ["IPAD", "IPHONE", "MAC"],
+			            "deviceCount": 128,
+			            "enableMdmDisownFlag": false,
+			            "lastConnectedDateTime": "2026-06-01T08:14:23Z",
+			            "lastConnectedIp": "203.0.113.5",
+			            "createdDateTime": "2025-05-01T03:21:44Z",
+			            "updatedDateTime": "2026-05-12T11:02:18Z"
+			        }
+			    },
+			    "included": [
+			        {
+			            "type": "orgDevices",
+			            "id": "XABC123X0ABC123X0",
+			            "attributes": {
+			                "serialNumber": "XABC123X0ABC123X0",
+			                "deviceModel": "iPhone 15 Pro",
+			                "productFamily": "iPhone",
+			                "status": "ASSIGNED"
+			            }
+			        }
+			    ],
+			    "links": {
+			        "self": "https://api-business.apple.com/v1/mdmServers/1F97349736CF4614A94F624E705841AD"
 			    }
 			}
 			""".stripIndent();
@@ -515,6 +633,162 @@ public class AppleBusinessClientDevicesTests {
 		assertTrue(attrs.meid().isEmpty(), "null meid should map to empty list");
 		// null ethernetMacAddress → empty string
 		assertTrue(attrs.ethernetMacAddress().isEmpty(), "null ethernetMacAddress should map to empty string");
+	}
+
+	// --- fetchMdmServices ---
+
+	@Test
+	void fetch_mdm_services_with_fields_sends_comma_joined_wire_names_in_declaration_order(WireMockRuntimeInfo wm)
+			throws Exception {
+		stubFor(get(urlPathEqualTo("/mdmServers")).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(MDM_SERVERS_RESPONSE)));
+
+		// SERVER_NAME and STATUS — declaration order determines the joined string
+		createClient(wm).fetchMdmServices(MdmServerField.of(MdmServerField.SERVER_NAME, MdmServerField.STATUS), 0, "");
+
+		// WireMock automatically decodes %5B / %5D back to [ / ] when matching query params
+		verify(getRequestedFor(urlPathEqualTo("/mdmServers")).withQueryParam("fields[mdmServers]",
+				equalTo("serverName,status")));
+	}
+
+	@Test
+	void fetch_mdm_services_with_empty_fields_omits_fields_param(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlPathEqualTo("/mdmServers")).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(MDM_SERVERS_RESPONSE)));
+
+		createClient(wm).fetchMdmServices(MdmServerField.of(), 0, "");
+
+		verify(getRequestedFor(urlPathEqualTo("/mdmServers")).withoutQueryParam("fields[mdmServers]"));
+	}
+
+	@Test
+	void fetch_mdm_services_with_limit_sends_limit_param(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlPathEqualTo("/mdmServers")).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(MDM_SERVERS_RESPONSE)));
+
+		createClient(wm).fetchMdmServices(MdmServerField.of(), 10, "");
+
+		verify(getRequestedFor(urlPathEqualTo("/mdmServers")).withQueryParam("limit", equalTo("10")));
+	}
+
+	@Test
+	void fetch_mdm_services_with_cursor_sends_cursor_param(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlPathEqualTo("/mdmServers")).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(MDM_SERVERS_RESPONSE)));
+
+		createClient(wm).fetchMdmServices(MdmServerField.of(), 0, "next-page-cursor");
+
+		verify(getRequestedFor(urlPathEqualTo("/mdmServers")).withQueryParam("cursor", equalTo("next-page-cursor")));
+	}
+
+	@Test
+	void fetch_mdm_services_deserializes_attributes_and_included(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlPathEqualTo("/mdmServers")).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(MDM_SERVERS_RESPONSE)));
+
+		var response = createClient(wm).fetchMdmServices();
+
+		assertEquals(4, response.data().size());
+
+		var first = response.data().getFirst().attributes();
+		assertEquals("Test Device Management Service", first.serverName());
+		assertEquals(MdmServerAttributes.ServerType.MDM, first.serverType());
+		assertEquals(MdmServerAttributes.Status.ACTIVE, first.status());
+		assertEquals(2, first.defaultProductFamilies().size());
+		assertEquals(MdmServerAttributes.ProductFamily.IPHONE, first.defaultProductFamilies().getFirst());
+		assertEquals(42, first.deviceCount());
+		assertTrue(first.enableMdmDisownFlag());
+
+		// null/unrecognized fields map to empty string / empty list / UNKNOWN
+		var second = response.data().get(1).attributes();
+		assertTrue(second.serverName().isEmpty(), "null serverName should map to empty string");
+		assertEquals(MdmServerAttributes.ServerType.UNKNOWN, second.serverType(),
+				"unrecognized serverType should map to UNKNOWN");
+		assertEquals(MdmServerAttributes.Status.UNKNOWN, second.status(), "unrecognized status should map to UNKNOWN");
+		assertTrue(second.defaultProductFamilies().isEmpty(), "null defaultProductFamilies should map to empty list");
+
+		// absent fields (e.g. Apple's own sample response omits status) stay null, not UNKNOWN
+		var third = response.data().get(2).attributes();
+		assertNull(third.serverType(), "absent serverType should stay null");
+		assertNull(third.status(), "absent status should stay null");
+
+		// explicit JSON null also stays null, not UNKNOWN
+		var fourth = response.data().get(3).attributes();
+		assertNull(fourth.serverType(), "null serverType should stay null");
+		assertNull(fourth.status(), "null status should stay null");
+
+		assertEquals(1, response.included().size());
+		assertEquals("XABC123X0ABC123X0", response.included().getFirst().attributes().serialNumber());
+
+		assertTrue(response.meta().paging().nextCursor().isEmpty(), "absent nextCursor should map to empty string");
+	}
+
+	// --- fetchMdmServiceDetail ---
+
+	@Test
+	void fetch_mdm_service_detail_uses_correct_path(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlPathEqualTo("/mdmServers/" + DEVICE_ID_FOR_COVERAGE)).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(MDM_SERVER_RESPONSE)));
+
+		createClient(wm).fetchMdmService(DEVICE_ID_FOR_COVERAGE);
+
+		verify(getRequestedFor(urlPathEqualTo("/mdmServers/" + DEVICE_ID_FOR_COVERAGE)));
+	}
+
+	@Test
+	void fetch_mdm_service_detail_with_fields_sends_comma_joined_wire_names_in_declaration_order(
+			WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlPathEqualTo("/mdmServers/" + DEVICE_ID_FOR_COVERAGE)).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(MDM_SERVER_RESPONSE)));
+
+		// SERVER_NAME and STATUS — declaration order determines the joined string
+		createClient(wm).fetchMdmService(DEVICE_ID_FOR_COVERAGE,
+				MdmServerField.of(MdmServerField.SERVER_NAME, MdmServerField.STATUS));
+
+		// WireMock automatically decodes %5B / %5D back to [ / ] when matching query params
+		verify(getRequestedFor(urlPathEqualTo("/mdmServers/" + DEVICE_ID_FOR_COVERAGE)).withQueryParam(
+				"fields[mdmServers]", equalTo("serverName,status")));
+	}
+
+	@Test
+	void fetch_mdm_service_detail_with_empty_fields_omits_fields_param(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlPathEqualTo("/mdmServers/" + DEVICE_ID_FOR_COVERAGE)).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(MDM_SERVER_RESPONSE)));
+
+		createClient(wm).fetchMdmService(DEVICE_ID_FOR_COVERAGE, MdmServerField.of());
+
+		verify(getRequestedFor(urlPathEqualTo("/mdmServers/" + DEVICE_ID_FOR_COVERAGE)).withoutQueryParam(
+				"fields[mdmServers]"));
+	}
+
+	@Test
+	void fetch_mdm_service_detail_deserializes_attributes_and_included(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlPathEqualTo("/mdmServers/" + DEVICE_ID_FOR_COVERAGE)).willReturn(
+				aResponse().withStatus(200).withHeader("content-type", "application/json")
+						.withBody(MDM_SERVER_RESPONSE)));
+
+		var response = createClient(wm).fetchMdmService(DEVICE_ID_FOR_COVERAGE);
+
+		var attrs = response.data().attributes();
+		assertEquals("Production MDM", attrs.serverName());
+		assertEquals(MdmServerAttributes.ServerType.MDM, attrs.serverType());
+		assertEquals(MdmServerAttributes.Status.ACTIVE, attrs.status());
+		assertEquals(3, attrs.defaultProductFamilies().size());
+		assertEquals(MdmServerAttributes.ProductFamily.IPAD, attrs.defaultProductFamilies().getFirst());
+		assertEquals(128, attrs.deviceCount());
+		assertFalse(attrs.enableMdmDisownFlag());
+		assertEquals("203.0.113.5", attrs.lastConnectedIp());
+
+		assertEquals(1, response.included().size());
+		assertEquals("XABC123X0ABC123X0", response.included().getFirst().attributes().serialNumber());
 	}
 
 	private AppleBusinessClient createClient(WireMockRuntimeInfo wm) throws Exception {

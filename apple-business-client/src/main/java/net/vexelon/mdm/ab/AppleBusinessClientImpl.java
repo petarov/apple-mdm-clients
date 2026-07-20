@@ -12,6 +12,9 @@ import net.vexelon.mdm.ab.model.response.device.MdmDeviceDetailResponse;
 import net.vexelon.mdm.ab.model.response.device.MdmDevicesResponse;
 import net.vexelon.mdm.ab.model.response.device.OrgDeviceResponse;
 import net.vexelon.mdm.ab.model.response.device.OrgDevicesResponse;
+import net.vexelon.mdm.ab.model.response.servers.MdmServerResponse;
+import net.vexelon.mdm.ab.model.response.servers.MdmServersResponse;
+import net.vexelon.mdm.ab.model.servers.MdmServerField;
 import net.vexelon.mdm.shared.http.HttpClientWrapper;
 import net.vexelon.mdm.shared.http.HttpClientWrapperException;
 import net.vexelon.mdm.shared.http.HttpConsts;
@@ -172,6 +175,43 @@ class AppleBusinessClientImpl implements AppleBusinessClient {
 		}
 		return execute(client.createRequestBuilder(client.complementURI(path.toString())).GET(),
 				MdmDeviceDetailResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public MdmServersResponse fetchMdmServices(@Nonnull EnumSet<MdmServerField> fields, int limit, String cursor) {
+		var path = new StringBuilder("/mdmServers");
+		var params = new ArrayList<String>();
+		if (!fields.isEmpty()) {
+			// fields[mdmServers] — brackets must be percent-encoded in the URI
+			params.add("fields%5BmdmServers%5D=" + fields.stream()
+					.map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
+					.collect(Collectors.joining(",")));
+		}
+		if (limit > 0) {
+			params.add("limit=" + limit);
+		}
+		if (cursor != null && !cursor.isEmpty()) {
+			params.add("cursor=" + URLEncoder.encode(cursor, StandardCharsets.UTF_8));
+		}
+		if (!params.isEmpty()) {
+			path.append("?").append(String.join("&", params));
+		}
+		return execute(client.createRequestBuilder(client.complementURI(path.toString())).GET(),
+				MdmServersResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public MdmServerResponse fetchMdmService(@Nonnull String id, @Nonnull EnumSet<MdmServerField> fields) {
+		var path = new StringBuilder("/mdmServers/").append(URLEncoder.encode(id, StandardCharsets.UTF_8));
+		if (!fields.isEmpty()) {
+			path.append("?fields%5BmdmServers%5D=").append(fields.stream()
+					.map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
+					.collect(Collectors.joining(",")));
+		}
+		return execute(client.createRequestBuilder(client.complementURI(path.toString())).GET(),
+				MdmServerResponse.class);
 	}
 
 	<T> HttpRequest.BodyPublisher ofBody(T obj) {

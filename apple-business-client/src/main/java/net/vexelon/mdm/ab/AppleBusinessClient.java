@@ -8,6 +8,9 @@ import net.vexelon.mdm.ab.model.devices.MdmDeviceDetailField;
 import net.vexelon.mdm.ab.model.devices.MdmDeviceField;
 import net.vexelon.mdm.ab.model.devices.OrgDeviceField;
 import net.vexelon.mdm.ab.model.response.device.*;
+import net.vexelon.mdm.ab.model.response.servers.MdmServerResponse;
+import net.vexelon.mdm.ab.model.response.servers.MdmServersResponse;
+import net.vexelon.mdm.ab.model.servers.MdmServerField;
 
 import java.util.EnumSet;
 
@@ -187,4 +190,62 @@ public interface AppleBusinessClient {
 	 */
 	@Nonnull
 	MdmDeviceDetailResponse fetchMdmDeviceDetail(@Nonnull String id, @Nonnull EnumSet<MdmDeviceDetailField> fields);
+
+	/**
+	 * Fetches the first page of device management services using the server default field set and page size.
+	 *
+	 * @see #fetchMdmServices(EnumSet, int, String)
+	 */
+	@Nonnull
+	default MdmServersResponse fetchMdmServices() {
+		return fetchMdmServices(MdmServerField.of(), 0, "");
+	}
+
+	/**
+	 * Fetches the first page of device management services for the given fields and page size.
+	 *
+	 * @see #fetchMdmServices(EnumSet, int, String)
+	 */
+	@Nonnull
+	default MdmServersResponse fetchMdmServices(@Nonnull EnumSet<MdmServerField> fields, int limit) {
+		return fetchMdmServices(fields, limit, "");
+	}
+
+	/**
+	 * Fetches a list of device management services in an organization.
+	 *
+	 * @param fields the fields to return for included related types; pass an empty set to receive all fields
+	 * @param limit  maximum number of device management services per page (1–1000); pass {@code 0} to use the
+	 *               server default
+	 * @param cursor the pagination cursor from a previous response's
+	 *               {@link PagingInformation.Paging#nextCursor()}; pass {@code ""} or {@code null} for the
+	 *               first page
+	 * @return response that contains a list of device management service resources
+	 * @see <a href="https://developer.apple.com/documentation/applebusinessapi/get-mdm-servers">Get Device Management Services</a>
+	 */
+	@Nonnull
+	MdmServersResponse fetchMdmServices(@Nonnull EnumSet<MdmServerField> fields, int limit, @Nullable String cursor);
+
+	/**
+	 * Fetches information for a single device management service using the server default field set.
+	 *
+	 * @param id the unique identifier of the device management service
+	 * @return response that contains a single device management service resource
+	 * @see #fetchMdmService(String, EnumSet)
+	 */
+	@Nonnull
+	default MdmServerResponse fetchMdmService(@Nonnull String id) {
+		return fetchMdmService(id, MdmServerField.of());
+	}
+
+	/**
+	 * Fetches information for a single device management service.
+	 *
+	 * @param id     the unique identifier of the device management service
+	 * @param fields the fields to return for included related types; pass an empty set to receive all fields
+	 * @return response that contains a single device management service resource
+	 * @see <a href="https://developer.apple.com/documentation/applebusinessapi/get-mdmserver-information">Get Device Management Service Information</a>
+	 */
+	@Nonnull
+	MdmServerResponse fetchMdmService(@Nonnull String id, @Nonnull EnumSet<MdmServerField> fields);
 }

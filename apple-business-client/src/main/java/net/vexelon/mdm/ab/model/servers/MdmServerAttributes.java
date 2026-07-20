@@ -1,0 +1,104 @@
+package net.vexelon.mdm.ab.model.servers;
+
+import com.fasterxml.jackson.annotation.*;
+import jakarta.annotation.Nonnull;
+
+import java.util.List;
+
+/**
+ * Attributes that describe a device management service resource.
+ *
+ * <p>All date-time fields use ISO 8601 format (e.g. {@code 2025-05-01T03:21:44.685Z}).
+ * All nullable string/list fields default to empty string or empty list when absent or {@code null} in the response.
+ *
+ * @param serverName             the device management service's name
+ * @param serverType             the type of device management service: defaults to {@link ServerType#UNKNOWN} when
+ *                               unrecognized. Read only
+ * @param status                 the operational status of the device management service: defaults to
+ *                               {@link Status#UNKNOWN} when unrecognized. Read only
+ * @param defaultProductFamilies the product families that are assigned by default to this device management
+ *                               service. Read/update only
+ * @param deviceCount            the number of devices currently assigned to this device management service. Read only
+ * @param enableMdmDisownFlag    a boolean value that indicates whether the device management service is allowed to
+ *                               disown its enrolled devices
+ * @param lastConnectedDateTime  the date and time the device management service last connected to Apple's servers.
+ *                               Read only
+ * @param lastConnectedIp        the IP address from which the device management service last connected to Apple's
+ *                               servers. Read only
+ * @param createdDateTime        the date and time of the creation of the resource
+ * @param updatedDateTime        the date and time of the most-recent update for the resource
+ * @see <a href="https://developer.apple.com/documentation/applebusinessapi/mdmserver/attributes-data.dictionary">MdmServer.Attributes</a>
+ * @since Apple Business API 2.2+
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record MdmServerAttributes(@JsonSetter(nulls = Nulls.AS_EMPTY) String serverName,
+                                  @Nonnull @JsonSetter(nulls = Nulls.DEFAULT) ServerType serverType,
+                                  @Nonnull @JsonSetter(nulls = Nulls.DEFAULT) Status status, @Nonnull @JsonSetter(
+		nulls = Nulls.AS_EMPTY) List<ProductFamily> defaultProductFamilies, int deviceCount,
+                                  boolean enableMdmDisownFlag,
+                                  @JsonSetter(nulls = Nulls.AS_EMPTY) String lastConnectedDateTime,
+                                  @JsonSetter(nulls = Nulls.AS_EMPTY) String lastConnectedIp,
+                                  @JsonSetter(nulls = Nulls.AS_EMPTY) String createdDateTime,
+                                  @JsonSetter(nulls = Nulls.AS_EMPTY) String updatedDateTime) {
+
+	/**
+	 * The type of device management service.
+	 */
+	public enum ServerType {
+		@JsonEnumDefaultValue UNKNOWN,
+		MDM,
+		APPLE_CONFIGURATOR,
+		APPLE_MDM;
+
+		@JsonCreator
+		public static ServerType fromValue(String value) {
+			for (var type : values()) {
+				if (type.name().equalsIgnoreCase(value))
+					return type;
+			}
+			return UNKNOWN;
+		}
+	}
+
+	/**
+	 * The operational status of a device management service.
+	 */
+	public enum Status {
+		@JsonEnumDefaultValue UNKNOWN,
+		ACTIVE,
+		INACTIVE,
+		DELETED;
+
+		@JsonCreator
+		public static Status fromValue(String value) {
+			for (var type : values()) {
+				if (type.name().equalsIgnoreCase(value))
+					return type;
+			}
+			return UNKNOWN;
+		}
+	}
+
+	/**
+	 * A product family that can be assigned as a default to a device management service.
+	 */
+	public enum ProductFamily {
+		@JsonEnumDefaultValue UNKNOWN,
+		APPLE_TV,
+		IPAD,
+		IPHONE,
+		IPOD,
+		MAC,
+		VISION,
+		WATCH;
+
+		@JsonCreator
+		public static ProductFamily fromValue(String value) {
+			for (var type : values()) {
+				if (type.name().equalsIgnoreCase(value))
+					return type;
+			}
+			return UNKNOWN;
+		}
+	}
+}
