@@ -75,14 +75,18 @@ class AppleBusinessClientImpl implements AppleBusinessClient {
 		});
 	}
 
+	// square brackets in query parameter names must be percent-encoded in the raw URI string
+	private static String fieldsParam(String resourceType) {
+		return "fields%5B" + resourceType + "%5D=";
+	}
+
 	@Nonnull
 	@Override
 	public OrgDevicesResponse fetchOrgDevices(@Nonnull EnumSet<OrgDeviceField> fields, int limit, String cursor) {
 		var path = new StringBuilder("/orgDevices");
 		var params = new ArrayList<String>();
 		if (!fields.isEmpty()) {
-			// fields[orgDevices] — brackets must be percent-encoded in the URI
-			params.add("fields%5BorgDevices%5D=" + fields.stream()
+			params.add(fieldsParam("orgDevices") + fields.stream()
 					.map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
 					.collect(Collectors.joining(",")));
 		}
@@ -104,7 +108,7 @@ class AppleBusinessClientImpl implements AppleBusinessClient {
 	public OrgDeviceResponse fetchOrgDevice(@Nonnull String id, @Nonnull EnumSet<OrgDeviceField> fields) {
 		var path = new StringBuilder("/orgDevices/").append(URLEncoder.encode(id, StandardCharsets.UTF_8));
 		if (!fields.isEmpty()) {
-			path.append("?fields%5BorgDevices%5D=")
+			path.append("?").append(fieldsParam("orgDevices"))
 					.append(fields.stream().map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
 							.collect(Collectors.joining(",")));
 		}
@@ -120,8 +124,7 @@ class AppleBusinessClientImpl implements AppleBusinessClient {
 				.append("/appleCareCoverage");
 		var params = new ArrayList<String>();
 		if (!fields.isEmpty()) {
-			// fields[appleCareCoverage] — brackets must be percent-encoded in the URI
-			params.add("fields%5BappleCareCoverage%5D=" + fields.stream()
+			params.add(fieldsParam("appleCareCoverage") + fields.stream()
 					.map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
 					.collect(Collectors.joining(",")));
 		}
@@ -144,8 +147,7 @@ class AppleBusinessClientImpl implements AppleBusinessClient {
 		var path = new StringBuilder("/mdmDevices");
 		var params = new ArrayList<String>();
 		if (!fields.isEmpty()) {
-			// fields[mdmDevices] — brackets must be percent-encoded in the URI
-			params.add("fields%5BmdmDevices%5D=" + fields.stream()
+			params.add(fieldsParam("mdmDevices") + fields.stream()
 					.map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
 					.collect(Collectors.joining(",")));
 		}
@@ -169,7 +171,7 @@ class AppleBusinessClientImpl implements AppleBusinessClient {
 		var path = new StringBuilder("/mdmDevices/").append(URLEncoder.encode(id, StandardCharsets.UTF_8))
 				.append("/details");
 		if (!fields.isEmpty()) {
-			path.append("?fields%5BmdmDeviceDetails%5D=").append(fields.stream()
+			path.append("?").append(fieldsParam("mdmDeviceDetails")).append(fields.stream()
 					.map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
 					.collect(Collectors.joining(",")));
 		}
@@ -183,8 +185,7 @@ class AppleBusinessClientImpl implements AppleBusinessClient {
 		var path = new StringBuilder("/mdmServers");
 		var params = new ArrayList<String>();
 		if (!fields.isEmpty()) {
-			// fields[mdmServers] — brackets must be percent-encoded in the URI
-			params.add("fields%5BmdmServers%5D=" + fields.stream()
+			params.add(fieldsParam("mdmServers") + fields.stream()
 					.map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
 					.collect(Collectors.joining(",")));
 		}
@@ -206,7 +207,7 @@ class AppleBusinessClientImpl implements AppleBusinessClient {
 	public MdmServerResponse fetchMdmService(@Nonnull String id, @Nonnull EnumSet<MdmServerField> fields) {
 		var path = new StringBuilder("/mdmServers/").append(URLEncoder.encode(id, StandardCharsets.UTF_8));
 		if (!fields.isEmpty()) {
-			path.append("?fields%5BmdmServers%5D=").append(fields.stream()
+			path.append("?").append(fieldsParam("mdmServers")).append(fields.stream()
 					.map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
 					.collect(Collectors.joining(",")));
 		}
