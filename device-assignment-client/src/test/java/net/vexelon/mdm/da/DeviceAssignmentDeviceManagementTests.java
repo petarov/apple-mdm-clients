@@ -13,6 +13,7 @@ import org.junit.jupiter.api.TestInstance;
 import java.security.Security;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -166,6 +167,12 @@ public class DeviceAssignmentDeviceManagementTests {
 						            "device_assigned_date": "2025-05-03T21:01:55Z",
 						            "op_type": "modified",
 						            "op_date": "2025-05-03T21:01:55Z"
+						        },
+						        {
+						            "serial_number": "C112342757",
+						            "op_type": "deleted",
+						            "op_date": "2025-05-04T09:12:00Z",
+						            "released_by_replacement": true
 						        }
 						    ],
 						    "fetched_until": "2025-05-03T21:01:55Z",
@@ -180,16 +187,22 @@ public class DeviceAssignmentDeviceManagementTests {
 		assertEquals("MTAwOjA6MTc0NjMwNjExNTA1OToxNzQ2MzA2NDgyNTM2OnRydWU6MTc0NjMwNjExNTA1OQ", syncResponse2.cursor());
 		assertFalse(syncResponse2.moreToFollow());
 		assertEquals(OffsetDateTime.parse("2025-05-03T21:01:55Z"), syncResponse2.fetchedUntil());
-		assertEquals(2, syncResponse2.devices().size());
+		assertEquals(3, syncResponse2.devices().size());
 		assertEquals("C112342756", syncResponse2.devices().getFirst().serialNumber());
 		assertEquals(Device.OpType.MODIFIED, syncResponse2.devices().getFirst().opType());
 		assertEquals("2025-05-03T20:59:31Z", syncResponse2.devices().getFirst().opDate());
 		assertEquals(OffsetDateTime.parse("2025-05-03T20:59:31Z"), syncResponse2.devices().getFirst().opDateTime());
 
-		assertEquals("C112342756", syncResponse2.devices().getLast().serialNumber());
-		assertEquals(Device.OpType.MODIFIED, syncResponse2.devices().getLast().opType());
-		assertEquals("2025-05-03T21:01:55Z", syncResponse2.devices().getLast().opDate());
-		assertEquals(OffsetDateTime.parse("2025-05-03T21:01:55Z"), syncResponse2.devices().getLast().opDateTime());
+		assertEquals("C112342756", syncResponse2.devices().get(1).serialNumber());
+		assertEquals(Device.OpType.MODIFIED, syncResponse2.devices().get(1).opType());
+		assertEquals("2025-05-03T21:01:55Z", syncResponse2.devices().get(1).opDate());
+		assertEquals(OffsetDateTime.parse("2025-05-03T21:01:55Z"), syncResponse2.devices().get(1).opDateTime());
+		assertFalse(syncResponse2.devices().get(1).isReleasedByReplacement());
+
+		assertEquals("C112342757", syncResponse2.devices().getLast().serialNumber());
+		assertEquals(Device.OpType.DELETED, syncResponse2.devices().getLast().opType());
+		assertEquals("2025-05-04T09:12:00Z", syncResponse2.devices().getLast().opDate());
+		assertTrue(syncResponse2.devices().getLast().isReleasedByReplacement());
 	}
 
 	@Test
@@ -212,7 +225,14 @@ public class DeviceAssignmentDeviceManagementTests {
 						            "profile_status": "assigned",
 						            "device_assigned_by": "max-muster-work@petarov.net",
 						            "device_assigned_date": "2022-03-03T08:16:27Z",
-						            "response_status": "SUCCESS"
+						            "response_status": "SUCCESS",
+						            "bluetooth_mac_address": "AC:BC:32:9A:1B:2C",
+						            "eid": "89049032000123456789012345678901",
+						            "ethernet_mac_address": "3C:15:C2:A1:B2:C3",
+						            "wifi_mac_address": "3C:15:C2:D4:E5:F6",
+						            "imei": ["01 129600 314225 1"],
+						            "meid": ["35795904370426"],
+						            "is_replacement_device": true
 						        },
 						        "BNPT0GHHM7252": {
 						            "response_status": "NOT_ACCESSIBLE"
@@ -238,8 +258,20 @@ public class DeviceAssignmentDeviceManagementTests {
 		assertEquals("max-muster-work@petarov.net", device.deviceAssignedBy());
 		assertEquals("2022-03-03T08:16:27Z", device.deviceAssignedDate());
 		assertEquals("SUCCESS", device.responseStatus());
+		assertEquals("AC:BC:32:9A:1B:2C", device.bluetoothMacAddress());
+		assertEquals("89049032000123456789012345678901", device.eid());
+		assertEquals("3C:15:C2:A1:B2:C3", device.ethernetMacAddress());
+		assertEquals("3C:15:C2:D4:E5:F6", device.wifiMacAddress());
+		assertEquals(List.of("01 129600 314225 1"), device.imei());
+		assertEquals(List.of("35795904370426"), device.meid());
+		assertTrue(device.isReplacementDevice());
+		assertFalse(device.isReleasedByReplacement());
 
-		assertEquals("NOT_ACCESSIBLE", response.devices().get("BNPT0GHHM7252").responseStatus());
+		var device2 = response.devices().get("BNPT0GHHM7252");
+		assertEquals("NOT_ACCESSIBLE", device2.responseStatus());
+		assertTrue(device2.imei().isEmpty());
+		assertTrue(device2.meid().isEmpty());
+		assertFalse(device2.isReplacementDevice());
 	}
 
 	@Test
