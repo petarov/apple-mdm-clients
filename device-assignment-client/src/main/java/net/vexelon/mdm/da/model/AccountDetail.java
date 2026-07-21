@@ -57,6 +57,6 @@ public record AccountDetail(@JsonSetter(nulls = Nulls.AS_EMPTY) String adminId,
 		@JsonEnumDefaultValue UNKNOWN,
 		EDU,
 		ORG,
-		@JsonProperty("tvprovider") TV_PROVIDER
+		TVPROVIDER
 	}
 }

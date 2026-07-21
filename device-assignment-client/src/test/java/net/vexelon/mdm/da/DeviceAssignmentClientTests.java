@@ -78,7 +78,7 @@ public class DeviceAssignmentClientTests {
 		// verify the headers are right
 		verify(getRequestedFor(urlEqualTo("/account")).withHeader("x-adm-auth-session",
 						equalTo("1745786035268O1O789F19CF078867E47DC9D9BF4682D021O75CA72ECB87046A1B2239D9CFA4D6771O420397O11Op1OB123AA978976E390FF7693C640C92D3F8F6FE7F6O81E6CAAC7816AD3E12D531496695CF5A"))
-				.withHeader("x-server-protocol-version", equalTo("8"))
+				.withHeader("x-server-protocol-version", equalTo("10"))
 				.withHeader(HttpConsts.HEADER_CONTENT_TYPE, equalTo("application/json;charset=UTF8"))
 				.withHeader(HttpConsts.HEADER_USER_AGENT, equalTo("apple-mdm-device-assignment-v1")));
 
@@ -252,7 +252,7 @@ public class DeviceAssignmentClientTests {
 		assertEquals("ZS16DKkGwAGFsF5on9evLPYkFmq99fs2EFBHd3F2JUXpJVUvAYBDwyFRQn1nVLp8",
 				seedBuild.betaEnrollmentTokens().getFirst().token());
 		assertEquals("visionOS Developer Beta", seedBuild.betaEnrollmentTokens().getFirst().title());
-		assertEquals(SeedBuildToken.OS.VISION_OS, seedBuild.betaEnrollmentTokens().getFirst().os());
+		assertEquals(SeedBuildToken.OS.VISIONOS, seedBuild.betaEnrollmentTokens().getFirst().os());
 		assertEquals("WkaTiJV3QAvUkeo46QJynL631Pxja6sbGTiPjcjHUncAZdL1fozjSPbmMhy1u2Ws",
 				seedBuild.betaEnrollmentTokens().getLast().token());
 		assertEquals("macOS Sequoia 15.2 AppleSeed Beta", seedBuild.betaEnrollmentTokens().getLast().title());

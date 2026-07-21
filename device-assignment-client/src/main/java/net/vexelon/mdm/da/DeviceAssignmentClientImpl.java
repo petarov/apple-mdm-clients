@@ -26,7 +26,7 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 
 	private static final String HEADER_X_ADM_AUTH_SESSION              = "X-ADM-Auth-Session";
 	private static final String HEADER_X_SERVER_PROTOCOL_VERSION       = "X-Server-Protocol-Version";
-	private static final String HEADER_X_SERVER_PROTOCOL_VERSION_VALUE = "8";
+	private static final String HEADER_X_SERVER_PROTOCOL_VERSION_VALUE = "10";
 
 	private final HttpClientWrapper           client;
 	private final DeviceAssignmentServerToken serverToken;
@@ -165,10 +165,10 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 
 	@Nonnull
 	@Override
-	public ProfileDevicesResponse assignProfile(String profileUuid, @Nonnull Set<String> serialNumbers) {
+	public AssignProfileResponse assignProfile(String profileUuid, @Nonnull Set<String> serialNumbers) {
 		return execute(client.createRequestBuilder(client.complementURI("/profile/devices"))
 						.POST(ofBody(Map.of("profile_uuid", profileUuid, "devices", serialNumbers))),
-				ProfileDevicesResponse.class);
+				AssignProfileResponse.class);
 	}
 
 	@Nonnull
@@ -196,6 +196,23 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 
 		return execute(client.createRequestBuilder(client.complementURI("/device/activationlock")).POST(ofBody(params)),
 				ActivationLockStatusResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<GetReplacementDetailsResponse> fetchReplacementDetails(String serialNumber) {
+		try {
+			return Optional.of(execute(client.createRequestBuilder(
+							client.complementURI("/device/replacementDetails?device=" + serialNumber)).GET(),
+					GetReplacementDetailsResponse.class));
+		} catch (DeviceAssignmentException e) {
+			// documented as 404, but Apple's server currently responds with 400 and a `DEVICE_NOT_FOUND` body
+			if (e.getCode() == HttpConsts.STATUS_NOT_FOUND || (e.getCode() == HttpConsts.STATUS_BAD_REQUEST
+					&& "DEVICE_NOT_FOUND".equals(e.getStatusLine()))) {
+				return Optional.empty();
+			}
+			throw e;
+		}
 	}
 
 	@Nonnull
