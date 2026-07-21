@@ -217,6 +217,13 @@ public enum ProfileSkipItem {
 	ACTION_BUTTON("ActionButton", OsType.IOS),
 
 	/**
+	 * Skips the Accessibility Appearance configuration pane.
+	 * <p>
+	 * Availability: iOS 17+
+	 */
+	ACCESSIBILITY_APPEARANCE("AccessibilityAppearance", OsType.IOS),
+
+	/**
 	 * Skips the Lockdown Mode pane if an Apple ID is set up.
 	 * <p>
 	 * Availability: iOS 17.1+ and macOS 14+
@@ -351,6 +358,13 @@ public enum ProfileSkipItem {
 	 * Availability: visionOS 26+
 	 */
 	TIPS("Tips", OsType.VISIONOS),
+
+	/**
+	 * Skips the Liquid Glass pane.
+	 * <p>
+	 * Availability: iOS 27+, macOS 27+
+	 */
+	LIQUID_GLASS("LiquidGlass", OsType.IOS, OsType.MACOS),
 
 	// ---
 	;
