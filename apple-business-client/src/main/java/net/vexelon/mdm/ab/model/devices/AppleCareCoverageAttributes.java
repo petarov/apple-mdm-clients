@@ -30,8 +30,8 @@ import jakarta.annotation.Nonnull;
  * @since Apple Business API 2.1+
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record AppleCareCoverageAttributes(@Nonnull @JsonSetter(nulls = Nulls.DEFAULT) Status status,
-                                          @Nonnull @JsonSetter(nulls = Nulls.DEFAULT) PaymentType paymentType,
+public record AppleCareCoverageAttributes(@Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) Status status,
+                                          @Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) PaymentType paymentType,
                                           @JsonSetter(nulls = Nulls.AS_EMPTY) String description,
                                           @JsonSetter(nulls = Nulls.AS_EMPTY) String agreementNumber,
                                           @JsonSetter(nulls = Nulls.AS_EMPTY) String startDateTime,
@@ -45,17 +45,7 @@ public record AppleCareCoverageAttributes(@Nonnull @JsonSetter(nulls = Nulls.DEF
 	public enum Status {
 		@JsonEnumDefaultValue UNKNOWN,
 		ACTIVE,
-		INACTIVE;
-
-		@JsonCreator
-		public static Status fromValue(String value) {
-			for (var type : values()) {
-				if (type.name().equalsIgnoreCase(value)) {
-					return type;
-				}
-			}
-			return UNKNOWN;
-		}
+		INACTIVE
 	}
 
 	/**
@@ -78,16 +68,6 @@ public record AppleCareCoverageAttributes(@Nonnull @JsonSetter(nulls = Nulls.DEF
 		/**
 		 * No payment type is associated with coverage (e.g. Limited Warranty).
 		 */
-		NONE;
-
-		@JsonCreator
-		public static PaymentType fromValue(String value) {
-			for (var type : values()) {
-				if (type.name().equalsIgnoreCase(value)) {
-					return type;
-				}
-			}
-			return UNKNOWN;
-		}
+		NONE
 	}
 }

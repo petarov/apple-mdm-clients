@@ -1,6 +1,9 @@
 package net.vexelon.mdm.ab.model.servers;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import jakarta.annotation.Nonnull;
 
 import java.util.List;
@@ -13,9 +16,9 @@ import java.util.List;
  *
  * @param serverName             the device management service's name
  * @param serverType             the type of device management service: defaults to {@link ServerType#UNKNOWN} when
- *                               unrecognized. Read only
+ *                               absent or unrecognized. Read only
  * @param status                 the operational status of the device management service: defaults to
- *                               {@link Status#UNKNOWN} when unrecognized. Read only
+ *                               {@link Status#UNKNOWN} when absent or unrecognized. Read only
  * @param defaultProductFamilies the product families that are assigned by default to this device management
  *                               service. Read/update only
  * @param deviceCount            the number of devices currently assigned to this device management service. Read only
@@ -32,8 +35,8 @@ import java.util.List;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record MdmServerAttributes(@JsonSetter(nulls = Nulls.AS_EMPTY) String serverName,
-                                  @Nonnull @JsonSetter(nulls = Nulls.DEFAULT) ServerType serverType,
-                                  @Nonnull @JsonSetter(nulls = Nulls.DEFAULT) Status status, @Nonnull @JsonSetter(
+                                  @Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) ServerType serverType,
+                                  @Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) Status status, @Nonnull @JsonSetter(
 		nulls = Nulls.AS_EMPTY) List<ProductFamily> defaultProductFamilies, int deviceCount,
                                   boolean enableMdmDisownFlag,
                                   @JsonSetter(nulls = Nulls.AS_EMPTY) String lastConnectedDateTime,
@@ -48,16 +51,7 @@ public record MdmServerAttributes(@JsonSetter(nulls = Nulls.AS_EMPTY) String ser
 		@JsonEnumDefaultValue UNKNOWN,
 		MDM,
 		APPLE_CONFIGURATOR,
-		APPLE_MDM;
-
-		@JsonCreator
-		public static ServerType fromValue(String value) {
-			for (var type : values()) {
-				if (type.name().equalsIgnoreCase(value))
-					return type;
-			}
-			return UNKNOWN;
-		}
+		APPLE_MDM
 	}
 
 	/**
@@ -67,16 +61,7 @@ public record MdmServerAttributes(@JsonSetter(nulls = Nulls.AS_EMPTY) String ser
 		@JsonEnumDefaultValue UNKNOWN,
 		ACTIVE,
 		INACTIVE,
-		DELETED;
-
-		@JsonCreator
-		public static Status fromValue(String value) {
-			for (var type : values()) {
-				if (type.name().equalsIgnoreCase(value))
-					return type;
-			}
-			return UNKNOWN;
-		}
+		DELETED
 	}
 
 	/**
@@ -90,15 +75,6 @@ public record MdmServerAttributes(@JsonSetter(nulls = Nulls.AS_EMPTY) String ser
 		IPOD,
 		MAC,
 		VISION,
-		WATCH;
-
-		@JsonCreator
-		public static ProductFamily fromValue(String value) {
-			for (var type : values()) {
-				if (type.name().equalsIgnoreCase(value))
-					return type;
-			}
-			return UNKNOWN;
-		}
+		WATCH
 	}
 }

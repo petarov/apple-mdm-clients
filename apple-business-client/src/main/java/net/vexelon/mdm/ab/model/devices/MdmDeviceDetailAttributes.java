@@ -1,6 +1,9 @@
 package net.vexelon.mdm.ab.model.devices;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import jakarta.annotation.Nonnull;
 
 import java.util.List;
@@ -51,9 +54,10 @@ public record MdmDeviceDetailAttributes(@JsonSetter(nulls = Nulls.AS_EMPTY) Stri
                                         @Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) List<String> meid,
                                         boolean isFirewallEnabled, boolean isFileVaultEnabled, long storageFreeCapacity,
                                         long storageTotalCapacity,
-                                        @Nonnull @JsonSetter(nulls = Nulls.DEFAULT) DeviceLockStatus deviceLockStatus,
-                                        @Nonnull @JsonSetter(nulls = Nulls.DEFAULT) DeviceEraseStatus deviceEraseStatus,
-                                        @Nonnull @JsonSetter(nulls = Nulls.DEFAULT) LostModeStatus lostModeStatus) {
+                                        @Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) DeviceLockStatus deviceLockStatus,
+                                        @Nonnull @JsonSetter(
+		                                        nulls = Nulls.AS_EMPTY) DeviceEraseStatus deviceEraseStatus,
+                                        @Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) LostModeStatus lostModeStatus) {
 
 	/**
 	 * The lock status of an MDM-enrolled device.
@@ -61,17 +65,7 @@ public record MdmDeviceDetailAttributes(@JsonSetter(nulls = Nulls.AS_EMPTY) Stri
 	public enum DeviceLockStatus {
 		@JsonEnumDefaultValue UNKNOWN,
 		LOCKED,
-		UNLOCKED;
-
-		@JsonCreator
-		public static DeviceLockStatus fromValue(String value) {
-			for (var type : values()) {
-				if (type.name().equalsIgnoreCase(value)) {
-					return type;
-				}
-			}
-			return UNKNOWN;
-		}
+		UNLOCKED
 	}
 
 	/**
@@ -80,17 +74,7 @@ public record MdmDeviceDetailAttributes(@JsonSetter(nulls = Nulls.AS_EMPTY) Stri
 	public enum DeviceEraseStatus {
 		@JsonEnumDefaultValue UNKNOWN,
 		NOT_ERASED,
-		ERASED;
-
-		@JsonCreator
-		public static DeviceEraseStatus fromValue(String value) {
-			for (var type : values()) {
-				if (type.name().equalsIgnoreCase(value)) {
-					return type;
-				}
-			}
-			return UNKNOWN;
-		}
+		ERASED
 	}
 
 	/**
@@ -99,16 +83,6 @@ public record MdmDeviceDetailAttributes(@JsonSetter(nulls = Nulls.AS_EMPTY) Stri
 	public enum LostModeStatus {
 		@JsonEnumDefaultValue UNKNOWN,
 		ENABLED,
-		DISABLED;
-
-		@JsonCreator
-		public static LostModeStatus fromValue(String value) {
-			for (var type : values()) {
-				if (type.name().equalsIgnoreCase(value)) {
-					return type;
-				}
-			}
-			return UNKNOWN;
-		}
+		DISABLED
 	}
 }

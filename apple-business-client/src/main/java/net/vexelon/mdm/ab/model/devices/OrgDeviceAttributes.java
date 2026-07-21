@@ -1,6 +1,9 @@
 package net.vexelon.mdm.ab.model.devices;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import jakarta.annotation.Nonnull;
 
 import java.util.List;
@@ -53,13 +56,13 @@ public record OrgDeviceAttributes(@JsonSetter(nulls = Nulls.AS_EMPTY) String ser
                                   @JsonSetter(nulls = Nulls.AS_EMPTY) String partNumber,
                                   @JsonSetter(nulls = Nulls.AS_EMPTY) String orderNumber,
                                   @JsonSetter(nulls = Nulls.AS_EMPTY) String color,
-                                  @Nonnull @JsonSetter(nulls = Nulls.DEFAULT) Status status,
+                                  @Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) Status status,
                                   @JsonSetter(nulls = Nulls.AS_EMPTY) String orderDateTime,
                                   @Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) List<String> imei,
                                   @Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) List<String> meid,
                                   @JsonSetter(nulls = Nulls.AS_EMPTY) String eid,
                                   @JsonSetter(nulls = Nulls.AS_EMPTY) String purchaseSourceId,
-                                  @Nonnull @JsonSetter(nulls = Nulls.DEFAULT) PurchaseSourceType purchaseSourceType,
+                                  @Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) PurchaseSourceType purchaseSourceType,
                                   @JsonSetter(nulls = Nulls.AS_EMPTY) String wifiMacAddress,
                                   @JsonSetter(nulls = Nulls.AS_EMPTY) String bluetoothMacAddress,
                                   @Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) List<String> ethernetMacAddress) {
@@ -71,16 +74,7 @@ public record OrgDeviceAttributes(@JsonSetter(nulls = Nulls.AS_EMPTY) String ser
 		@JsonEnumDefaultValue UNKNOWN,
 		APPLE,
 		ASSIGNED,
-		UNASSIGNED;
-
-		@JsonCreator
-		public static Status fromValue(String value) {
-			for (var type : values()) {
-				if (type.name().equalsIgnoreCase(value))
-					return type;
-			}
-			return UNKNOWN;
-		}
+		UNASSIGNED
 	}
 
 	/**
@@ -90,15 +84,6 @@ public record OrgDeviceAttributes(@JsonSetter(nulls = Nulls.AS_EMPTY) String ser
 		@JsonEnumDefaultValue UNKNOWN,
 		APPLE,
 		RESELLER,
-		MANUALLY_ADDED;
-
-		@JsonCreator
-		public static PurchaseSourceType fromValue(String value) {
-			for (var type : values()) {
-				if (type.name().equalsIgnoreCase(value))
-					return type;
-			}
-			return UNKNOWN;
-		}
+		MANUALLY_ADDED
 	}
 }
