@@ -119,7 +119,8 @@ public record Device(@JsonSetter(nulls = Nulls.AS_EMPTY) String assetTag,
 		IPHONE,
 		IPOD,
 		MAC,
-		@JsonProperty("AppleTV") APPLE_TV
+		APPLETV,
+		VISION
 	}
 
 	/**
@@ -128,8 +129,10 @@ public record Device(@JsonSetter(nulls = Nulls.AS_EMPTY) String assetTag,
 	public enum DeviceOs {
 		@JsonEnumDefaultValue UNKNOWN,
 		IOS,
+		IPADOS,
 		OSX,
-		TVOS
+		TVOS,
+		VISIONOS
 	}
 
 	/**

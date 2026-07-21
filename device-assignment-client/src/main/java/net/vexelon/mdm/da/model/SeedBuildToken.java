@@ -20,11 +20,11 @@ public record SeedBuildToken(@Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) OS os,
 	 */
 	public enum OS {
 		@JsonEnumDefaultValue UNKNOWN,
-		@JsonProperty("homePodOS") HOMEPOD_OS,
+		HOMEPODOS,
 		IOS,
 		OSX,
 		TVOS,
-		@JsonProperty("visionOS") VISION_OS,
-		@JsonProperty("watchOS") WATCH_OS
+		VISIONOS,
+		WATCHOS
 	}
 }

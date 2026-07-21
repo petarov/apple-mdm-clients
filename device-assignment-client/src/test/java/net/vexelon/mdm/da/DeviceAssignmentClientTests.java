@@ -252,7 +252,7 @@ public class DeviceAssignmentClientTests {
 		assertEquals("ZS16DKkGwAGFsF5on9evLPYkFmq99fs2EFBHd3F2JUXpJVUvAYBDwyFRQn1nVLp8",
 				seedBuild.betaEnrollmentTokens().getFirst().token());
 		assertEquals("visionOS Developer Beta", seedBuild.betaEnrollmentTokens().getFirst().title());
-		assertEquals(SeedBuildToken.OS.VISION_OS, seedBuild.betaEnrollmentTokens().getFirst().os());
+		assertEquals(SeedBuildToken.OS.VISIONOS, seedBuild.betaEnrollmentTokens().getFirst().os());
 		assertEquals("WkaTiJV3QAvUkeo46QJynL631Pxja6sbGTiPjcjHUncAZdL1fozjSPbmMhy1u2Ws",
 				seedBuild.betaEnrollmentTokens().getLast().token());
 		assertEquals("macOS Sequoia 15.2 AppleSeed Beta", seedBuild.betaEnrollmentTokens().getLast().title());
