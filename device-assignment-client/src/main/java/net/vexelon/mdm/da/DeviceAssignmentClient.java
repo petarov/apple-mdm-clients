@@ -30,6 +30,7 @@ public interface DeviceAssignmentClient {
 	String DEVICE_RESPONSE_STATUS_NOT_ACCESSIBLE = "NOT_ACCESSIBLE";
 	String DEVICE_RESPONSE_STATUS_NOT_FOUND      = "NOT_FOUND";
 	String DEVICE_RESPONSE_STATUS_FAILED         = "FAILED";
+	String DEVICE_RESPONSE_STATUS_THROTTLED      = "THROTTLED";
 
 	/**
 	 * Creates a new builder for configuring and constructing a {@link DeviceAssignmentClient}.
@@ -162,14 +163,21 @@ public interface DeviceAssignmentClient {
 	 * Assigns a profile to a list of devices.
 	 * <p>
 	 * To avoid performance issues, limit requests to <i>1000</i> devices at a time.
+	 * <p>
+	 * With <i>X-Server-Protocol-Version 9</i> and later, the server may throttle profile assignment on a per-device
+	 * basis. When a device is throttled, its value in {@link AssignProfileResponse#devices()} is
+	 * {@value #DEVICE_RESPONSE_STATUS_THROTTLED} instead of {@value #DEVICE_RESPONSE_STATUS_SUCCESS}. With
+	 * <i>X-Server-Protocol-Version 10</i> and later, {@link AssignProfileResponse#retryAfterSeconds()} is also set
+	 * when at least one device is throttled; clients should wait at least that many seconds before retrying
+	 * assignment for the throttled devices.
 	 *
 	 * @param profileUuid   the unique identifier for a profile
 	 * @param serialNumbers the serial numbers of the devices that will be assigned
-	 * @return {@link ProfileDevicesResponse} object
+	 * @return {@link AssignProfileResponse} object
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/assign-profile">Assign a Profile</a>
 	 */
 	@Nonnull
-	ProfileDevicesResponse assignProfile(String profileUuid, @Nonnull Set<String> serialNumbers);
+	AssignProfileResponse assignProfile(String profileUuid, @Nonnull Set<String> serialNumbers);
 
 	/**
 	 * Removes a profile from a list of devices.

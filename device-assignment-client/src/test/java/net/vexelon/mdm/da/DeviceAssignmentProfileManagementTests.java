@@ -196,6 +196,25 @@ public class DeviceAssignmentProfileManagementTests {
 		assertEquals(2, response.devices().size());
 		assertEquals("SUCCESS", response.devices().get("C112342756"));
 		assertEquals("NOT_ACCESSIBLE", response.devices().get("B222342AF8"));
+		assertEquals(0, response.retryAfterSeconds());
+	}
+
+	@Test
+	void test_assign_profile_throttled(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(post(urlEqualTo("/profile/devices")).withRequestBody(equalToJson("""
+						{"profile_uuid": "95C2189CA0EFB3272AC8B3C66201F33", "devices": ["C112342756", "B222342AF8"]}
+						""".stripIndent(), true, false))
+				.willReturn(aResponse().withStatus(200).withHeaders(headers).withBody("""
+						{"profile_uuid":"95C2189CB0EFB3192BC7B3C555091D22","devices":{"C112342756":"SUCCESS","B222342AF8":"THROTTLED"},"retry_after_seconds":30}
+						""".stripIndent())));
+
+		var response = TestUtil.createClient(wm)
+				.assignProfile("95C2189CA0EFB3272AC8B3C66201F33", Set.of("C112342756", "B222342AF8"));
+
+		assertEquals(2, response.devices().size());
+		assertEquals("SUCCESS", response.devices().get("C112342756"));
+		assertEquals("THROTTLED", response.devices().get("B222342AF8"));
+		assertEquals(30, response.retryAfterSeconds());
 	}
 
 	@Test
