@@ -1,9 +1,6 @@
 package net.vexelon.mdm.da.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.annotation.Nonnull;
@@ -18,30 +15,30 @@ import java.util.Set;
  * @param description          a description of the device
  * @param deviceAssignedBy     the email of the person who assigned the device
  * @param deviceAssignedDate   a time stamp in ISO 8601 format that indicates when the device was assigned to the MDM server
- * @param deviceFamily         the device's Apple product family: {@code iPad}, {@code iPhone}, {@code iPod}, {@code Mac},
- *                             or {@code AppleTV}. This key is valid in <i>X-Server-Protocol-Version 2</i> and later.
+ * @param deviceFamily         the device's Apple product family: defaults to {@link DeviceFamily#UNKNOWN} when absent or
+ *                             unrecognized. This key is valid in <i>X-Server-Protocol-Version 2</i> and later.
  * @param model                the model name
  * @param opDate               a time stamp in ISO 8601 format that indicates when the device was added, updated, or
  *                             deleted. If the value of {@link #opType()} is added, this is the same as
  *                             {@link #deviceAssignedDate()}. This field is only applicable with the
  *                             <i>Sync the List of Devices</i> call - {@link DeviceAssignmentClient#syncDevices(String, int)}.
- * @param opType               indicates whether the device was added (assigned to the MDM server), modified, or deleted.
- *                             Contains one of the following strings: added, modified, or deleted. This field is only
+ * @param opType               indicates whether the device was added (assigned to the MDM server), modified, or deleted:
+ *                             defaults to {@link OpType#UNKNOWN} when absent or unrecognized. This field is only
  *                             applicable with the <i>Sync the List of Devices</i> call -
  *                             {@link DeviceAssignmentClient#syncDevices(String, int)}.
- * @param os                   the device's operating system: {@code iOS}, {@code OSX}, or {@code tvOS}. This key is valid
- *                             in <i>X-Server-Protocol-Version 2</i> and later.
+ * @param os                   the device's operating system: defaults to {@link DeviceOs#UNKNOWN} when absent or unrecognized.
+ *                             This key is valid in <i>X-Server-Protocol-Version 2</i> and later.
  * @param profileAssignTime    a time stamp in ISO 8601 format that indicates when a profile was assigned to the device
  * @param profilePushTime      a time stamp in ISO 8601 format that indicates when a profile was pushed to the device
- * @param profileStatus        the status of profile installation — either {@code empty}, {@code assigned}, {@code pushed}
- *                             or {@code removed}.
+ * @param profileStatus        the status of profile installation: defaults to {@link ProfileStatus#UNKNOWN} when absent
+ *                             or unrecognized.
  * @param profileUuid          the unique ID of the assigned profile
  * @param serialNumber         the device's serial number
  * @param responseStatus       a string indicating whether a particular device's data could be retrieved, either
  *                             {@code SUCCESS}, {@code NOT_ACCESSIBLE} or {@code FAILED}. Available after calling
  *                             {@link DeviceAssignmentClient#fetchDeviceDetails(Set)}.
- * @param mdmMigrationDeadline a time stamp in ISO 8601 format that indicates the MDM migration deadline. This key is
- *                             valid with <i>X-Server-Protocol-Version 8</i> and later.
+ * @param mdmMigrationDeadline a time stamp in ISO 8601 format that indicates the MDM migration deadline.
+ *                             This key is valid with <i>X-Server-Protocol-Version 8</i> and later.
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -51,13 +48,14 @@ public record Device(@JsonSetter(nulls = Nulls.AS_EMPTY) String assetTag,
                      @JsonSetter(nulls = Nulls.AS_EMPTY) String description,
                      @JsonSetter(nulls = Nulls.AS_EMPTY) String deviceAssignedBy,
                      @JsonSetter(nulls = Nulls.AS_EMPTY) String deviceAssignedDate,
-                     @JsonSetter(nulls = Nulls.AS_EMPTY) String deviceFamily,
+                     @Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) DeviceFamily deviceFamily,
                      @JsonSetter(nulls = Nulls.AS_EMPTY) String model,
                      @JsonSetter(nulls = Nulls.AS_EMPTY) String opDate,
-                     @JsonSetter(nulls = Nulls.AS_EMPTY) String opType, @JsonSetter(nulls = Nulls.AS_EMPTY) String os,
+                     @Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) OpType opType,
+                     @Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) DeviceOs os,
                      @JsonSetter(nulls = Nulls.AS_EMPTY) String profileAssignTime,
                      @JsonSetter(nulls = Nulls.AS_EMPTY) String profilePushTime,
-                     @JsonSetter(nulls = Nulls.AS_EMPTY) String profileStatus,
+                     @Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) ProfileStatus profileStatus,
                      @JsonSetter(nulls = Nulls.AS_EMPTY) String profileUuid,
                      @JsonSetter(nulls = Nulls.AS_EMPTY) String serialNumber,
                      @JsonSetter(nulls = Nulls.AS_EMPTY) String responseStatus,
@@ -68,7 +66,8 @@ public record Device(@JsonSetter(nulls = Nulls.AS_EMPTY) String assetTag,
 	 */
 	@Nonnull
 	public static Device ofEmpty() {
-		return new Device("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "");
+		return new Device("", "", "", "", "", DeviceFamily.UNKNOWN, "", "", OpType.UNKNOWN, DeviceOs.UNKNOWN, "", "",
+				ProfileStatus.UNKNOWN, "", "", "", "");
 	}
 
 	/**
@@ -111,4 +110,46 @@ public record Device(@JsonSetter(nulls = Nulls.AS_EMPTY) String assetTag,
 		return mdmMigrationDeadline.isBlank() ? OffsetDateTime.MIN : OffsetDateTime.parse(mdmMigrationDeadline);
 	}
 
+	/**
+	 * The device's Apple product family.
+	 */
+	public enum DeviceFamily {
+		@JsonEnumDefaultValue UNKNOWN,
+		IPAD,
+		IPHONE,
+		IPOD,
+		MAC,
+		@JsonProperty("AppleTV") APPLE_TV
+	}
+
+	/**
+	 * The device's operating system.
+	 */
+	public enum DeviceOs {
+		@JsonEnumDefaultValue UNKNOWN,
+		IOS,
+		OSX,
+		TVOS
+	}
+
+	/**
+	 * Indicates whether the device was added, modified, or deleted during a sync.
+	 */
+	public enum OpType {
+		@JsonEnumDefaultValue UNKNOWN,
+		ADDED,
+		MODIFIED,
+		DELETED
+	}
+
+	/**
+	 * The status of profile installation on a device.
+	 */
+	public enum ProfileStatus {
+		@JsonEnumDefaultValue UNKNOWN,
+		EMPTY,
+		ASSIGNED,
+		PUSHED,
+		REMOVED
+	}
 }
