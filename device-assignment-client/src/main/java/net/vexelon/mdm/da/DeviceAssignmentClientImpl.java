@@ -26,7 +26,7 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 
 	private static final String HEADER_X_ADM_AUTH_SESSION              = "X-ADM-Auth-Session";
 	private static final String HEADER_X_SERVER_PROTOCOL_VERSION       = "X-Server-Protocol-Version";
-	private static final String HEADER_X_SERVER_PROTOCOL_VERSION_VALUE = "8";
+	private static final String HEADER_X_SERVER_PROTOCOL_VERSION_VALUE = "10";
 
 	private final HttpClientWrapper           client;
 	private final DeviceAssignmentServerToken serverToken;
