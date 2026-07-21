@@ -3,6 +3,7 @@
 Automate device management activities, view device information, and manage users and user groups using the Apple Business API.
 
 To use the Java client, you must already have a valid API account in Apple Business with the corresponding private key. 
+See [Create an API account in Apple Business](https://support.apple.com/en-us/guide/business/axm33189f66a/web) for helping on setting things up.
 
 See Apple's [Apple Business API](https://developer.apple.com/documentation/applebusinessapi) documentation for the full list of supported API calls.
 

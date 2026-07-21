@@ -3,8 +3,18 @@ package net.vexelon.mdm.ab;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.ab.model.devices.AppleCareCoverageField;
+import net.vexelon.mdm.ab.model.devices.MdmDeviceDetailField;
+import net.vexelon.mdm.ab.model.devices.MdmDeviceField;
+import net.vexelon.mdm.ab.model.devices.OrgDeviceField;
+import net.vexelon.mdm.ab.model.response.device.AppleCareCoverageResponse;
+import net.vexelon.mdm.ab.model.response.device.MdmDeviceDetailResponse;
+import net.vexelon.mdm.ab.model.response.device.MdmDevicesResponse;
 import net.vexelon.mdm.ab.model.response.device.OrgDeviceResponse;
 import net.vexelon.mdm.ab.model.response.device.OrgDevicesResponse;
+import net.vexelon.mdm.ab.model.response.servers.MdmServerResponse;
+import net.vexelon.mdm.ab.model.response.servers.MdmServersResponse;
+import net.vexelon.mdm.ab.model.servers.MdmServerField;
 import net.vexelon.mdm.shared.http.HttpClientWrapper;
 import net.vexelon.mdm.shared.http.HttpClientWrapperException;
 import net.vexelon.mdm.shared.http.HttpConsts;
@@ -16,7 +26,7 @@ import java.net.URLEncoder;
 import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.EnumSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -65,20 +75,26 @@ class AppleBusinessClientImpl implements AppleBusinessClient {
 		});
 	}
 
+	// square brackets in query parameter names must be percent-encoded in the raw URI string
+	private static String fieldsParam(String resourceType) {
+		return "fields%5B" + resourceType + "%5D=";
+	}
+
 	@Nonnull
 	@Override
-	public OrgDevicesResponse fetchOrgDevices(@Nonnull List<String> fields, int limit) {
+	public OrgDevicesResponse fetchOrgDevices(@Nonnull EnumSet<OrgDeviceField> fields, int limit, String cursor) {
 		var path = new StringBuilder("/orgDevices");
 		var params = new ArrayList<String>();
 		if (!fields.isEmpty()) {
-			// fields[orgDevices] — brackets must be percent-encoded in the URI
-			// TODO: this should really be some enum, i.e., typed list
-			params.add(
-					"fields%5BorgDevices%5D=" + fields.stream().map(f -> URLEncoder.encode(f, StandardCharsets.UTF_8))
-							.collect(Collectors.joining(",")));
+			params.add(fieldsParam("orgDevices") + fields.stream()
+					.map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
+					.collect(Collectors.joining(",")));
 		}
 		if (limit > 0) {
 			params.add("limit=" + limit);
+		}
+		if (cursor != null && !cursor.isEmpty()) {
+			params.add("cursor=" + URLEncoder.encode(cursor, StandardCharsets.UTF_8));
 		}
 		if (!params.isEmpty()) {
 			path.append("?").append(String.join("&", params));
@@ -89,15 +105,114 @@ class AppleBusinessClientImpl implements AppleBusinessClient {
 
 	@Nonnull
 	@Override
-	public OrgDeviceResponse fetchOrgDevice(@Nonnull String id, @Nonnull List<String> fields) {
+	public OrgDeviceResponse fetchOrgDevice(@Nonnull String id, @Nonnull EnumSet<OrgDeviceField> fields) {
 		var path = new StringBuilder("/orgDevices/").append(URLEncoder.encode(id, StandardCharsets.UTF_8));
 		if (!fields.isEmpty()) {
-			path.append("?fields%5BorgDevices%5D=").append(
-					fields.stream().map(f -> URLEncoder.encode(f, StandardCharsets.UTF_8))
+			path.append("?").append(fieldsParam("orgDevices"))
+					.append(fields.stream().map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
 							.collect(Collectors.joining(",")));
 		}
 		return execute(client.createRequestBuilder(client.complementURI(path.toString())).GET(),
 				OrgDeviceResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public AppleCareCoverageResponse fetchAppleCareCoverage(@Nonnull String id,
+			@Nonnull EnumSet<AppleCareCoverageField> fields, int limit, String cursor) {
+		var path = new StringBuilder("/orgDevices/").append(URLEncoder.encode(id, StandardCharsets.UTF_8))
+				.append("/appleCareCoverage");
+		var params = new ArrayList<String>();
+		if (!fields.isEmpty()) {
+			params.add(fieldsParam("appleCareCoverage") + fields.stream()
+					.map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
+					.collect(Collectors.joining(",")));
+		}
+		if (limit > 0) {
+			params.add("limit=" + limit);
+		}
+		if (cursor != null && !cursor.isEmpty()) {
+			params.add("cursor=" + URLEncoder.encode(cursor, StandardCharsets.UTF_8));
+		}
+		if (!params.isEmpty()) {
+			path.append("?").append(String.join("&", params));
+		}
+		return execute(client.createRequestBuilder(client.complementURI(path.toString())).GET(),
+				AppleCareCoverageResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public MdmDevicesResponse fetchMdmDevices(@Nonnull EnumSet<MdmDeviceField> fields, int limit, String cursor) {
+		var path = new StringBuilder("/mdmDevices");
+		var params = new ArrayList<String>();
+		if (!fields.isEmpty()) {
+			params.add(fieldsParam("mdmDevices") + fields.stream()
+					.map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
+					.collect(Collectors.joining(",")));
+		}
+		if (limit > 0) {
+			params.add("limit=" + limit);
+		}
+		if (cursor != null && !cursor.isEmpty()) {
+			params.add("cursor=" + URLEncoder.encode(cursor, StandardCharsets.UTF_8));
+		}
+		if (!params.isEmpty()) {
+			path.append("?").append(String.join("&", params));
+		}
+		return execute(client.createRequestBuilder(client.complementURI(path.toString())).GET(),
+				MdmDevicesResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public MdmDeviceDetailResponse fetchMdmDeviceDetail(@Nonnull String id,
+			@Nonnull EnumSet<MdmDeviceDetailField> fields) {
+		var path = new StringBuilder("/mdmDevices/").append(URLEncoder.encode(id, StandardCharsets.UTF_8))
+				.append("/details");
+		if (!fields.isEmpty()) {
+			path.append("?").append(fieldsParam("mdmDeviceDetails")).append(fields.stream()
+					.map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
+					.collect(Collectors.joining(",")));
+		}
+		return execute(client.createRequestBuilder(client.complementURI(path.toString())).GET(),
+				MdmDeviceDetailResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public MdmServersResponse fetchMdmServices(@Nonnull EnumSet<MdmServerField> fields, int limit, String cursor) {
+		var path = new StringBuilder("/mdmServers");
+		var params = new ArrayList<String>();
+		if (!fields.isEmpty()) {
+			params.add(fieldsParam("mdmServers") + fields.stream()
+					.map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
+					.collect(Collectors.joining(",")));
+		}
+		if (limit > 0) {
+			params.add("limit=" + limit);
+		}
+		if (cursor != null && !cursor.isEmpty()) {
+			params.add("cursor=" + URLEncoder.encode(cursor, StandardCharsets.UTF_8));
+		}
+		if (!params.isEmpty()) {
+			path.append("?").append(String.join("&", params));
+		}
+		return execute(client.createRequestBuilder(client.complementURI(path.toString())).GET(),
+				MdmServersResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public MdmServerResponse fetchMdmService(@Nonnull String id, @Nonnull EnumSet<MdmServerField> fields) {
+		var path = new StringBuilder("/mdmServers/").append(URLEncoder.encode(id, StandardCharsets.UTF_8));
+		if (!fields.isEmpty()) {
+			path.append("?").append(fieldsParam("mdmServers")).append(fields.stream()
+					.map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
+					.collect(Collectors.joining(",")));
+		}
+		return execute(client.createRequestBuilder(client.complementURI(path.toString())).GET(),
+				MdmServerResponse.class);
 	}
 
 	<T> HttpRequest.BodyPublisher ofBody(T obj) {

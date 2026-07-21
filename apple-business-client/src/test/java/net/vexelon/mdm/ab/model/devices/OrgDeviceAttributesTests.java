@@ -1,6 +1,7 @@
 package net.vexelon.mdm.ab.model.devices;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.vexelon.mdm.shared.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OrgDeviceAttributesTests {
 
-	private static final ObjectMapper MAPPER = new ObjectMapper();
+	private static final ObjectMapper MAPPER = JsonUtil.createObjectMapper();
 
 	// language=json
 	private static final String FULL_JSON = """

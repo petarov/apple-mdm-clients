@@ -1,10 +1,18 @@
 package net.vexelon.mdm.ab;
 
 import jakarta.annotation.Nonnull;
-import net.vexelon.mdm.ab.model.response.device.OrgDeviceResponse;
-import net.vexelon.mdm.ab.model.response.device.OrgDevicesResponse;
+import jakarta.annotation.Nullable;
+import net.vexelon.mdm.ab.model.PagingInformation;
+import net.vexelon.mdm.ab.model.devices.AppleCareCoverageField;
+import net.vexelon.mdm.ab.model.devices.MdmDeviceDetailField;
+import net.vexelon.mdm.ab.model.devices.MdmDeviceField;
+import net.vexelon.mdm.ab.model.devices.OrgDeviceField;
+import net.vexelon.mdm.ab.model.response.device.*;
+import net.vexelon.mdm.ab.model.response.servers.MdmServerResponse;
+import net.vexelon.mdm.ab.model.response.servers.MdmServersResponse;
+import net.vexelon.mdm.ab.model.servers.MdmServerField;
 
-import java.util.List;
+import java.util.EnumSet;
 
 /**
  * Client interface for the Apple Business Manager API.
@@ -31,47 +39,213 @@ public interface AppleBusinessClient {
 	}
 
 	/**
-	 * Fetches all organization devices using the server default field set and page size.
+	 * Fetches the first page of organization devices using the server default field set and page size.
 	 *
-	 * @return response that contains a list of organization device resources
-	 * @see #fetchOrgDevices(List, int)
+	 * @see #fetchOrgDevices(EnumSet, int, String)
 	 */
 	@Nonnull
 	default OrgDevicesResponse fetchOrgDevices() {
-		return fetchOrgDevices(List.of(), 0);
+		return fetchOrgDevices(OrgDeviceField.of(), 0, "");
+	}
+
+	/**
+	 * Fetches the first page of organization devices for the given fields and page size.
+	 *
+	 * @see #fetchOrgDevices(EnumSet, int, String)
+	 */
+	@Nonnull
+	default OrgDevicesResponse fetchOrgDevices(@Nonnull EnumSet<OrgDeviceField> fields, int limit) {
+		return fetchOrgDevices(fields, limit, "");
 	}
 
 	/**
 	 * Fetches a list of devices in an organization that enroll using Automated Device Enrollment.
 	 *
-	 * @param fields the fields to return for included related types; pass an empty list to receive all fields
+	 * @param fields the fields to return for included related types; pass an empty set to receive all fields
 	 * @param limit  maximum number of devices per page (1–1000); pass {@code 0} to use the server default
+	 * @param cursor the pagination cursor from a previous response's
+	 *               {@link PagingInformation.Paging#nextCursor()}; pass {@code ""} or {@code null} for the
+	 *               first page
 	 * @return response that contains a list of organization device resources
 	 * @see <a href="https://developer.apple.com/documentation/applebusinessapi/get-org-devices">Get Organization Devices</a>
 	 */
 	@Nonnull
-	OrgDevicesResponse fetchOrgDevices(@Nonnull List<String> fields, int limit);
+	OrgDevicesResponse fetchOrgDevices(@Nonnull EnumSet<OrgDeviceField> fields, int limit, @Nullable String cursor);
 
 	/**
 	 * Fetches information about a single device using the server default field set.
 	 *
 	 * @param id the unique identifier of the device
 	 * @return response that contains a single organization device resource
-	 * @see #fetchOrgDevice(String, List)
+	 * @see #fetchOrgDevice(String, EnumSet)
 	 */
 	@Nonnull
 	default OrgDeviceResponse fetchOrgDevice(@Nonnull String id) {
-		return fetchOrgDevice(id, List.of());
+		return fetchOrgDevice(id, OrgDeviceField.of());
 	}
 
 	/**
 	 * Fetches information about a single device in an organization.
 	 *
 	 * @param id     the unique identifier of the device
-	 * @param fields the fields to return for included related types; pass an empty list to receive all fields
+	 * @param fields the fields to return for included related types; pass an empty set to receive all fields
 	 * @return response that contains a single organization device resource
 	 * @see <a href="https://developer.apple.com/documentation/applebusinessapi/get-orgdevice-information">Get Device Information</a>
 	 */
 	@Nonnull
-	OrgDeviceResponse fetchOrgDevice(@Nonnull String id, @Nonnull List<String> fields);
+	OrgDeviceResponse fetchOrgDevice(@Nonnull String id, @Nonnull EnumSet<OrgDeviceField> fields);
+
+	/**
+	 * Fetches the first page of AppleCare coverage resources for a device using the server default field set and
+	 * page size.
+	 *
+	 * @see #fetchAppleCareCoverage(String, EnumSet, int, String)
+	 */
+	@Nonnull
+	default AppleCareCoverageResponse fetchAppleCareCoverage(@Nonnull String id) {
+		return fetchAppleCareCoverage(id, AppleCareCoverageField.of(), 0, "");
+	}
+
+	/**
+	 * Fetches the first page of AppleCare coverage resources for a device for the given fields and page size.
+	 *
+	 * @see #fetchAppleCareCoverage(String, EnumSet, int, String)
+	 */
+	@Nonnull
+	default AppleCareCoverageResponse fetchAppleCareCoverage(@Nonnull String id,
+			@Nonnull EnumSet<AppleCareCoverageField> fields, int limit) {
+		return fetchAppleCareCoverage(id, fields, limit, "");
+	}
+
+	/**
+	 * Fetches a list of AppleCare coverage resources for an organization device.
+	 *
+	 * @param id     the unique identifier of the device (e.g. its serial number)
+	 * @param fields the fields to return for included related types; pass an empty set to receive all fields
+	 * @param limit  maximum number of resources per page (1–1000); pass {@code 0} to use the server default
+	 * @param cursor the pagination cursor from a previous response's
+	 *               {@link PagingInformation.Paging#nextCursor()}; pass {@code ""} or {@code null} for the
+	 *               first page
+	 * @return response that contains a list of AppleCare coverage resources for the device
+	 * @see <a href="https://developer.apple.com/documentation/applebusinessapi/get-orgdevice-applecarecoverage">Get AppleCare Coverage Information for a Device</a>
+	 */
+	@Nonnull
+	AppleCareCoverageResponse fetchAppleCareCoverage(@Nonnull String id,
+			@Nonnull EnumSet<AppleCareCoverageField> fields, int limit, @Nullable String cursor);
+
+	/**
+	 * Fetches the first page of devices enrolled in Apple device management service using the server
+	 * default field set and page size.
+	 *
+	 * @see #fetchMdmDevices(EnumSet, int, String)
+	 */
+	@Nonnull
+	default MdmDevicesResponse fetchMdmDevices() {
+		return fetchMdmDevices(MdmDeviceField.of(), 0, "");
+	}
+
+	/**
+	 * Fetches the first page of devices enrolled in Apple device management service for the given
+	 * fields and page size.
+	 *
+	 * @see #fetchMdmDevices(EnumSet, int, String)
+	 */
+	@Nonnull
+	default MdmDevicesResponse fetchMdmDevices(@Nonnull EnumSet<MdmDeviceField> fields, int limit) {
+		return fetchMdmDevices(fields, limit, "");
+	}
+
+	/**
+	 * Fetches a list of devices enrolled in Apple device management service.
+	 *
+	 * @param fields the fields to return for included related types; pass an empty set to receive all fields
+	 * @param limit  maximum number of devices per page (1–1000); pass {@code 0} to use the server default
+	 * @param cursor the pagination cursor from a previous response's
+	 *               {@link PagingInformation.Paging#nextCursor()}; pass {@code ""} or {@code null} for the
+	 *               first page
+	 * @return response that contains a list of MDM-enrolled device resources
+	 * @see <a href="https://developer.apple.com/documentation/applebusinessapi/get-apple-mdm-enrolled-devices">Get Devices Enrolled in Apple Device Management Service</a>
+	 */
+	@Nonnull
+	MdmDevicesResponse fetchMdmDevices(@Nonnull EnumSet<MdmDeviceField> fields, int limit, @Nullable String cursor);
+
+	/**
+	 * Fetches details for a single device enrolled in Apple device management service, using the server default
+	 * field set.
+	 *
+	 * @see #fetchMdmDeviceDetail(String, EnumSet)
+	 */
+	@Nonnull
+	default MdmDeviceDetailResponse fetchMdmDeviceDetail(@Nonnull String id) {
+		return fetchMdmDeviceDetail(id, MdmDeviceDetailField.of());
+	}
+
+	/**
+	 * Fetches details for a single device enrolled in Apple device management service.
+	 *
+	 * @param id     the unique identifier of the device
+	 * @param fields the fields to return for included related types; pass an empty set to receive all fields
+	 * @return response that contains a single MDM device detail resource
+	 * @see <a href="https://developer.apple.com/documentation/applebusinessapi/get-the-details-for-apple-mdm-enrolled-device">Get Details for a Device Enrolled in Apple Device Management Service</a>
+	 */
+	@Nonnull
+	MdmDeviceDetailResponse fetchMdmDeviceDetail(@Nonnull String id, @Nonnull EnumSet<MdmDeviceDetailField> fields);
+
+	/**
+	 * Fetches the first page of device management services using the server default field set and page size.
+	 *
+	 * @see #fetchMdmServices(EnumSet, int, String)
+	 */
+	@Nonnull
+	default MdmServersResponse fetchMdmServices() {
+		return fetchMdmServices(MdmServerField.of(), 0, "");
+	}
+
+	/**
+	 * Fetches the first page of device management services for the given fields and page size.
+	 *
+	 * @see #fetchMdmServices(EnumSet, int, String)
+	 */
+	@Nonnull
+	default MdmServersResponse fetchMdmServices(@Nonnull EnumSet<MdmServerField> fields, int limit) {
+		return fetchMdmServices(fields, limit, "");
+	}
+
+	/**
+	 * Fetches a list of device management services in an organization.
+	 *
+	 * @param fields the fields to return for included related types; pass an empty set to receive all fields
+	 * @param limit  maximum number of device management services per page (1–1000); pass {@code 0} to use the
+	 *               server default
+	 * @param cursor the pagination cursor from a previous response's
+	 *               {@link PagingInformation.Paging#nextCursor()}; pass {@code ""} or {@code null} for the
+	 *               first page
+	 * @return response that contains a list of device management service resources
+	 * @see <a href="https://developer.apple.com/documentation/applebusinessapi/get-mdm-servers">Get Device Management Services</a>
+	 */
+	@Nonnull
+	MdmServersResponse fetchMdmServices(@Nonnull EnumSet<MdmServerField> fields, int limit, @Nullable String cursor);
+
+	/**
+	 * Fetches information for a single device management service using the server default field set.
+	 *
+	 * @param id the unique identifier of the device management service
+	 * @return response that contains a single device management service resource
+	 * @see #fetchMdmService(String, EnumSet)
+	 */
+	@Nonnull
+	default MdmServerResponse fetchMdmService(@Nonnull String id) {
+		return fetchMdmService(id, MdmServerField.of());
+	}
+
+	/**
+	 * Fetches information for a single device management service.
+	 *
+	 * @param id     the unique identifier of the device management service
+	 * @param fields the fields to return for included related types; pass an empty set to receive all fields
+	 * @return response that contains a single device management service resource
+	 * @see <a href="https://developer.apple.com/documentation/applebusinessapi/get-mdmserver-information">Get Device Management Service Information</a>
+	 */
+	@Nonnull
+	MdmServerResponse fetchMdmService(@Nonnull String id, @Nonnull EnumSet<MdmServerField> fields);
 }
