@@ -1,16 +1,30 @@
 package net.vexelon.mdm.da.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.*;
+import jakarta.annotation.Nonnull;
 
 /**
  * Describes a beta enrollment token available for the given organization.
  *
- * @param os    the platform related to beta build: {@code homePodOS}, {@code iOS}, {@code OSX}, {@code tvOS}, {@code visionOS}, {@code watchOS}
+ * @param os    the platform related to beta build: defaults to {@link OS#UNKNOWN} when absent or unrecognized
  * @param title the public facing name, like <i>"iOS 17 Public Beta"</i>
  * @param token the token to use when requesting the beta build
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/seedbuildtoken">SeedBuildToken</a>
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public record SeedBuildToken(String os, String title, String token) {}
+public record SeedBuildToken(@Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) OS os, String title, String token) {
+
+	/**
+	 * The platform related to a beta build.
+	 */
+	public enum OS {
+		@JsonEnumDefaultValue UNKNOWN,
+		@JsonProperty("homePodOS") HOMEPOD_OS,
+		IOS,
+		OSX,
+		TVOS,
+		@JsonProperty("visionOS") VISION_OS,
+		@JsonProperty("watchOS") WATCH_OS
+	}
+}
