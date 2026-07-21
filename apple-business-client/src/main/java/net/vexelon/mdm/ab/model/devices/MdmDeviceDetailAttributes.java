@@ -15,6 +15,7 @@ import java.util.List;
  *     <li>All date-time fields use ISO 8601 format (e.g. {@code 2025-06-01T12:00:00Z}).
  *     <li>All nullable string fields default to empty string when absent or {@code null} in the response.
  *     <li>All nullable list fields default to an empty list when absent or {@code null} in the response.
+ * </ul>
  *
  * @param serialNumber         the device's serial number
  * @param deviceName           the device name assigned by the user
