@@ -3,6 +3,8 @@ package net.vexelon.mdm.da;
 import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import net.vexelon.mdm.da.model.AccountDetail;
+import net.vexelon.mdm.da.model.SeedBuildToken;
 import net.vexelon.mdm.shared.http.HttpConsts;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
@@ -90,7 +92,7 @@ public class DeviceAssignmentClientTests {
 		assertEquals("Unknown Street 123, 12345 City", accountDetail.orgAddress());
 		assertEquals("780420", accountDetail.orgId());
 		assertEquals("f6e1e81a93837e1e87d6f4d99e235117f12ccc0b567bd0e7c126d7f28395d3d3", accountDetail.orgIdHash());
-		assertEquals("org", accountDetail.orgType());
+		assertEquals(AccountDetail.OrgType.ORG, accountDetail.orgType());
 		assertEquals("v2", accountDetail.orgVersion());
 
 		// not all possible urls are verified here
@@ -250,10 +252,10 @@ public class DeviceAssignmentClientTests {
 		assertEquals("ZS16DKkGwAGFsF5on9evLPYkFmq99fs2EFBHd3F2JUXpJVUvAYBDwyFRQn1nVLp8",
 				seedBuild.betaEnrollmentTokens().getFirst().token());
 		assertEquals("visionOS Developer Beta", seedBuild.betaEnrollmentTokens().getFirst().title());
-		assertEquals("visionOS", seedBuild.betaEnrollmentTokens().getFirst().os());
+		assertEquals(SeedBuildToken.OS.VISION_OS, seedBuild.betaEnrollmentTokens().getFirst().os());
 		assertEquals("WkaTiJV3QAvUkeo46QJynL631Pxja6sbGTiPjcjHUncAZdL1fozjSPbmMhy1u2Ws",
 				seedBuild.betaEnrollmentTokens().getLast().token());
 		assertEquals("macOS Sequoia 15.2 AppleSeed Beta", seedBuild.betaEnrollmentTokens().getLast().title());
-		assertEquals("OSX", seedBuild.betaEnrollmentTokens().getLast().os());
+		assertEquals(SeedBuildToken.OS.OSX, seedBuild.betaEnrollmentTokens().getLast().os());
 	}
 }

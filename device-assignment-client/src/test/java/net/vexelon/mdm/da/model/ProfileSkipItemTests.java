@@ -49,4 +49,15 @@ public class ProfileSkipItemTests {
 		profile = JsonUtil.createObjectMapper().readValue("{}", Profile.class);
 		assertEquals(0, profile.skipSetupItems().size());
 	}
+
+	@Test
+	void test_new_skip_items() throws JsonProcessingException {
+		var json = "{ \"skip_setup_items\": [\"LiquidGlass\", \"AccessibilityAppearance\"] }";
+		var profile = JsonUtil.createObjectMapper().readValue(json, Profile.class);
+
+		assertEquals(2, profile.skipSetupItems().size());
+
+		assertTrue(profile.skipSetupItems().contains(ProfileSkipItem.ACCESSIBILITY_APPEARANCE));
+		assertTrue(profile.skipSetupItems().contains(ProfileSkipItem.LIQUID_GLASS));
+	}
 }

@@ -3,6 +3,7 @@ package net.vexelon.mdm.da;
 import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import net.vexelon.mdm.da.model.Device;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -86,13 +87,13 @@ public class DeviceAssignmentDeviceManagementTests {
 		assertEquals("F6BRR3Z6GLK0", devices.getFirst().serialNumber());
 		assertEquals("IPAD MINI 4 WI-FI 16GB SPACE GRAY-FRD", devices.getFirst().description());
 		assertEquals("iPad mini 4", devices.getFirst().model());
-		assertEquals("iOS", devices.getFirst().os());
-		assertEquals("iPad", devices.getFirst().deviceFamily());
+		assertEquals(Device.DeviceOs.IOS, devices.getFirst().os());
+		assertEquals(Device.DeviceFamily.IPAD, devices.getFirst().deviceFamily());
 		assertEquals("SPACE GRAY", devices.getFirst().color());
 		assertEquals("722081EC2F9D9F6CAC4106A7CE1AD6A7", devices.getFirst().profileUuid());
 		assertEquals("2025-02-18T15:43:38Z", devices.getFirst().profileAssignTime());
 		assertEquals("2025-02-18T20:13:06Z", devices.getFirst().profilePushTime());
-		assertEquals("pushed", devices.getFirst().profileStatus());
+		assertEquals(Device.ProfileStatus.PUSHED, devices.getFirst().profileStatus());
 		assertEquals("max-muster-work@petarov.net", devices.getFirst().deviceAssignedBy());
 		assertEquals("2022-03-03T08:16:27Z", devices.getFirst().deviceAssignedDate());
 		assertTrue(devices.getFirst().mdmMigrationDeadline().isEmpty());
@@ -102,7 +103,7 @@ public class DeviceAssignmentDeviceManagementTests {
 		assertEquals("IPHONE 14 MIDNIGHT 128GB-ZDD", devices.getLast().description());
 		assertEquals("max.mustermann@petarov.appleid.com", devices.getLast().deviceAssignedBy());
 		assertEquals("", devices.getLast().profilePushTime());
-		assertEquals("", devices.getLast().profileStatus());
+		assertEquals(Device.ProfileStatus.UNKNOWN, devices.getLast().profileStatus());
 		assertEquals(OffsetDateTime.MIN, devices.getLast().profilePushDateTime());
 		assertEquals("", devices.getLast().profileAssignTime());
 		assertEquals(OffsetDateTime.MIN, devices.getLast().opDateTime());
@@ -181,12 +182,12 @@ public class DeviceAssignmentDeviceManagementTests {
 		assertEquals(OffsetDateTime.parse("2025-05-03T21:01:55Z"), syncResponse2.fetchedUntil());
 		assertEquals(2, syncResponse2.devices().size());
 		assertEquals("C112342756", syncResponse2.devices().getFirst().serialNumber());
-		assertEquals("modified", syncResponse2.devices().getFirst().opType());
+		assertEquals(Device.OpType.MODIFIED, syncResponse2.devices().getFirst().opType());
 		assertEquals("2025-05-03T20:59:31Z", syncResponse2.devices().getFirst().opDate());
 		assertEquals(OffsetDateTime.parse("2025-05-03T20:59:31Z"), syncResponse2.devices().getFirst().opDateTime());
 
 		assertEquals("C112342756", syncResponse2.devices().getLast().serialNumber());
-		assertEquals("modified", syncResponse2.devices().getLast().opType());
+		assertEquals(Device.OpType.MODIFIED, syncResponse2.devices().getLast().opType());
 		assertEquals("2025-05-03T21:01:55Z", syncResponse2.devices().getLast().opDate());
 		assertEquals(OffsetDateTime.parse("2025-05-03T21:01:55Z"), syncResponse2.devices().getLast().opDateTime());
 	}
@@ -228,12 +229,12 @@ public class DeviceAssignmentDeviceManagementTests {
 		assertEquals("B9FPP3Q6GMK7", device.serialNumber());
 		assertEquals("IPAD MINI 4 WI-FI 16GB SPACE GRAY-FRD", device.description());
 		assertEquals("iPad mini 4", device.model());
-		assertEquals("iOS", device.os());
-		assertEquals("iPad", device.deviceFamily());
+		assertEquals(Device.DeviceOs.IOS, device.os());
+		assertEquals(Device.DeviceFamily.IPAD, device.deviceFamily());
 		assertEquals("SPACE GRAY", device.color());
 		assertEquals("95C2189CB0EFB3192BC7B3C555091D22", device.profileUuid());
 		assertEquals("2025-04-29T18:06:53Z", device.profileAssignTime());
-		assertEquals("assigned", device.profileStatus());
+		assertEquals(Device.ProfileStatus.ASSIGNED, device.profileStatus());
 		assertEquals("max-muster-work@petarov.net", device.deviceAssignedBy());
 		assertEquals("2022-03-03T08:16:27Z", device.deviceAssignedDate());
 		assertEquals("SUCCESS", device.responseStatus());
