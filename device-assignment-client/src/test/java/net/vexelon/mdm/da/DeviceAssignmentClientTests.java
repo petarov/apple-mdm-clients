@@ -3,6 +3,7 @@ package net.vexelon.mdm.da;
 import com.github.tomakehurst.wiremock.http.HttpHeaders;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import net.vexelon.mdm.da.model.AccountDetail;
 import net.vexelon.mdm.shared.http.HttpConsts;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.BeforeAll;
@@ -90,7 +91,7 @@ public class DeviceAssignmentClientTests {
 		assertEquals("Unknown Street 123, 12345 City", accountDetail.orgAddress());
 		assertEquals("780420", accountDetail.orgId());
 		assertEquals("f6e1e81a93837e1e87d6f4d99e235117f12ccc0b567bd0e7c126d7f28395d3d3", accountDetail.orgIdHash());
-		assertEquals("org", accountDetail.orgType());
+		assertEquals(AccountDetail.OrgType.ORG, accountDetail.orgType());
 		assertEquals("v2", accountDetail.orgVersion());
 
 		// not all possible urls are verified here
