@@ -330,5 +330,20 @@ public class DeviceAssignmentDeviceManagementTests {
 		var notFoundResponse = TestUtil.createClient(wm).fetchReplacementDetails("B9FPP3Q6GMK7");
 
 		assertFalse(notFoundResponse.isPresent());
+
+		// Apple's docs say this case is a 404, but in practice the server responds with 400 and this body instead
+		stubFor(get(urlEqualTo("/device/replacementDetails?device=BNPT0GHHM7252")).willReturn(
+				aResponse().withStatus(400).withHeaders(headers).withBody("DEVICE_NOT_FOUND")));
+
+		var notFoundResponse2 = TestUtil.createClient(wm).fetchReplacementDetails("BNPT0GHHM7252");
+
+		assertFalse(notFoundResponse2.isPresent());
+
+		// a genuine 400 unrelated to "not found" must still be thrown, not swallowed
+		stubFor(get(urlEqualTo("/device/replacementDetails?device=")).willReturn(
+				aResponse().withStatus(400).withHeaders(headers).withBody("DEVICE_ID_REQUIRED")));
+
+		var client = TestUtil.createClient(wm);
+		assertThrows(DeviceAssignmentException.class, () -> client.fetchReplacementDetails(""));
 	}
 }

@@ -225,7 +225,9 @@ public interface DeviceAssignmentClient {
 	 * Call this only when {@link Device#isReplacementDevice()} is {@code true} for the device, as returned by
 	 * {@link #fetchDevices(String, int)}, {@link #syncDevices(String, int)}, or {@link #fetchDeviceDetails(Set)}.
 	 * Calling this for a device whose {@code is_replacement_device} value is {@code false} returns an empty
-	 * {@link Optional}.
+	 * {@link Optional}. Apple's documentation states this case responds with {@code 404 DEVICE_NOT_FOUND}, but in
+	 * practice the server currently responds with {@code 400} and a {@code DEVICE_NOT_FOUND} body instead; both are
+	 * currently treated as "not found".
 	 *
 	 * @param serialNumber the serial number of the replacement device
 	 * @return optional-wrapped {@link GetReplacementDetailsResponse}, or empty if no replacement record was found

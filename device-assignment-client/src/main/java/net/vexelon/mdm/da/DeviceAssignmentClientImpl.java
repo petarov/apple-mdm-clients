@@ -202,11 +202,13 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 	@Override
 	public Optional<GetReplacementDetailsResponse> fetchReplacementDetails(String serialNumber) {
 		try {
-			return Optional.of(execute(
-					client.createRequestBuilder(client.complementURI("/device/replacementDetails?device=" + serialNumber))
-							.GET(), GetReplacementDetailsResponse.class));
+			return Optional.of(execute(client.createRequestBuilder(
+							client.complementURI("/device/replacementDetails?device=" + serialNumber)).GET(),
+					GetReplacementDetailsResponse.class));
 		} catch (DeviceAssignmentException e) {
-			if (e.getCode() == HttpConsts.STATUS_NOT_FOUND) {
+			// documented as 404, but Apple's server currently responds with 400 and a `DEVICE_NOT_FOUND` body
+			if (e.getCode() == HttpConsts.STATUS_NOT_FOUND || (e.getCode() == HttpConsts.STATUS_BAD_REQUEST
+					&& "DEVICE_NOT_FOUND".equals(e.getStatusLine()))) {
 				return Optional.empty();
 			}
 			throw e;
