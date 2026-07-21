@@ -220,6 +220,21 @@ public interface DeviceAssignmentClient {
 	}
 
 	/**
+	 * Retrieves information about the original device that a replacement device replaces.
+	 * <p>
+	 * Call this only when {@link Device#isReplacementDevice()} is {@code true} for the device, as returned by
+	 * {@link #fetchDevices(String, int)}, {@link #syncDevices(String, int)}, or {@link #fetchDeviceDetails(Set)}.
+	 * Calling this for a device whose {@code is_replacement_device} value is {@code false} returns an empty
+	 * {@link Optional}.
+	 *
+	 * @param serialNumber the serial number of the replacement device
+	 * @return optional-wrapped {@link GetReplacementDetailsResponse}, or empty if no replacement record was found
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/get-replacement-details">Get Replacement Details</a>
+	 */
+	@Nonnull
+	Optional<GetReplacementDetailsResponse> fetchReplacementDetails(String serialNumber);
+
+	/**
 	 * Retrieves the beta enrollment tokens available for the organization.
 	 *
 	 * @return {@link SeedBuildTokenResponse} object

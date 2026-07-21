@@ -200,6 +200,21 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 
 	@Nonnull
 	@Override
+	public Optional<GetReplacementDetailsResponse> fetchReplacementDetails(String serialNumber) {
+		try {
+			return Optional.of(execute(
+					client.createRequestBuilder(client.complementURI("/device/replacementDetails?device=" + serialNumber))
+							.GET(), GetReplacementDetailsResponse.class));
+		} catch (DeviceAssignmentException e) {
+			if (e.getCode() == HttpConsts.STATUS_NOT_FOUND) {
+				return Optional.empty();
+			}
+			throw e;
+		}
+	}
+
+	@Nonnull
+	@Override
 	public SeedBuildTokenResponse fetchBetaEnrollmentTokens() {
 		return execute(client.createRequestBuilder(client.complementURI("/os-beta-enrollment/tokens")).GET(),
 				SeedBuildTokenResponse.class);

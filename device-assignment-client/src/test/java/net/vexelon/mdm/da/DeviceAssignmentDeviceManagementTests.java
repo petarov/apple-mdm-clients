@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.security.Security;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -302,5 +303,32 @@ public class DeviceAssignmentDeviceManagementTests {
 
 		assertEquals("BNPT0GHHM7252", response2.serialNumber());
 		assertEquals("NOT_ACCESSIBLE", response2.responseStatus());
+	}
+
+	@Test
+	void test_fetch_replacement_details(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlEqualTo("/device/replacementDetails?device=C112342757")).willReturn(
+				aResponse().withStatus(200).withHeaders(headers).withBody("""
+						{
+						    "serial_number": "C112342757",
+						    "original_device_serial_number": "C112342756",
+						    "replacement_date": "2025-01-15"
+						}
+						""".stripIndent())));
+
+		var response = TestUtil.createClient(wm).fetchReplacementDetails("C112342757");
+
+		assertTrue(response.isPresent());
+		assertEquals("C112342757", response.get().serialNumber());
+		assertEquals("C112342756", response.get().originalDeviceSerialNumber());
+		assertEquals("2025-01-15", response.get().replacementDate());
+		assertEquals(LocalDate.of(2025, 1, 15), response.get().replacementLocalDate());
+
+		stubFor(get(urlEqualTo("/device/replacementDetails?device=B9FPP3Q6GMK7")).willReturn(
+				aResponse().withStatus(404).withHeaders(headers).withBody("DEVICE_NOT_FOUND")));
+
+		var notFoundResponse = TestUtil.createClient(wm).fetchReplacementDetails("B9FPP3Q6GMK7");
+
+		assertFalse(notFoundResponse.isPresent());
 	}
 }
