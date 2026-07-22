@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
  *                       <li>{@code FAILED}: Activation lock of the device failed for unexpected reason. If retry fails, the client should contact Apple support.
  *                       </ul>
  * @param serialNumber   serial number of the device
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/activationlockstatusresponse">ActivationLockStatusResponse</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/activationlockstatusresponse">devicemanagement/activationlockstatusresponse</a>
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record ActivationLockStatusResponse(@JsonSetter(nulls = Nulls.AS_EMPTY) String responseStatus,

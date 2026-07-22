@@ -10,10 +10,12 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import java.util.List;
 
 /**
+ * A URL object.
+ *
  * @param httpMethod possible values: {@code GET}, {@code POST}, {@code PUT}, {@code DELETE}
  * @param limit      the limit for the URL
  * @param uri        URI for the API
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/url">Url</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/url">devicemanagement/url</a>
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)

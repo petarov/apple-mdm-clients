@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * A device's properties and their values.
+ *
  * @param assetTag                the device's asset tag
  * @param color                   the color of the device
  * @param description             a description of the device
@@ -64,6 +66,7 @@ import java.util.Set;
  *                                by another device. Only present with <i>Sync the List of Devices</i> when
  *                                {@link #opType()} is {@link OpType#DELETED}.
  *                                This key is valid in <i>X-Server-Protocol-Version 10</i> and later.
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/device">devicemanagement/device</a>
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)

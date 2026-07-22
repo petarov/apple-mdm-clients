@@ -12,6 +12,8 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
+ * The response that contains a list of devices.
+ *
  * @param cursor       indicates when this request was processed by the enrollment server. The MDM server can use
  *                     this value in future requests if it wants to retrieve only records added or removed since this
  *                     request.
@@ -22,7 +24,7 @@ import java.util.List;
  * @param moreToFollow indicates that the request's limit and cursor values resulted in only a partial list of devices.
  *                     The MDM server should immediately make another request (starting from the newly returned cursor)
  *                     to obtain additional records.
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/fetchdeviceresponse">FetchDeviceResponse</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/fetchdeviceresponse">devicemanagement/fetchdeviceresponse</a>
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record DevicesResponse(@JsonSetter(nulls = Nulls.AS_EMPTY) String cursor,

@@ -9,7 +9,7 @@ import java.util.Optional;
 /**
  * The list of skip keys for setup panes.
  *
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/skipkeys">SkipKeys</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/skipkeys">devicemanagement/skipkeys</a>
  */
 public enum ProfileSkipItem {
 	/**

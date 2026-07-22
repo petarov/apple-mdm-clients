@@ -1,6 +1,9 @@
 package net.vexelon.mdm.da.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.annotation.Nonnull;
@@ -8,6 +11,8 @@ import jakarta.annotation.Nonnull;
 import java.util.List;
 
 /**
+ * The response that contains the details for an account.
+ *
  * @param adminId    the Apple ID of the person who generated the currently in-use tokens
  * @param orgAddress the organization address
  * @param orgEmail   the organization email
@@ -26,7 +31,7 @@ import java.util.List;
  * @param serverUuid the system-generated server identifier
  * @param urls       the list of URLs available in the MDM service.
  *                   This key is valid in <i>X-Server-Protocol-Version 3</i> and later.
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/accountdetail">AccountDetail</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/accountdetail">devicemanagement/accountdetail</a>
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)

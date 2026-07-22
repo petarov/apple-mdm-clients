@@ -19,7 +19,7 @@ import java.util.Map;
  * @param retryAfterSeconds with <i>X-Server-Protocol-Version 10</i> and later, present and non-zero when at least one
  *                          device in {@link #devices()} was throttled. Clients should wait at least this many
  *                          seconds before retrying assignment for the throttled devices.
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/assignprofileresponse">AssignProfileResponse</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/assignprofileresponse">devicemanagement/assignprofileresponse</a>
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record AssignProfileResponse(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull Map<String, String> devices,

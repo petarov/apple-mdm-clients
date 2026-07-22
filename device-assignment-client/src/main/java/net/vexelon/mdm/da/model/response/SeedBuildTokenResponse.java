@@ -11,7 +11,7 @@ import java.util.List;
  * Provides a list of beta enrollment tokens available for the given organization.
  *
  * @param betaEnrollmentTokens list of beta enrollment tokens available for the given organization
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/getseedbuildtokenresponse">GetSeedBuildTokenResponse</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/getseedbuildtokenresponse">devicemanagement/getseedbuildtokenresponse</a>
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)

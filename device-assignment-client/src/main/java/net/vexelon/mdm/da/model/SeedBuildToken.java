@@ -9,7 +9,7 @@ import jakarta.annotation.Nonnull;
  * @param os    the platform related to beta build: defaults to {@link OS#UNKNOWN} when absent or unrecognized
  * @param title the public facing name, like <i>"iOS 17 Public Beta"</i>
  * @param token the token to use when requesting the beta build
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/seedbuildtoken">SeedBuildToken</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/seedbuildtoken">devicemanagement/seedbuildtoken</a>
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)

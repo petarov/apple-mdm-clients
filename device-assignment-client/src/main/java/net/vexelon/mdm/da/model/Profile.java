@@ -69,7 +69,7 @@ import java.util.Set;
  *                                    <i>X-Server-Protocol-Version 2</i> and later.
  * @param supportPhoneNumber          a support phone number for the organization
  * @param url                         the URL of the MDM server
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/profile">Profile</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/profile">devicemanagement/profile</a>
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
