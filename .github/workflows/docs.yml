@@ -7,6 +7,13 @@ on:
       - main
     tags:
       - '[0-9]*'
+    paths:
+      - 'shared-apple-client/src/**'
+      - 'device-assignment-client/src/**'
+      - 'legacy-app-and-book-management-client/src/**'
+      - 'apple-business-client/src/**'
+      - '**/build.gradle'
+      - '.github/workflows/docs.yml'
 
 permissions:
   contents: read
