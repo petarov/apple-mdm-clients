@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.shared.util.ParseUtil;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
@@ -43,6 +45,33 @@ public record MdmServerAttributes(@JsonSetter(nulls = Nulls.AS_EMPTY) String ser
                                   @JsonSetter(nulls = Nulls.AS_EMPTY) String lastConnectedIp,
                                   @JsonSetter(nulls = Nulls.AS_EMPTY) String createdDateTime,
                                   @JsonSetter(nulls = Nulls.AS_EMPTY) String updatedDateTime) {
+
+	/**
+	 * @return {@link #lastConnectedDateTime()} parsed to {@link OffsetDateTime}, or {@link OffsetDateTime#MIN} if
+	 * absent
+	 */
+	@Nonnull
+	public OffsetDateTime lastConnectedDateTimeOffset() {
+		return lastConnectedDateTime.isEmpty() ?
+				OffsetDateTime.MIN :
+				ParseUtil.parseAppleDateTime(lastConnectedDateTime);
+	}
+
+	/**
+	 * @return {@link #createdDateTime()} parsed to {@link OffsetDateTime}, or {@link OffsetDateTime#MIN} if absent
+	 */
+	@Nonnull
+	public OffsetDateTime createdDateTimeOffset() {
+		return createdDateTime.isEmpty() ? OffsetDateTime.MIN : ParseUtil.parseAppleDateTime(createdDateTime);
+	}
+
+	/**
+	 * @return {@link #updatedDateTime()} parsed to {@link OffsetDateTime}, or {@link OffsetDateTime#MIN} if absent
+	 */
+	@Nonnull
+	public OffsetDateTime updatedDateTimeOffset() {
+		return updatedDateTime.isEmpty() ? OffsetDateTime.MIN : ParseUtil.parseAppleDateTime(updatedDateTime);
+	}
 
 	/**
 	 * The type of device management service.

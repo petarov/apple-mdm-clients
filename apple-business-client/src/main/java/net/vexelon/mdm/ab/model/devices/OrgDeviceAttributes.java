@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.shared.util.ParseUtil;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
@@ -66,6 +68,42 @@ public record OrgDeviceAttributes(@JsonSetter(nulls = Nulls.AS_EMPTY) String ser
                                   @JsonSetter(nulls = Nulls.AS_EMPTY) String wifiMacAddress,
                                   @JsonSetter(nulls = Nulls.AS_EMPTY) String bluetoothMacAddress,
                                   @Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) List<String> ethernetMacAddress) {
+
+	/**
+	 * @return {@link #addedToOrgDateTime()} parsed to {@link OffsetDateTime}, or {@link OffsetDateTime#MIN} if
+	 * absent
+	 */
+	@Nonnull
+	public OffsetDateTime addedToOrgDateTimeOffset() {
+		return addedToOrgDateTime.isEmpty() ? OffsetDateTime.MIN : ParseUtil.parseAppleDateTime(addedToOrgDateTime);
+	}
+
+	/**
+	 * @return {@link #releasedFromOrgDateTime()} parsed to {@link OffsetDateTime}, or {@link OffsetDateTime#MIN} if
+	 * absent
+	 */
+	@Nonnull
+	public OffsetDateTime releasedFromOrgDateTimeOffset() {
+		return releasedFromOrgDateTime.isEmpty() ?
+				OffsetDateTime.MIN :
+				ParseUtil.parseAppleDateTime(releasedFromOrgDateTime);
+	}
+
+	/**
+	 * @return {@link #updatedDateTime()} parsed to {@link OffsetDateTime}, or {@link OffsetDateTime#MIN} if absent
+	 */
+	@Nonnull
+	public OffsetDateTime updatedDateTimeOffset() {
+		return updatedDateTime.isEmpty() ? OffsetDateTime.MIN : ParseUtil.parseAppleDateTime(updatedDateTime);
+	}
+
+	/**
+	 * @return {@link #orderDateTime()} parsed to {@link OffsetDateTime}, or {@link OffsetDateTime#MIN} if absent
+	 */
+	@Nonnull
+	public OffsetDateTime orderDateTimeOffset() {
+		return orderDateTime.isEmpty() ? OffsetDateTime.MIN : ParseUtil.parseAppleDateTime(orderDateTime);
+	}
 
 	/**
 	 * The devices status for an organization device.

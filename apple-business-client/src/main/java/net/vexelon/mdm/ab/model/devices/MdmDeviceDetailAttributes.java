@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.shared.util.ParseUtil;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
@@ -59,6 +61,15 @@ public record MdmDeviceDetailAttributes(@JsonSetter(nulls = Nulls.AS_EMPTY) Stri
                                         @Nonnull @JsonSetter(
 		                                        nulls = Nulls.AS_EMPTY) DeviceEraseStatus deviceEraseStatus,
                                         @Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) LostModeStatus lostModeStatus) {
+
+	/**
+	 * @return {@link #lastCheckInDateTime()} parsed to {@link OffsetDateTime}, or {@link OffsetDateTime#MIN} if
+	 * absent
+	 */
+	@Nonnull
+	public OffsetDateTime lastCheckInDateTimeOffset() {
+		return lastCheckInDateTime.isEmpty() ? OffsetDateTime.MIN : ParseUtil.parseAppleDateTime(lastCheckInDateTime);
+	}
 
 	/**
 	 * The lock status of an MDM-enrolled device.

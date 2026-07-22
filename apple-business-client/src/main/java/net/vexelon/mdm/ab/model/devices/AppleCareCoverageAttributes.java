@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.shared.util.ParseUtil;
+
+import java.time.OffsetDateTime;
 
 /**
  * Attributes for an organization device's AppleCare coverage resource.
@@ -41,6 +44,33 @@ public record AppleCareCoverageAttributes(@Nonnull @JsonSetter(nulls = Nulls.AS_
                                           @JsonSetter(nulls = Nulls.AS_EMPTY) String endDateTime, boolean isRenewable,
                                           boolean isCanceled,
                                           @JsonSetter(nulls = Nulls.AS_EMPTY) String contractCancelDateTime) {
+
+	/**
+	 * @return {@link #startDateTime()} parsed to {@link OffsetDateTime}, or {@link OffsetDateTime#MIN} if absent
+	 */
+	@Nonnull
+	public OffsetDateTime startDateTimeOffset() {
+		return startDateTime.isEmpty() ? OffsetDateTime.MIN : ParseUtil.parseAppleDateTime(startDateTime);
+	}
+
+	/**
+	 * @return {@link #endDateTime()} parsed to {@link OffsetDateTime}, or {@link OffsetDateTime#MIN} if absent
+	 */
+	@Nonnull
+	public OffsetDateTime endDateTimeOffset() {
+		return endDateTime.isEmpty() ? OffsetDateTime.MIN : ParseUtil.parseAppleDateTime(endDateTime);
+	}
+
+	/**
+	 * @return {@link #contractCancelDateTime()} parsed to {@link OffsetDateTime}, or {@link OffsetDateTime#MIN} if
+	 * absent
+	 */
+	@Nonnull
+	public OffsetDateTime contractCancelDateTimeOffset() {
+		return contractCancelDateTime.isEmpty() ?
+				OffsetDateTime.MIN :
+				ParseUtil.parseAppleDateTime(contractCancelDateTime);
+	}
 
 	/**
 	 * The current status of device AppleCare coverage.

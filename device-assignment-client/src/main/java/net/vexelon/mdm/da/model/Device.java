@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.annotation.Nonnull;
 import net.vexelon.mdm.da.DeviceAssignmentClient;
+import net.vexelon.mdm.shared.util.ParseUtil;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -110,7 +111,7 @@ public record Device(@JsonSetter(nulls = Nulls.AS_EMPTY) String assetTag,
 	 */
 	@Nonnull
 	public OffsetDateTime deviceAssignedDateTime() {
-		return deviceAssignedDate.isBlank() ? OffsetDateTime.MIN : OffsetDateTime.parse(deviceAssignedDate);
+		return deviceAssignedDate.isBlank() ? OffsetDateTime.MIN : ParseUtil.parseAppleDateTime(deviceAssignedDate);
 	}
 
 	/**
@@ -118,7 +119,7 @@ public record Device(@JsonSetter(nulls = Nulls.AS_EMPTY) String assetTag,
 	 */
 	@Nonnull
 	public OffsetDateTime opDateTime() {
-		return opDate.isBlank() ? OffsetDateTime.MIN : OffsetDateTime.parse(opDate);
+		return opDate.isBlank() ? OffsetDateTime.MIN : ParseUtil.parseAppleDateTime(opDate);
 	}
 
 	/**
@@ -126,7 +127,7 @@ public record Device(@JsonSetter(nulls = Nulls.AS_EMPTY) String assetTag,
 	 */
 	@Nonnull
 	public OffsetDateTime profileAssignDateTime() {
-		return profileAssignTime.isBlank() ? OffsetDateTime.MIN : OffsetDateTime.parse(profileAssignTime);
+		return profileAssignTime.isBlank() ? OffsetDateTime.MIN : ParseUtil.parseAppleDateTime(profileAssignTime);
 	}
 
 	/**
@@ -134,7 +135,7 @@ public record Device(@JsonSetter(nulls = Nulls.AS_EMPTY) String assetTag,
 	 */
 	@Nonnull
 	public OffsetDateTime profilePushDateTime() {
-		return profilePushTime.isBlank() ? OffsetDateTime.MIN : OffsetDateTime.parse(profilePushTime);
+		return profilePushTime.isBlank() ? OffsetDateTime.MIN : ParseUtil.parseAppleDateTime(profilePushTime);
 	}
 
 	/**
@@ -142,7 +143,7 @@ public record Device(@JsonSetter(nulls = Nulls.AS_EMPTY) String assetTag,
 	 */
 	@Nonnull
 	public OffsetDateTime mdmMigrationDeadlineDateTime() {
-		return mdmMigrationDeadline.isBlank() ? OffsetDateTime.MIN : OffsetDateTime.parse(mdmMigrationDeadline);
+		return mdmMigrationDeadline.isBlank() ? OffsetDateTime.MIN : ParseUtil.parseAppleDateTime(mdmMigrationDeadline);
 	}
 
 	/**
