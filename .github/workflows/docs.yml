@@ -67,6 +67,11 @@ jobs:
             local ref="$1" label="$2"
             echo "::group::Building docs for $label ($ref)"
             git checkout --quiet "$ref"
+            if ! grep -q "aggregateJavadoc" build.gradle; then
+              echo "::warning::Skipping $label ($ref) - aggregateJavadoc task not present at this ref"
+              echo "::endgroup::"
+              return
+            fi
             ./gradlew clean aggregateJavadoc --no-daemon
             mkdir -p "site/$label"
             cp -r build/docs/aggregateJavadoc/. "site/$label/"
