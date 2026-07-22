@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
  *
  * @param locationId   the identifier for the location
  * @param locationName the name of the location
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/vpplocation">VppLocation</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/vpplocation">devicemanagement/vpplocation</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)

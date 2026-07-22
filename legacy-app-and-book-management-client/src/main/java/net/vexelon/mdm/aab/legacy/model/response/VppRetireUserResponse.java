@@ -3,8 +3,8 @@ package net.vexelon.mdm.aab.legacy.model.response;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import net.vexelon.mdm.aab.legacy.model.VppUser;
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.aab.legacy.model.VppUser;
 
 /**
  * The response from retiring a user.
@@ -12,7 +12,7 @@ import jakarta.annotation.Nonnull;
  * If the user passes the {@code userId} value for an already-retired user, this request returns an error that indicates
  * the user has already been retired.
  *
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/retirevppuserresponse">RetireVppUserResponse</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/retirevppuserresponse">devicemanagement/retirevppuserresponse</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class VppRetireUserResponse implements VppHasResponse {

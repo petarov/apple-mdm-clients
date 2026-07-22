@@ -10,7 +10,7 @@ import jakarta.annotation.Nonnull;
 /**
  * The response that contains the client configuration.
  *
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/vppclientconfigresponse">VppClientConfigResponse</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/vppclientconfigresponse">devicemanagement/vppclientconfigresponse</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class VppClientConfigResponse implements VppHasResponse {

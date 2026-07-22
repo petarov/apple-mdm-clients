@@ -35,7 +35,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
  * @param userId          the unique identifier assigned by the VPP for the user to whom this license is assigned
  * @param userIdStr       the string representation of the unique identifier assigned by the VPP for the user to whom
  *                        this license is assigned
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/vpplicense">VppLicense</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/vpplicense">devicemanagement/vpplicense</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)

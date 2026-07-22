@@ -39,7 +39,7 @@ import java.util.List;
  *                        recognize that the userId is no longer associated with the [clientUserId] record, and update any internal
  *                        references appropriately.
  * @param userId          the unique identifier assigned by the VPP when registering the user
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/vppuser">VppUser</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/vppuser">devicemanagement/vppuser</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import net.vexelon.mdm.aab.legacy.model.VppAssignment;
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.aab.legacy.model.VppAssignment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * The response that contains a list of assignments.
  *
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/vppassignmentsresponse">VppAssignmentsResponse</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/vppassignmentsresponse">devicemanagement/vppassignmentsresponse</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class VppGetAssignmentsResponse implements VppHasResponse {

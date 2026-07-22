@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import net.vexelon.mdm.aab.legacy.model.VppAsset;
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.aab.legacy.model.VppAsset;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * The response with the asset.
  *
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/getvppassetresponse">GetVppAssetResponse</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/getvppassetresponse">devicemanagement/getvppassetresponse</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class VppGetAssetResponse implements VppHasResponse {

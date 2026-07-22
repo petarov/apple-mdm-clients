@@ -16,7 +16,7 @@ import jakarta.annotation.Nonnull;
  * @param errorNumber     the numeric code of the error
  * @param licenseIdStr    the license identifier assigned to a user or device
  * @param serialNumber    the device serial number
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/vppassociation">VppAssociation</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/vppassociation">devicemanagement/vppassociation</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)

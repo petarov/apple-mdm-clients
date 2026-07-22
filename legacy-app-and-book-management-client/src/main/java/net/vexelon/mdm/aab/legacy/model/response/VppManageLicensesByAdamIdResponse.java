@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import net.vexelon.mdm.aab.legacy.model.VppAssociation;
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.aab.legacy.model.VppAssociation;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import java.util.List;
  * The response from managing licenses.
  *
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/managevpplicensesbyadamidresponse">
- * ManageVppLicensesByAdamIdResponse</a>
+ * devicemanagement/managevpplicensesbyadamidresponse</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class VppManageLicensesByAdamIdResponse implements VppHasResponse {

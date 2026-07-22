@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
  *
  * @param errorMessage The human-readable explanation of the error.
  * @param errorNumber  The numeric code of the error.
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/vpperrorcode">VppErrorCode</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/vpperrorcode">devicemanagement/vpperrorcode</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -33,7 +33,7 @@ import jakarta.annotation.Nonnull;
  *                           and {@link #pricingParam}
  * @param totalCount         the total number of licenses managed by your organization for the specified
  *                           {@link #adamIdStr} and {@link #pricingParam}
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/vppasset">VppAsset</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/vppasset">devicemanagement/vppasset</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)

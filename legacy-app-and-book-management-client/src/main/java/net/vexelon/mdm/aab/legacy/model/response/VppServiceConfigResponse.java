@@ -41,7 +41,7 @@ import java.util.List;
  *                                         <li>{@code –1}: Failure
  *                                         </ul>
  * @param vppWebsiteUrl                    the URL for the VPP website
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/vppserviceconfigresponse">VppServiceConfigResponse</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/vppserviceconfigresponse">devicemanagement/vppserviceconfigresponse</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)

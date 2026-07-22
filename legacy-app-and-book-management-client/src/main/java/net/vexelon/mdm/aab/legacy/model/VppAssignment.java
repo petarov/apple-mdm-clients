@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.annotation.Nonnull;
 
 /**
- * An assignment’s properties and their values.
+ * An assignment's properties and their values.
  *
  * @param adamIdStr       the unique identifier for a product in the iTunes Store
  * @param clientUserIdStr the client user ID of the user that the device is currently assigned to
@@ -18,7 +18,7 @@ import jakarta.annotation.Nonnull;
  *                        <li>{@code PLUS}: High quality
  *                        </ul>
  * @param serialNumber    the device's serial number that the license is currently assigned to
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/vppassignment">VppAssignment</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/vppassignment">devicemanagement/vppassignment</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)

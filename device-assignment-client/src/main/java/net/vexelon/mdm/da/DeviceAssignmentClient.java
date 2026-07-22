@@ -83,6 +83,8 @@ public interface DeviceAssignmentClient {
 	}
 
 	/**
+	 * Fetch the details on a set of devices.
+	 *
 	 * @param serialNumbers the serial numbers of the devices that will be fetched
 	 * @return {@link DeviceListResponse} object with {@link Device#responseStatus()} with one of the following set:
 	 * <ul>

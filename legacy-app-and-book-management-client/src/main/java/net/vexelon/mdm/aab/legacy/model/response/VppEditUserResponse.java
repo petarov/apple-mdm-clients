@@ -3,13 +3,13 @@ package net.vexelon.mdm.aab.legacy.model.response;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import net.vexelon.mdm.aab.legacy.model.VppUser;
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.aab.legacy.model.VppUser;
 
 /**
  * The response from editing a user.
  *
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/editvppuserresponse">EditVppUserResponse</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/editvppuserresponse">devicemanagement/editvppuserresponse</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class VppEditUserResponse implements VppHasResponse {

@@ -5,16 +5,16 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import net.vexelon.mdm.aab.legacy.model.VppUser;
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.aab.legacy.model.VppUser;
 
 import java.util.List;
 
 /**
  * The response from the users’ details service.
  *
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/getvppusersresponse">GetVppUsersResponse</a>
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/retrieving-a-large-record-set#Batched-Responses">Batched Responses</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/getvppusersresponse">devicemanagement/getvppusersresponse</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/retrieving-a-large-record-set#Batched-Responses">devicemanagement/retrieving-a-large-record-set#Batched-Response</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class VppGetUsersResponse implements VppHasResponse {

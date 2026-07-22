@@ -3,13 +3,13 @@ package net.vexelon.mdm.aab.legacy.model.response;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import net.vexelon.mdm.aab.legacy.model.VppUser;
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.aab.legacy.model.VppUser;
 
 /**
  * The response from registering a user.
  *
- * @see <a href="https://developer.apple.com/documentation/devicemanagement/registervppuserresponse">RegisterVppUserResponse</a>
+ * @see <a href="https://developer.apple.com/documentation/devicemanagement/registervppuserresponse">devicemanagement/registervppuserresponse</a>
  */
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class VppRegisterUserResponse implements VppHasResponse {
