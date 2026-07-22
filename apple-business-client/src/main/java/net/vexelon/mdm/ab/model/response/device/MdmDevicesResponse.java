@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @param data the resource data
  * @param meta paging information for this response
- * @see <a href="https://developer.apple.com/documentation/applebusinessapi/mdmdevicesresponse">MdmDevicesResponse</a>
+ * @see <a href="https://developer.apple.com/documentation/applebusinessapi/mdmdevicesresponse">applebusinessapi/mdmdevicesresponse</a>
  * @since Apple Business API 2.1+
  */
 @JsonIgnoreProperties(ignoreUnknown = true)

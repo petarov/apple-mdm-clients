@@ -10,8 +10,8 @@ import java.util.List;
 
 /**
  * Attributes that describe an organization device resource.
- *
- * <p>All date-time fields use ISO 8601 format (e.g. {@code 2025-04-30T22:05:14.192Z}).
+ * <p>
+ * All date-time fields use ISO 8601 format (e.g. {@code 2025-04-30T22:05:14.192Z}).
  * All nullable fields default to empty string or empty list when absent or {@code null} in the response.
  *
  * @param serialNumber            the device's serial number
@@ -39,7 +39,7 @@ import java.util.List;
  * @param wifiMacAddress          the device's Wi-Fi MAC address
  * @param bluetoothMacAddress     the device's Bluetooth MAC address
  * @param ethernetMacAddress      the device's built-in Ethernet MAC address(es)
- * @see <a href="https://developer.apple.com/documentation/applebusinessapi/orgdevice/attributes-data.dictionary">OrgDevice.Attributes</a>
+ * @see <a href="https://developer.apple.com/documentation/applebusinessapi/orgdevice/attributes-data.dictionary">applebusinessapi/orgdevice/attributes-data.dictionary</a>
  * @since Apple Business API 2.1+
  */
 @JsonIgnoreProperties(ignoreUnknown = true)

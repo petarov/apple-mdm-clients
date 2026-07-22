@@ -1,6 +1,9 @@
 package net.vexelon.mdm.ab.model.devices;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import jakarta.annotation.Nonnull;
 
 /**
@@ -26,7 +29,7 @@ import jakarta.annotation.Nonnull;
  *                               applicable for Limited Warranty and AppleCare+ for Business
  * @param contractCancelDateTime UTC date when coverage was canceled for the device; not applicable
  *                               for Limited Warranty and AppleCare+ for Business
- * @see <a href="https://developer.apple.com/documentation/applebusinessapi/applecarecoverage/attributes-data.dictionary">AppleCareCoverage.Attributes</a>
+ * @see <a href="https://developer.apple.com/documentation/applebusinessapi/applecarecoverage/attributes-data.dictionary">applebusinessapi/applecarecoverage/attributes-data.dictionary</a>
  * @since Apple Business API 2.1+
  */
 @JsonIgnoreProperties(ignoreUnknown = true)

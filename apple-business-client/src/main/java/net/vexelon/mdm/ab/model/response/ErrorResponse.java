@@ -11,14 +11,14 @@ import java.util.List;
  * The error details that an API returns in the response body whenever the API request isn’t successful.
  *
  * @param errors an array of one or more errors
- * @see <a href="https://developer.apple.com/documentation/applebusinessapi/errorresponse">ErrorResponse</a>
+ * @see <a href="https://developer.apple.com/documentation/applebusinessapi/errorresponse">applebusinessapi/errorresponse</a>
  * @since Apple Business API 2.1+
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record ErrorResponse(@Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) List<Error> errors) {
 
 	/**
-	 * A single error entry from an Apple Business API error response.
+	 * The details about an error that returns when an API request isn’t successful.
 	 *
 	 * @param id     the unique ID of a specific instance of an error, request, and response; use this ID when providing
 	 *               feedback to, or debugging issues with Apple
@@ -29,7 +29,7 @@ public record ErrorResponse(@Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) List<Er
 	 *               in code.
 	 * @param title  a summary of the error; don’t use this field for programmatic error handling
 	 * @param detail a detailed explanation of the error; don’t use this field for programmatic error handling.
-	 * @see <a href="https://developer.apple.com/documentation/applebusinessapi/errorresponse">ErrorResponse</a>
+	 * @see <a href="https://developer.apple.com/documentation/applebusinessapi/errorresponse/errors-data.dictionary">applebusinessapi/errorresponse/errors-data.dictionary</a>
 	 */
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public record Error(@JsonSetter(nulls = Nulls.AS_EMPTY) String id,

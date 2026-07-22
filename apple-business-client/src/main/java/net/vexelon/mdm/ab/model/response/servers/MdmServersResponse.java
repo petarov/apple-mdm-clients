@@ -16,7 +16,7 @@ import java.util.List;
  * @param data     the resource data
  * @param included organization devices included via the {@code devices} relationship, when requested
  * @param meta     paging information for this response
- * @see <a href="https://developer.apple.com/documentation/applebusinessapi/mdmserversresponse">MdmServersResponse</a>
+ * @see <a href="https://developer.apple.com/documentation/applebusinessapi/mdmserversresponse">applebusinessapi/mdmserversresponse</a>
  * @since Apple Business API 2.2+
  */
 @JsonIgnoreProperties(ignoreUnknown = true)

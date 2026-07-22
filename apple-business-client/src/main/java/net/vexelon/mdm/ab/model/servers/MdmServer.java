@@ -11,7 +11,7 @@ import jakarta.annotation.Nonnull;
  * @param id         the opaque resource ID that uniquely identifies the resource
  * @param type       the resource type; value: {@code mdmServers}
  * @param attributes the resource's attributes
- * @see <a href="https://developer.apple.com/documentation/applebusinessapi/mdmserver">MdmServer</a>
+ * @see <a href="https://developer.apple.com/documentation/applebusinessapi/mdmserver">applebusinessapi/mdmserver</a>
  * @since Apple Business API 2.2+
  */
 @JsonIgnoreProperties(ignoreUnknown = true)

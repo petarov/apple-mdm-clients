@@ -10,8 +10,8 @@ import java.util.List;
 
 /**
  * Attributes that describe a device management service resource.
- *
- * <p>All date-time fields use ISO 8601 format (e.g. {@code 2025-05-01T03:21:44.685Z}).
+ * <p>
+ * All date-time fields use ISO 8601 format (e.g. {@code 2025-05-01T03:21:44.685Z}).
  * All nullable string/list fields default to empty string or empty list when absent or {@code null} in the response.
  *
  * @param serverName             the device management service's name
@@ -30,7 +30,7 @@ import java.util.List;
  *                               servers. Read only
  * @param createdDateTime        the date and time of the creation of the resource
  * @param updatedDateTime        the date and time of the most-recent update for the resource
- * @see <a href="https://developer.apple.com/documentation/applebusinessapi/mdmserver/attributes-data.dictionary">MdmServer.Attributes</a>
+ * @see <a href="https://developer.apple.com/documentation/applebusinessapi/mdmserver/attributes-data.dictionary">applebusinessapi/mdmserver/attributes-data.dictionary</a>
  * @since Apple Business API 2.2+
  */
 @JsonIgnoreProperties(ignoreUnknown = true)

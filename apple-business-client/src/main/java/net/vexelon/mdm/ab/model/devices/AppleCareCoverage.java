@@ -11,7 +11,7 @@ import jakarta.annotation.Nonnull;
  * @param id         the opaque resource ID that uniquely identifies the resource
  * @param type       the resource type; value: {@code appleCareCoverage}
  * @param attributes the resource's attributes
- * @see <a href="https://developer.apple.com/documentation/applebusinessapi/applecarecoverage">AppleCareCoverage</a>
+ * @see <a href="https://developer.apple.com/documentation/applebusinessapi/applecarecoverage">applebusinessapi/applecarecoverage</a>
  * @since Apple Business API 2.1+
  */
 @JsonIgnoreProperties(ignoreUnknown = true)

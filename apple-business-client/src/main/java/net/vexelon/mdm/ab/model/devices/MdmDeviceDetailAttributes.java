@@ -38,7 +38,7 @@ import java.util.List;
  *                             or unrecognized
  * @param lostModeStatus       the lost mode status; defaults to {@link LostModeStatus#UNKNOWN} when absent
  *                             or unrecognized
- * @see <a href="https://developer.apple.com/documentation/applebusinessapi/mdmdevicedetail/attributes-data.dictionary">MdmDeviceDetail.Attributes</a>
+ * @see <a href="https://developer.apple.com/documentation/applebusinessapi/mdmdevicedetail/attributes-data.dictionary">mdmdevicedetail/attributes-data.dictionary</a>
  * @since Apple Business API 2.1+
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
