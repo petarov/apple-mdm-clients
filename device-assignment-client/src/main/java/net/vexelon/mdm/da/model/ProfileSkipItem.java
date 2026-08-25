@@ -366,6 +366,13 @@ public enum ProfileSkipItem {
 	 */
 	LIQUID_GLASS("LiquidGlass", OsType.IOS, OsType.MACOS),
 
+	/**
+	 * Skip Device Features tour pane.
+	 * <p>
+	 * Availability: iOS 27+
+	 */
+	DEVICE_FEATURES_TOUR("DeviceFeaturesTour", OsType.IOS),
+
 	// ---
 	;
 
