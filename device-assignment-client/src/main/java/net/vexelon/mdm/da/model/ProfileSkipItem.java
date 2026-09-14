@@ -252,13 +252,6 @@ public enum ProfileSkipItem {
 	INTELLIGENCE("Intelligence", OsType.IOS, OsType.MACOS, OsType.VISIONOS),
 
 	/**
-	 * Skips web content filtering pane.
-	 * <p>
-	 * Availability: iOS 18.2+
-	 */
-	WEB_CONTENT_FILTERING("WebContentFiltering", OsType.IOS),
-
-	/**
 	 * Skips Safety and Handling pane.
 	 * <p>
 	 * Availability: iOS 18.4+

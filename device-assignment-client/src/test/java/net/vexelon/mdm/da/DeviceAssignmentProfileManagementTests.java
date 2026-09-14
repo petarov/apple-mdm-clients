@@ -148,7 +148,6 @@ public class DeviceAssignmentProfileManagementTests {
 								"TVRoom",
 								"UpdateCompleted",
 								"WatchMigration",
-								"WebContentFiltering",
 								"Welcome",
 								"SafetyAndHandling"
 						    ],
@@ -173,7 +172,7 @@ public class DeviceAssignmentProfileManagementTests {
 		assertTrue(response.isMultiUser());
 		assertTrue(response.isSupervised()); // default must be `true`
 		assertTrue(response.isAutoAdvanceSetup());
-		assertEquals(42, response.skipSetupItems().size());
+		assertEquals(41, response.skipSetupItems().size());
 		assertEquals("95C2189CB0EFB3192BC7B3C555091D22", response.profileUuid());
 		assertEquals("MDM petarov", response.profileName());
 
