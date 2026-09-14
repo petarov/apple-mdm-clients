@@ -12,11 +12,11 @@ Java clients for Apple's Mobile Device Management (MDM) services.
 
 ## Libraries
 
-| Library | Latest version | Artifact | Status | API-1.0.0  | API-latest  |
+| Library | Latest version | Artifact | Status | API-1.1.0  | API-latest  |
 |---|---|---|---|---|---|
-| [Device Assignment client](device-assignment-client/README.md) | `1.0.0` | [![MvnRepository](https://badges.mvnrepository.com/badge/net.vexelon.mdm/device-assignment-client/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.vexelon.mdm/device-assignment-client) | Stable | [Javadoc](https://petarov.github.io/apple-mdm-clients/1.0.0/device-assignment-client/) | [Javadoc](https://petarov.github.io/apple-mdm-clients/main/device-assignment-client/)  |
-| [Legacy App and Book Management client](legacy-app-and-book-management-client/README.md) | `1.0.0` | [![MvnRepository](https://badges.mvnrepository.com/badge/net.vexelon.mdm/legacy-app-and-book-management-client/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.vexelon.mdm/legacy-app-and-book-management-client) | Stable | [Javadoc](https://petarov.github.io/apple-mdm-clients/1.0.0/legacy-app-and-book-management-client/) | [Javadoc](https://petarov.github.io/apple-mdm-clients/main/legacy-app-and-book-management-client/)  |
-| [Apple Business client](apple-business-client/README.md) | `0.0.1-SNAPSHOT` | — | WIP | [Javadoc](https://petarov.github.io/apple-mdm-clients/1.0.0/apple-business-client/) | [Javadoc](https://petarov.github.io/apple-mdm-clients/main/apple-business-client/)  |
+| [Device Assignment client](device-assignment-client/README.md) | `1.1.0` | [![MvnRepository](https://badges.mvnrepository.com/badge/net.vexelon.mdm/device-assignment-client/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.vexelon.mdm/device-assignment-client) | Stable | [Javadoc](https://petarov.github.io/apple-mdm-clients/1.1.0/device-assignment-client/) | [Javadoc](https://petarov.github.io/apple-mdm-clients/main/device-assignment-client/)  |
+| [Legacy App and Book Management client](legacy-app-and-book-management-client/README.md) | `1.1.0` | [![MvnRepository](https://badges.mvnrepository.com/badge/net.vexelon.mdm/legacy-app-and-book-management-client/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.vexelon.mdm/legacy-app-and-book-management-client) | Stable | [Javadoc](https://petarov.github.io/apple-mdm-clients/1.1.0/legacy-app-and-book-management-client/) | [Javadoc](https://petarov.github.io/apple-mdm-clients/main/legacy-app-and-book-management-client/)  |
+| [Apple Business client](apple-business-client/README.md) | `1.1.0` | [![MvnRepository](https://badges.mvnrepository.com/badge/net.vexelon.mdm/apple-business-client/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.vexelon.mdm/apple-business-client) | Stable | [Javadoc](https://petarov.github.io/apple-mdm-clients/1.1.0/apple-business-client/) | [Javadoc](https://petarov.github.io/apple-mdm-clients/main/apple-business-client/)  |
 
 > Snapshot builds are published to GitHub Packages. See each library's README for the package link and authentication requirements.
 

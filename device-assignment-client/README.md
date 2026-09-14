@@ -14,13 +14,13 @@ See Apple's [Device Assignment](https://developer.apple.com/documentation/device
 
 ## Releases
 
-    implementation 'net.vexelon.mdm:device-assignment-client:1.0.0'
+    implementation 'net.vexelon.mdm:device-assignment-client:1.1.0'
 
 ```xml
 <dependency>
     <groupId>net.vexelon.mdm</groupId>
     <artifactId>device-assignment-client</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 

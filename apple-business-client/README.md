@@ -1,11 +1,25 @@
 # Apple Business Client
 
+[![MvnRepository](https://badges.mvnrepository.com/badge/net.vexelon.mdm/apple-business-client/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.vexelon.mdm/apple-business-client)
+
 Automate device management activities, view device information, and manage users and user groups using the Apple Business API.
 
 To use the Java client, you must already have a valid API account in Apple Business with the corresponding private key. 
 See [Create an API account in Apple Business](https://support.apple.com/en-us/guide/business/axm33189f66a/web) for helping on setting things up.
 
 See Apple's [Apple Business API](https://developer.apple.com/documentation/applebusinessapi) documentation for the full list of supported API calls.
+
+## Releases
+
+    implementation 'net.vexelon.mdm:apple-business-client:1.1.0'
+
+```xml
+<dependency>
+    <groupId>net.vexelon.mdm</groupId>
+    <artifactId>apple-business-client</artifactId>
+    <version>1.1.0</version>
+</dependency>
+```
 
 ## Snapshots
 

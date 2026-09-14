@@ -13,13 +13,13 @@ See Apple's [App and book management (Legacy)](https://developer.apple.com/docum
 
 ## Releases
 
-    implementation 'net.vexelon.mdm:legacy-app-and-book-management-client:1.0.0'
+    implementation 'net.vexelon.mdm:legacy-app-and-book-management-client:1.1.0'
 
 ```xml
 <dependency>
     <groupId>net.vexelon.mdm</groupId>
     <artifactId>legacy-app-and-book-management-client</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
