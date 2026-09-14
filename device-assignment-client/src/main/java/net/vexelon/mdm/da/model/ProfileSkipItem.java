@@ -346,13 +346,6 @@ public enum ProfileSkipItem {
 	MULTITASKING("Multitasking", OsType.IOS),
 
 	/**
-	 * Skips the OS Showcase pane.
-	 * <p>
-	 * Availability: iOS 26+ and macOS 26.1+
-	 */
-	OS_SHOWCASE("OSShowcase", OsType.IOS, OsType.MACOS),
-
-	/**
 	 * Skips the Tips pane.
 	 * <p>
 	 * Availability: visionOS 26+

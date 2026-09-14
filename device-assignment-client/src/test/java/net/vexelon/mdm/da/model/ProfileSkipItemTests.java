@@ -32,13 +32,13 @@ public class ProfileSkipItemTests {
 
 	@Test
 	void test_deprecated_skip_items() throws JsonProcessingException {
-		var json = "{ \"skip_setup_items\": [\"MessagingActivationUsingPhoneNumber\", \"OSShowcase\", \"DisplayTone\", \"HomeButtonSensitivity\"] }";
+		var json = "{ \"skip_setup_items\": [\"MessagingActivationUsingPhoneNumber\", \"AppleID\", \"DisplayTone\", \"HomeButtonSensitivity\"] }";
 		var profile = JsonUtil.createObjectMapper().readValue(json, Profile.class);
 
 		assertEquals(2, profile.skipSetupItems().size());
 
 		assertTrue(profile.skipSetupItems().contains(ProfileSkipItem.MESSAGING_ACTIVATION_USING_PHONE_NUMBER));
-		assertTrue(profile.skipSetupItems().contains(ProfileSkipItem.OS_SHOWCASE));
+		assertTrue(profile.skipSetupItems().contains(ProfileSkipItem.APPLE_ID));
 	}
 
 	@Test
