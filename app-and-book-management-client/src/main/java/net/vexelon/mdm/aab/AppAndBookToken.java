@@ -1,0 +1,55 @@
+package net.vexelon.mdm.aab;
+
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
+import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.shared.util.JsonUtil;
+import net.vexelon.mdm.shared.util.ParseUtil;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.OffsetDateTime;
+import java.util.Base64;
+
+public record AppAndBookToken(String sToken, @Nonnull AppAndBookTokenDetails details) {
+
+	/**
+	 * Create a sToken wrapper byte data input.
+	 */
+	@Nonnull
+	public static AppAndBookToken create(@Nonnull InputStream input) {
+		try {
+			String sToken = new String(input.readAllBytes(), StandardCharsets.UTF_8).stripTrailing();
+			return new AppAndBookToken(sToken, JsonUtil.createObjectMapper()
+					.readValue(Base64.getDecoder().decode(sToken), AppAndBookTokenDetails.class));
+		} catch (IOException e) {
+			throw new AppAndBookClientException("Error read sToken input stream", e);
+		}
+	}
+
+	/**
+	 * @see #create(InputStream)
+	 */
+	@Nonnull
+	public static AppAndBookToken create(@Nonnull Path path) throws IOException {
+		try (var input = Files.newInputStream(path)) {
+			return create(input);
+		}
+	}
+
+	public record AppAndBookTokenDetails(@JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull String token,
+	                                     @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull String expDate,
+	                                     @JsonSetter(nulls = Nulls.AS_EMPTY) @Nonnull String orgName) {
+
+		/**
+		 * @return {@link AppAndBookTokenDetails#expDate()} parsed to {@link OffsetDateTime}
+		 */
+		@Nonnull
+		public OffsetDateTime expiryDateTime() {
+			return ParseUtil.parseAppleDateTime(expDate);
+		}
+	}
+}
