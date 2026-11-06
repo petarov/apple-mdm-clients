@@ -67,13 +67,27 @@ jobs:
           name: test-report-legacy-app-and-book-management-client
           path: legacy-app-and-book-management-client/build/reports/tests/test/**/*
 
+      ## --- sub-project: app-and-book-management-client
+      - name: Upload app-and-book-management-client test reports
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-report-app-and-book-management-client
+          path: app-and-book-management-client/build/reports/tests/test/**/*
+
+      ## --- sub-project: apple-business-client
+      - name: Upload apple-business-client test reports
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-report-apple-business-client
+          path: apple-business-client/build/reports/tests/test/**/*
+
       ## --- Upload unit test results for all projects
       - name: Unit test results
         uses: dorny/test-reporter@v3
         if: success() || failure()
         with:
           name: Uploading unit test results and generating badges
-          path: 'shared-apple-client/build/test-results/test/*.xml,device-assignment-client/build/test-results/test/*.xml,legacy-app-and-book-management-client/build/test-results/test/*.xml'
+          path: 'shared-apple-client/build/test-results/test/*.xml,device-assignment-client/build/test-results/test/*.xml,legacy-app-and-book-management-client/build/test-results/test/*.xml,app-and-book-management-client/build/test-results/test/*.xml,apple-business-client/build/test-results/test/*.xml'
           reporter: java-junit
           only-summary: 'true'
           badge-title: 'unit tests'
