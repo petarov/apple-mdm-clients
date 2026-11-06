@@ -1,7 +1,11 @@
 package net.vexelon.mdm.aab;
 
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.aab.model.ProductType;
+import net.vexelon.mdm.aab.model.PricingParam;
 import net.vexelon.mdm.aab.model.response.GetAssetsResponse;
+import net.vexelon.mdm.aab.model.response.GetAssignmentsResponse;
+import net.vexelon.mdm.aab.model.response.GetUsersResponse;
 import net.vexelon.mdm.shared.http.HttpClientWrapper;
 import net.vexelon.mdm.shared.http.HttpClientWrapperException;
 import net.vexelon.mdm.shared.http.HttpConsts;
@@ -56,15 +60,34 @@ class AppAndBookClientImpl implements AppAndBookClient {
 		}
 	}
 
+	private static void requirePricingParam(PricingParam pricingParam) {
+		if (pricingParam == PricingParam.UNKNOWN) {
+			throw new IllegalArgumentException("pricingParam must not be UNKNOWN");
+		}
+	}
+
+	private static void addPricingParam(List<String> params, PricingParam pricingParam) {
+		if (pricingParam != null) {
+			addParam(params, "pricingParam", pricingParam.jsonName());
+		}
+	}
+
 	@Nonnull
 	@Override
 	public GetAssetsResponse fetchAssets(@Nonnull FetchAssetsOptions options, int pageIndex) {
+		if (options.productType() == ProductType.UNKNOWN) {
+			throw new IllegalArgumentException("productType must not be UNKNOWN");
+		}
+		requirePricingParam(options.pricingParam());
+
 		var params = new ArrayList<String>();
 		if (pageIndex > 0) {
 			addParam(params, "pageIndex", pageIndex);
 		}
-		addParam(params, "productType", options.productType());
-		addParam(params, "pricingParam", options.pricingParam());
+		if (options.productType() != null) {
+			addParam(params, "productType", options.productType().jsonName());
+		}
+		addPricingParam(params, options.pricingParam());
 		addParam(params, "revocable", options.revocable());
 		addParam(params, "deviceAssignable", options.deviceAssignable());
 		addParam(params, "maxAvailableCount", options.maxAvailableCount());
@@ -76,5 +99,46 @@ class AppAndBookClientImpl implements AppAndBookClient {
 
 		var path = "/assets" + (params.isEmpty() ? "" : "?" + String.join("&", params));
 		return execute(client.createRequestBuilder(client.complementURI(path)).GET(), GetAssetsResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public GetAssignmentsResponse fetchAssignments(String adamId, @Nonnull FetchAssignmentsOptions options,
+			int pageIndex) {
+		requirePricingParam(options.pricingParam());
+
+		var params = new ArrayList<String>();
+		if (pageIndex > 0) {
+			addParam(params, "pageIndex", pageIndex);
+		}
+		addParam(params, "adamId", adamId);
+		if (!options.clientUserId().isBlank()) {
+			addParam(params, "clientUserId", options.clientUserId());
+		} else if (!options.serialNumber().isBlank()) {
+			addParam(params, "serialNumber", options.serialNumber());
+		}
+		addPricingParam(params, options.pricingParam());
+		addParam(params, "excludeInactiveUsers", options.excludeInactiveUsers());
+		addParam(params, "includeUserState", options.includeUserState());
+		addParam(params, "sinceVersionId", options.sinceVersionId());
+
+		var path = "/assignments" + (params.isEmpty() ? "" : "?" + String.join("&", params));
+		return execute(client.createRequestBuilder(client.complementURI(path)).GET(), GetAssignmentsResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public GetUsersResponse fetchUsers(@Nonnull FetchUsersOptions options, int pageIndex) {
+		var params = new ArrayList<String>();
+		if (pageIndex > 0) {
+			addParam(params, "pageIndex", pageIndex);
+		}
+		addParam(params, "clientUserId", options.clientUserId());
+		addParam(params, "activeOnly", options.activeOnly());
+		addParam(params, "retiredOnly", options.retiredOnly());
+		addParam(params, "sinceVersionId", options.sinceVersionId());
+
+		var path = "/users" + (params.isEmpty() ? "" : "?" + String.join("&", params));
+		return execute(client.createRequestBuilder(client.complementURI(path)).GET(), GetUsersResponse.class);
 	}
 }

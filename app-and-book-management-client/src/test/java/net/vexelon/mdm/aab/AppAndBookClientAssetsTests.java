@@ -222,13 +222,75 @@ public class AppAndBookClientAssetsTests {
 	}
 
 	@Test
+	void test_fetch_assets_real_world_payload(WireMockRuntimeInfo wm) throws Exception {
+		// Shape of a real response with randomized adamId/uId/versionId: Integer.MAX_VALUE license counts, 9 and 10
+		// digit adamIds, mixed platform lists
+		stubFor(get(urlPathEqualTo("/assets")).willReturn(aResponse().withStatus(200).withHeaders(headers).withBody("""
+				{"assets":[
+				{"adamId":"4502283496","assignedCount":1,"availableCount":2147483646,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS","tvOS"],"totalCount":2147483647},
+				{"adamId":"8719966855","assignedCount":2,"availableCount":2147483645,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS"],"totalCount":2147483647},
+				{"adamId":"7017091956","assignedCount":2,"availableCount":2147483645,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS"],"totalCount":2147483647},
+				{"adamId":"8573731881","assignedCount":1,"availableCount":2147483646,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS"],"totalCount":2147483647},
+				{"adamId":"5149933681","assignedCount":0,"availableCount":2147483647,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS"],"totalCount":2147483647},
+				{"adamId":"5945106184","assignedCount":0,"availableCount":2147483647,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS"],"totalCount":2147483647},
+				{"adamId":"2292299297","assignedCount":0,"availableCount":2,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS"],"totalCount":2},
+				{"adamId":"6760115735","assignedCount":0,"availableCount":2147483647,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS"],"totalCount":2147483647},
+				{"adamId":"7746627752","assignedCount":0,"availableCount":2147483647,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS"],"totalCount":2147483647},
+				{"adamId":"9133268114","assignedCount":4,"availableCount":2147483643,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS"],"totalCount":2147483647},
+				{"adamId":"543636691","assignedCount":0,"availableCount":2147483647,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS","macOS","watchOS"],"totalCount":2147483647},
+				{"adamId":"476409757","assignedCount":4,"availableCount":2147483643,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS","watchOS"],"totalCount":2147483647},
+				{"adamId":"685642320","assignedCount":3,"availableCount":2147483644,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS","tvOS"],"totalCount":2147483647},
+				{"adamId":"561644697","assignedCount":1,"availableCount":2147483646,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS"],"totalCount":2147483647},
+				{"adamId":"284180808","assignedCount":0,"availableCount":2147483647,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS","tvOS"],"totalCount":2147483647},
+				{"adamId":"316979708","assignedCount":0,"availableCount":2147483647,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS","visionOS"],"totalCount":2147483647},
+				{"adamId":"3617035366","assignedCount":3,"availableCount":2147483644,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS"],"totalCount":2147483647},
+				{"adamId":"472405037","assignedCount":0,"availableCount":2147483647,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS"],"totalCount":2147483647},
+				{"adamId":"9805903626","assignedCount":4,"availableCount":2147483643,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS"],"totalCount":2147483647},
+				{"adamId":"774553903","assignedCount":1,"availableCount":2147483646,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS"],"totalCount":2147483647},
+				{"adamId":"860530677","assignedCount":0,"availableCount":154,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS"],"totalCount":154},
+				{"adamId":"916563899","assignedCount":4,"availableCount":2147483643,"deviceAssignable":true,"pricingParam":"STDQ","productType":"App","retiredCount":0,"revocable":true,"supportedPlatforms":["iOS","visionOS"],"totalCount":2147483647}
+				],"currentPageIndex":0,"size":22,"tokenExpirationDate":"2027-06-22T08:27:27+0000","totalPages":1,"uId":"2105000009993362","versionId":"00f40084-a9ea-4bfd-9505-ce6d7f5a8799"}
+				""")));
+
+		var resp = TestUtil.createClient(wm).fetchAssets();
+
+		assertEquals(22, resp.assets().size());
+		assertEquals(22, resp.size());
+		assertEquals(0, resp.nextPageIndex());
+		assertEquals("2027-06-22T08:27:27+0000", resp.tokenExpirationDate());
+		assertEquals("2105000009993362", resp.uId());
+		assertEquals("00f40084-a9ea-4bfd-9505-ce6d7f5a8799", resp.versionId());
+		assertTrue(resp.unlimitedAssets().isEmpty());
+
+		var first = resp.assets().getFirst();
+		assertEquals("4502283496", first.adamId());
+		assertEquals(1, first.assignedCount());
+		assertEquals(Integer.MAX_VALUE - 1, first.availableCount());
+		assertEquals(Integer.MAX_VALUE, first.totalCount());
+		assertEquals(0, first.retiredCount());
+		assertTrue(first.isDeviceAssignable());
+		assertTrue(first.isRevocable());
+		assertEquals(PricingParam.STDQ, first.pricingParam());
+		assertEquals(ProductType.APP, first.productType());
+		assertEquals(List.of(Platform.IOS, Platform.TVOS), first.supportedPlatforms());
+
+		assertEquals("543636691", resp.assets().get(10).adamId());
+		assertEquals(List.of(Platform.IOS, Platform.MACOS, Platform.WATCHOS),
+				resp.assets().get(10).supportedPlatforms());
+		assertEquals(List.of(Platform.IOS, Platform.VISIONOS), resp.assets().get(21).supportedPlatforms());
+		assertEquals(154, resp.assets().get(20).totalCount());
+		assertEquals(154, resp.assets().get(20).availableCount());
+		assertTrue(resp.assets().stream().noneMatch(a -> a.supportedPlatforms().contains(Platform.UNKNOWN)));
+	}
+
+	@Test
 	void test_fetch_assets_apple_example_query(WireMockRuntimeInfo wm) throws Exception {
 		stubFor(get(urlPathEqualTo("/assets")).willReturn(
 				aResponse().withStatus(200).withHeaders(headers).withBody("{}")));
 
 		TestUtil.createClient(wm).fetchAssets(
-				new FetchAssetsOptions("", AppAndBookClient.PRODUCT_TYPE_APP,
-						AppAndBookClient.PRICING_PARAM_STANDARD_QUALITY, null, null, null, null, null, null, null), 0);
+				new FetchAssetsOptions("", ProductType.APP,
+						PricingParam.STDQ, null, null, null, null, null, null, null), 0);
 
 		verify(getRequestedFor(urlPathEqualTo("/assets")).withQueryParam("productType", equalTo("App"))
 				.withQueryParam("pricingParam", equalTo("STDQ")).withoutQueryParam("pageIndex")
@@ -241,8 +303,8 @@ public class AppAndBookClientAssetsTests {
 				aResponse().withStatus(200).withHeaders(headers).withBody("{}")));
 
 		TestUtil.createClient(wm).fetchAssets(
-				new FetchAssetsOptions("408709785", AppAndBookClient.PRODUCT_TYPE_BOOK,
-						AppAndBookClient.PRICING_PARAM_HIGH_QUALITY, false, true, true, 0, 10, 1, 20), 2);
+				new FetchAssetsOptions("408709785", ProductType.BOOK,
+						PricingParam.PLUS, false, true, true, 0, 10, 1, 20), 2);
 
 		verify(getRequestedFor(urlPathEqualTo("/assets")).withQueryParam("pageIndex", equalTo("2"))
 				.withQueryParam("productType", equalTo("Book")).withQueryParam("pricingParam", equalTo("PLUS"))
@@ -250,6 +312,49 @@ public class AppAndBookClientAssetsTests {
 				.withQueryParam("maxAvailableCount", equalTo("10")).withQueryParam("minAvailableCount", equalTo("0"))
 				.withQueryParam("maxAssignedCount", equalTo("20")).withQueryParam("minAssignedCount", equalTo("1"))
 				.withQueryParam("adamId", equalTo("408709785")).withQueryParam("unlimited", equalTo("true")));
+	}
+
+	@Test
+	void test_fetch_assets_product_type_wire_values(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlPathEqualTo("/assets")).willReturn(
+				aResponse().withStatus(200).withHeaders(headers).withBody("{}")));
+
+		var client = TestUtil.createClient(wm);
+		client.fetchAssets(FetchAssetsOptions.ofProductType(ProductType.APP));
+		client.fetchAssets(FetchAssetsOptions.ofProductType(ProductType.BOOK));
+
+		verify(1, getRequestedFor(urlEqualTo("/assets?productType=App")));
+		verify(1, getRequestedFor(urlEqualTo("/assets?productType=Book")));
+	}
+
+	@Test
+	void test_fetch_assets_without_product_type(WireMockRuntimeInfo wm) throws Exception {
+		stubFor(get(urlPathEqualTo("/assets")).willReturn(
+				aResponse().withStatus(200).withHeaders(headers).withBody("{}")));
+
+		TestUtil.createClient(wm).fetchAssets(FetchAssetsOptions.ofAdamId("408709785"));
+
+		verify(getRequestedFor(urlEqualTo("/assets?adamId=408709785")));
+	}
+
+	@Test
+	void test_fetch_assets_unknown_product_type(WireMockRuntimeInfo wm) throws Exception {
+		var client = TestUtil.createClient(wm);
+
+		var ex = assertThrows(IllegalArgumentException.class,
+				() -> client.fetchAssets(FetchAssetsOptions.ofProductType(ProductType.UNKNOWN)));
+		assertEquals("productType must not be UNKNOWN", ex.getMessage());
+		verify(0, getRequestedFor(anyUrl()));
+	}
+
+	@Test
+	void test_fetch_assets_unknown_pricing_param(WireMockRuntimeInfo wm) throws Exception {
+		var client = TestUtil.createClient(wm);
+
+		var ex = assertThrows(IllegalArgumentException.class, () -> client.fetchAssets(
+				new FetchAssetsOptions("", null, PricingParam.UNKNOWN, null, null, null, null, null, null, null)));
+		assertEquals("pricingParam must not be UNKNOWN", ex.getMessage());
+		verify(0, getRequestedFor(anyUrl()));
 	}
 
 	@Test
