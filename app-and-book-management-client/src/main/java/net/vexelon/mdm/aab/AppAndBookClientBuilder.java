@@ -28,7 +28,7 @@ public class AppAndBookClientBuilder
 	/**
 	 * Sets the server token issued by Apple Business Manager for an MDM server.
 	 * <p>
-	 * See <a href="https://developer.apple.com/documentation/devicemanagement/app-and-book-management">Authentication</a>.
+	 * See <a href="https://developer.apple.com/documentation/devicemanagement/getting-started-with-the-management-api#Authenticate">Authentication</a>.
 	 */
 	@Nonnull
 	public AppAndBookClientBuilder setServerToken(@Nonnull AppAndBookToken serverToken) {
