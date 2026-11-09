@@ -16,6 +16,7 @@ public class AppAndBookClientExceptionTests {
 		assertEquals(9726, ex.getCode());
 		assertEquals(400, ex.getStatusCode());
 		assertEquals("Invalid argument", ex.getErrorMessage());
+		assertEquals("http error (9726) Invalid argument", ex.getMessage());
 	}
 
 	@Test
@@ -25,5 +26,6 @@ public class AppAndBookClientExceptionTests {
 		assertEquals(502, ex.getCode());
 		assertEquals(502, ex.getStatusCode());
 		assertEquals("Bad Gateway", ex.getErrorMessage());
+		assertEquals("http error", ex.getMessage());
 	}
 }

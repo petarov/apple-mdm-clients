@@ -8,6 +8,7 @@ import net.vexelon.mdm.aab.model.PricingParam;
 import net.vexelon.mdm.aab.model.UserStatus;
 import net.vexelon.mdm.shared.http.HttpConsts;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
@@ -25,43 +26,47 @@ public class AppAndBookClientUsersTests {
 		headers = TestUtil.createDefaultHeaders();
 	}
 
+	@BeforeEach
+	void stubServiceConfig(WireMockRuntimeInfo wm) {
+		TestUtil.stubServiceConfig(wm);
+	}
+
 	private void stubOk(String path, String body) {
-		stubFor(get(urlPathEqualTo(path)).willReturn(
-				aResponse().withStatus(200).withHeaders(headers).withBody(body)));
+		stubFor(get(urlPathEqualTo(path)).willReturn(aResponse().withStatus(200).withHeaders(headers).withBody(body)));
 	}
 
 	@Test
 	void test_fetch_users_apple_example(WireMockRuntimeInfo wm) throws Exception {
 		// Apple's example response, verbatim (example request: ?activeOnly=true)
 		stubOk("/users", """
-						{
-						    "currentPageIndex": 0,
-						    "size": 3,
-						    "tokenExpirationDate": "2030-11-08T22:33:22+0000",
-						    "totalPages": 1,
-						    "uId": "2049025000431439",
-						    "users": [
-						        {
-						            "clientUserId": "client-101",
-						            "email": "client-101@apple.com",
-						            "inviteCode": "46bc93ea3acd41e0a4919c02db0d7d3a",
-						            "status": "Registered"
-						        },
-						        {
-						            "clientUserId": "client-102",
-						            "email": "client-102@apple.com",
-						            "inviteCode": "d2ab1319ff6448f89bb1b0e010cf68e0",
-						            "status": "Registered"
-						        },
-						        {
-						            "clientUserId": "client-103",
-						            "email": "client-1031@apple.com",
-						            "status": "Retired"
-						        }
-						    ],
-						    "versionId": "021f10a0-7035-11eb-9f67-bd1df52e1e13"
-						}
-						""".stripIndent());
+				{
+				    "currentPageIndex": 0,
+				    "size": 3,
+				    "tokenExpirationDate": "2030-11-08T22:33:22+0000",
+				    "totalPages": 1,
+				    "uId": "2049025000431439",
+				    "users": [
+				        {
+				            "clientUserId": "client-101",
+				            "email": "client-101@apple.com",
+				            "inviteCode": "46bc93ea3acd41e0a4919c02db0d7d3a",
+				            "status": "Registered"
+				        },
+				        {
+				            "clientUserId": "client-102",
+				            "email": "client-102@apple.com",
+				            "inviteCode": "d2ab1319ff6448f89bb1b0e010cf68e0",
+				            "status": "Registered"
+				        },
+				        {
+				            "clientUserId": "client-103",
+				            "email": "client-1031@apple.com",
+				            "status": "Retired"
+				        }
+				    ],
+				    "versionId": "021f10a0-7035-11eb-9f67-bd1df52e1e13"
+				}
+				""".stripIndent());
 
 		var resp = TestUtil.createClient(wm).fetchUsers(new FetchUsersOptions("", "", true, null));
 
@@ -137,8 +142,7 @@ public class AppAndBookClientUsersTests {
 		assertEquals(4, resp.users().stream().filter(u -> u.status() == UserStatus.ASSOCIATED).count());
 		assertEquals(4, resp.users().stream().filter(u -> u.status() == UserStatus.REGISTERED).count());
 		assertEquals(4, resp.users().stream().filter(u -> u.status() == UserStatus.RETIRED).count());
-		assertEquals(4,
-				resp.users().stream().filter(u -> "bP/MYr3aNVL0dXS6CRodE3SYJrg=".equals(u.idHash())).count());
+		assertEquals(4, resp.users().stream().filter(u -> "bP/MYr3aNVL0dXS6CRodE3SYJrg=".equals(u.idHash())).count());
 	}
 
 	@Test
@@ -158,8 +162,8 @@ public class AppAndBookClientUsersTests {
 
 		verify(getRequestedFor(urlPathEqualTo("/users")).withQueryParam("pageIndex", equalTo("1"))
 				.withQueryParam("clientUserId", equalTo("client-1"))
-				.withQueryParam("sinceVersionId", equalTo("version-1"))
-				.withQueryParam("activeOnly", equalTo("false")).withQueryParam("retiredOnly", equalTo("true")));
+				.withQueryParam("sinceVersionId", equalTo("version-1")).withQueryParam("activeOnly", equalTo("false"))
+				.withQueryParam("retiredOnly", equalTo("true")));
 	}
 
 	@Test

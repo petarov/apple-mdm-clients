@@ -2,16 +2,23 @@ package net.vexelon.mdm.aab;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import net.vexelon.mdm.aab.model.MdmInfo;
+import net.vexelon.mdm.aab.model.NotificationType;
 import net.vexelon.mdm.aab.model.PricingParam;
 import net.vexelon.mdm.aab.model.ProductType;
-import net.vexelon.mdm.aab.model.response.GetAssetsResponse;
-import net.vexelon.mdm.aab.model.response.GetAssignmentsResponse;
-import net.vexelon.mdm.aab.model.response.GetUsersResponse;
+import net.vexelon.mdm.aab.model.response.*;
+
+import java.util.Set;
 
 /**
  * Client interface for Apple's App and Book Management API.
  * <p>
  * Authenticates using a content token (sToken) obtained from Apple Business Manager.
+ * <p>
+ * Endpoint URLs are resolved from the service configuration ({@link #fetchServiceConfiguration()}), which is
+ * fetched on first use and cached for {@code 5 minutes}, as Apple recommends. If the configuration lacks an endpoint's
+ * URL, the client falls back to the endpoint's fixed path on the configured service URL. A failure to fetch the
+ * service configuration fails the call.
  * <p>
  * The underlying implementation is not thread-safe. Concurrent access from multiple threads requires
  * external synchronization.
@@ -29,6 +36,48 @@ public interface AppAndBookClient {
 	static AppAndBookClientBuilder newBuilder() {
 		return new AppAndBookClientBuilder();
 	}
+
+	/**
+	 * Fetches the full list of service URLs, supported notification types, request limits and possible error codes.
+	 * <p>
+	 * This is the only call that does not authenticate with the server token. It always contacts the server and
+	 * also refreshes the cached service configuration used to resolve endpoint URLs.
+	 *
+	 * @return {@link ServiceConfigResponse} object
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/service-config">Service Config</a>
+	 */
+	@Nonnull
+	ServiceConfigResponse fetchServiceConfiguration();
+
+	/**
+	 * Stores client-specific information on the server.
+	 * <p>
+	 * Sets the MDM information returned in all subsequent responses (to detect another MDM managing the same
+	 * organization) and configures notifications. When notifications are configured, the server sends a
+	 * {@link NotificationType#TEST_NOTIFICATION} to the notification URL and rejects the configuration if delivery
+	 * fails. Apple recommends checking the client configuration regularly; see
+	 * {@link #fetchClientConfiguration()}.
+	 *
+	 * @param options see {@link ClientConfigOptions}
+	 * @return {@link ClientConfigResponse} object
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/client-config-4szk1">Client Config</a>
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/subscribing-to-notifications">Subscribing to notifications</a>
+	 */
+	@Nonnull
+	ClientConfigResponse updateClientConfiguration(@Nonnull ClientConfigOptions options);
+
+	/**
+	 * Fetches the client-specific information stored on the server.
+	 * <p>
+	 * Returns the current MDM information and notification settings, as set through
+	 * {@link #updateClientConfiguration(ClientConfigOptions)}, without changing them. Apple recommends checking the
+	 * client configuration regularly to verify the expected values.
+	 *
+	 * @return {@link ClientConfigResponse} object
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/client-config-4szk1">Client Config</a>
+	 */
+	@Nonnull
+	ClientConfigResponse fetchClientConfiguration();
 
 	/**
 	 * Fetches the set of assets that your organization manages.
@@ -275,6 +324,36 @@ public interface AppAndBookClient {
 		@Nonnull
 		public static FetchUsersOptions ofSinceVersionId(String sinceVersionId) {
 			return new FetchUsersOptions("", sinceVersionId, null, null);
+		}
+	}
+
+	/**
+	 * Client configuration. {@code null} values are omitted from the request; empty strings and empty sets are sent
+	 * as-is. Apple does not document whether omitted fields keep their stored value.
+	 *
+	 * @param mdmInfo               the MDM information; Apple requires all of {@code id}, {@code name} and
+	 *                              {@code metadata} when set (error {@code 9723}), although its documentation
+	 *                              marks them optional
+	 * @param notificationUrl       the HTTPS URL to which subscribed notifications POST; host and path only.
+	 *                              Apple requires it together with {@code notificationAuthToken}
+	 * @param notificationAuthToken the bearer token the server sends in the {@code Authorization} header of
+	 *                              notifications (shared secret)
+	 * @param notificationTypes     the complete set of notification types to subscribe to; must not contain
+	 *                              {@link NotificationType#UNKNOWN}
+	 */
+	record ClientConfigOptions(@Nullable MdmInfo mdmInfo, @Nullable String notificationUrl,
+	                           @Nullable String notificationAuthToken,
+	                           @Nullable Set<NotificationType> notificationTypes) {
+
+		@Nonnull
+		public static ClientConfigOptions ofMdmInfo(@Nonnull MdmInfo mdmInfo) {
+			return new ClientConfigOptions(mdmInfo, null, null, null);
+		}
+
+		@Nonnull
+		public static ClientConfigOptions ofNotifications(@Nonnull String notificationUrl,
+				@Nonnull String notificationAuthToken, @Nonnull Set<NotificationType> notificationTypes) {
+			return new ClientConfigOptions(null, notificationUrl, notificationAuthToken, notificationTypes);
 		}
 	}
 }

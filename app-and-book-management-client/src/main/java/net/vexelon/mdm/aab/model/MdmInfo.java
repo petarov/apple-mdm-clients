@@ -1,8 +1,10 @@
 package net.vexelon.mdm.aab.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
+import jakarta.annotation.Nonnull;
 
 /**
  * Information about the MDM server, as set through the client configuration.
@@ -13,6 +15,7 @@ import com.fasterxml.jackson.annotation.Nulls;
  * @see <a href="https://developer.apple.com/documentation/devicemanagement/mdminfo">devicemanagement/mdminfo</a>
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record MdmInfo(@JsonSetter(nulls = Nulls.AS_EMPTY) String id, @JsonSetter(nulls = Nulls.AS_EMPTY) String metadata,
-                      @JsonSetter(nulls = Nulls.AS_EMPTY) String name) {
-}
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public record MdmInfo(@Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) String id,
+                      @Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) String metadata,
+                      @Nonnull @JsonSetter(nulls = Nulls.AS_EMPTY) String name) {}

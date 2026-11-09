@@ -5,20 +5,23 @@ import net.vexelon.mdm.shared.config.MdmClientBuilder;
 import net.vexelon.mdm.shared.http.HttpClientWrapper;
 
 import java.security.SecureRandom;
+import java.time.Clock;
 import java.util.Objects;
 
-public class AppAndBookClientBuilder
-		extends MdmClientBuilder<AppAndBookClientBuilder, AppAndBookClient> {
+public class AppAndBookClientBuilder extends MdmClientBuilder<AppAndBookClientBuilder, AppAndBookClient> {
 
 	private static final String DEFAULT_APPLE_PRODUCTION_HOST = "https://vpp.itunes.apple.com/mdm/v2";
 
 	private AppAndBookToken serverToken;
+	private Clock           clock;
 
 	AppAndBookClientBuilder() {
 	}
 
 	/**
 	 * Sets an Apple host other than the default {@link AppAndBookClientBuilder#DEFAULT_APPLE_PRODUCTION_HOST}.
+	 * The service configuration is fetched from this URL. Endpoint URLs are then taken from it, falling back to this
+	 * URL when an endpoint is missing.
 	 */
 	@Nonnull
 	public AppAndBookClientBuilder setAppleServiceUrl(String serviceUrl) {
@@ -37,6 +40,12 @@ public class AppAndBookClientBuilder
 	}
 
 	@Nonnull
+	AppAndBookClientBuilder setClock(@Nonnull Clock clock) {
+		this.clock = clock;
+		return this;
+	}
+
+	@Nonnull
 	@Override
 	public AppAndBookClient build() {
 		setServiceUrl(Objects.requireNonNullElse(serviceUrl, DEFAULT_APPLE_PRODUCTION_HOST));
@@ -47,7 +56,8 @@ public class AppAndBookClientBuilder
 
 		return new AppAndBookClientImpl(new HttpClientWrapper(
 				new MdmBuilderOptions(serviceUrl, userAgent, skipSslVerify, connectTimeout, readTimeout, proxyOptions,
-						secureRandom), AppAndBookClientImpl.logger), serverToken);
+						secureRandom), AppAndBookClientImpl.logger), serverToken,
+				Objects.requireNonNullElseGet(clock, Clock::systemUTC));
 	}
 }
 

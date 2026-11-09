@@ -8,6 +8,7 @@ import net.vexelon.mdm.aab.model.PricingParam;
 import net.vexelon.mdm.aab.model.UserStatus;
 import net.vexelon.mdm.shared.http.HttpConsts;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
@@ -25,41 +26,45 @@ public class AppAndBookClientAssignmentsTests {
 		headers = TestUtil.createDefaultHeaders();
 	}
 
+	@BeforeEach
+	void stubServiceConfig(WireMockRuntimeInfo wm) {
+		TestUtil.stubServiceConfig(wm);
+	}
+
 	private void stubOk(String path, String body) {
-		stubFor(get(urlPathEqualTo(path)).willReturn(
-				aResponse().withStatus(200).withHeaders(headers).withBody(body)));
+		stubFor(get(urlPathEqualTo(path)).willReturn(aResponse().withStatus(200).withHeaders(headers).withBody(body)));
 	}
 
 	@Test
 	void test_fetch_assignments_apple_example(WireMockRuntimeInfo wm) throws Exception {
 		// Apple's example response, verbatim (example request: ?adamId=408709785)
 		stubOk("/assignments", """
-						{
-						    "assignments": [
-						        {
-						            "adamId": "408709785",
-						            "clientUserId": "client-1",
-						            "pricingParam": "STDQ"
-						        },
-						        {
-						            "adamId": "408709785",
-						            "serialNumber": "serial-1",
-						            "pricingParam": "STDQ"
-						        }
-						    ],
-						    "size": 2,
-						    "currentPageIndex": 0,
-						    "tokenExpirationDate": "2030-11-08T22:33:22+0000",
-						    "totalPages": 1,
-						    "uId": "2049025000431439",
-						    "versionId": "009061cb-87d1-4ea8-ae4c-7849dc49224e"
-						}
-						""".stripIndent());
+				{
+				    "assignments": [
+				        {
+				            "adamId": "408709785",
+				            "clientUserId": "client-1",
+				            "pricingParam": "STDQ"
+				        },
+				        {
+				            "adamId": "408709785",
+				            "serialNumber": "serial-1",
+				            "pricingParam": "STDQ"
+				        }
+				    ],
+				    "size": 2,
+				    "currentPageIndex": 0,
+				    "tokenExpirationDate": "2030-11-08T22:33:22+0000",
+				    "totalPages": 1,
+				    "uId": "2049025000431439",
+				    "versionId": "009061cb-87d1-4ea8-ae4c-7849dc49224e"
+				}
+				""".stripIndent());
 
 		var resp = TestUtil.createClient(wm).fetchAssignments("408709785");
 
-		verify(getRequestedFor(urlEqualTo("/assignments?adamId=408709785")).withHeader(
-				HttpConsts.HEADER_AUTHORIZATION, equalTo("Bearer " + TestUtil.getSToken())));
+		verify(getRequestedFor(urlEqualTo("/assignments?adamId=408709785")).withHeader(HttpConsts.HEADER_AUTHORIZATION,
+				equalTo("Bearer " + TestUtil.getSToken())));
 		assertEquals(2, resp.assignments().size());
 		var first = resp.assignments().getFirst();
 		assertEquals("408709785", first.adamId());
@@ -85,8 +90,8 @@ public class AppAndBookClientAssignmentsTests {
 	void test_fetch_assignments_user_state_query(WireMockRuntimeInfo wm) throws Exception {
 		stubOk("/assignments", "{}");
 
-		TestUtil.createClient(wm).fetchAssignments("408709785",
-				new FetchAssignmentsOptions("", "", null, null, true, ""));
+		TestUtil.createClient(wm)
+				.fetchAssignments("408709785", new FetchAssignmentsOptions("", "", null, null, true, ""));
 
 		verify(getRequestedFor(urlEqualTo("/assignments?adamId=408709785&includeUserState=true")));
 	}
