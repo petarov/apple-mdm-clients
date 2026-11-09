@@ -53,8 +53,8 @@ Requires [JDK 21](https://adoptium.net/temurin/releases/) or later
 > Since version 2.0.0 this project uses AI agents together with manual edits. The agent output is always reviewed 
 > by a human, but if you have concerns about AI-generated code, please avoid this project. 
 >
-> You can still use the stable [1.1.0](https://github.com/petarov/apple-mdm-clients/tree/1.1.0) version, which has no
-> AI-generated contributions.
+> You can still use the stable [1.1.0](https://github.com/petarov/apple-mdm-clients/releases/tag/1.1.0) version, 
+> which has no AI-generated contributions.
 
 # License
 
