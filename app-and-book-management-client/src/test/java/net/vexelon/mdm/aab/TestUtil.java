@@ -50,7 +50,9 @@ public final class TestUtil {
 				{"urls": {"getAssets": "%1$s/assets", "getAssignments": "%1$s/assignments", \
 				"getUsers": "%1$s/users", "clientConfig": "%1$s/client/config", \
 				"associateAssets": "%1$s/assets/associate", "disassociateAssets": "%1$s/assets/disassociate", \
-				"revokeAssets": "%1$s/assets/revoke", "eventStatus": "%1$s/status"}}
+				"revokeAssets": "%1$s/assets/revoke", "eventStatus": "%1$s/status", \
+				"createUsers": "%1$s/users/create", "updateUsers": "%1$s/users/update", \
+				"retireUsers": "%1$s/users/retire"}}
 				""".formatted(baseUrl);
 	}
 }

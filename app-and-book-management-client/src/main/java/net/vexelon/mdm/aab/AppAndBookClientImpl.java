@@ -3,10 +3,7 @@ package net.vexelon.mdm.aab;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nonnull;
-import net.vexelon.mdm.aab.model.NotificationType;
-import net.vexelon.mdm.aab.model.PricingParam;
-import net.vexelon.mdm.aab.model.ProductType;
-import net.vexelon.mdm.aab.model.RequestAsset;
+import net.vexelon.mdm.aab.model.*;
 import net.vexelon.mdm.aab.model.response.*;
 import net.vexelon.mdm.shared.http.HttpClientWrapper;
 import net.vexelon.mdm.shared.http.HttpClientWrapperException;
@@ -217,21 +214,6 @@ class AppAndBookClientImpl implements AppAndBookClient {
 
 	@Nonnull
 	@Override
-	public GetUsersResponse fetchUsers(@Nonnull FetchUsersOptions options, int pageIndex) {
-		var params = new ArrayList<String>();
-		if (pageIndex > 0) {
-			addParam(params, "pageIndex", pageIndex);
-		}
-		addParam(params, "clientUserId", options.clientUserId());
-		addParam(params, "activeOnly", options.activeOnly());
-		addParam(params, "retiredOnly", options.retiredOnly());
-		addParam(params, "sinceVersionId", options.sinceVersionId());
-
-		return execute(endpointRequestBuilder("getUsers", "/users", params).GET(), GetUsersResponse.class);
-	}
-
-	@Nonnull
-	@Override
 	public EventResponse associateAssets(@Nonnull Set<RequestAsset> assets, @Nonnull Set<String> clientUserIds,
 			@Nonnull Set<String> serialNumbers) {
 		var body = manageAssetsBody(assets, clientUserIds, serialNumbers);
@@ -255,6 +237,51 @@ class AppAndBookClientImpl implements AppAndBookClient {
 		var body = new LinkedHashMap<String, Object>();
 		putTargets(body, clientUserIds, serialNumbers);
 		return execute(endpointRequestBuilder("revokeAssets", "/assets/revoke", List.of()).POST(ofBody(body)),
+				EventResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public GetUsersResponse fetchUsers(@Nonnull FetchUsersOptions options, int pageIndex) {
+		var params = new ArrayList<String>();
+		if (pageIndex > 0) {
+			addParam(params, "pageIndex", pageIndex);
+		}
+		addParam(params, "clientUserId", options.clientUserId());
+		addParam(params, "activeOnly", options.activeOnly());
+		addParam(params, "retiredOnly", options.retiredOnly());
+		addParam(params, "sinceVersionId", options.sinceVersionId());
+
+		return execute(endpointRequestBuilder("getUsers", "/users", params).GET(), GetUsersResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public EventResponse createUsers(@Nonnull Set<RequestUser> users) {
+		return execute(
+				endpointRequestBuilder("createUsers", "/users/create", List.of()).POST(ofBody(manageUsersBody(users))),
+				EventResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public EventResponse updateUsers(@Nonnull Set<RequestUser> users) {
+		return execute(
+				endpointRequestBuilder("updateUsers", "/users/update", List.of()).POST(ofBody(manageUsersBody(users))),
+				EventResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public EventResponse retireUsers(@Nonnull Set<String> clientUserIds) {
+		var requestUsers = new ArrayList<Map<String, String>>();
+		for (var clientUserId : clientUserIds) {
+			requestUsers.add(Map.of("clientUserId", clientUserId));
+		}
+
+		var body = new LinkedHashMap<String, Object>();
+		body.put("users", requestUsers);
+		return execute(endpointRequestBuilder("retireUsers", "/users/retire", List.of()).POST(ofBody(body)),
 				EventResponse.class);
 	}
 
@@ -289,6 +316,26 @@ class AppAndBookClientImpl implements AppAndBookClient {
 		var body = new LinkedHashMap<String, Object>();
 		body.put("assets", requestAssets);
 		putTargets(body, clientUserIds, serialNumbers);
+		return body;
+	}
+
+	private static Map<String, Object> manageUsersBody(Set<RequestUser> users) {
+		var requestUsers = new ArrayList<Map<String, String>>();
+		for (var user : users) {
+			var requestUser = new LinkedHashMap<String, String>();
+			requestUser.put("clientUserId", user.clientUserId());
+
+			if (user.email() != null) {
+				requestUser.put("email", user.email());
+			}
+			if (user.managedAppleId() != null) {
+				requestUser.put("managedAppleId", user.managedAppleId());
+			}
+			requestUsers.add(requestUser);
+		}
+
+		var body = new LinkedHashMap<String, Object>();
+		body.put("users", requestUsers);
 		return body;
 	}
 

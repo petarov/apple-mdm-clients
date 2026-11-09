@@ -2,7 +2,7 @@
 
 Manage apps and books for students and employees through Apple's App and Book Management API (`mdm/v2`).
 
-**Status:** under development. Not yet published; the client builder, sToken handling, Service Config, Client Config, Get Assets, Get Assignments, Get Users, Associate Assets, Disassociate Assets, Revoke Assets and Event Status are implemented.
+**Status:** under development. Not yet published; the client builder, sToken handling, Service Config, Client Config, Get Assets, Get Assignments, Get Users, Associate Assets, Disassociate Assets, Revoke Assets, Create Users, Update Users, Retire Users and Event Status are implemented.
 
 To use the Java client, you must already have a valid content token created in Apple Business Manager.
 See [Getting started with the management API](https://developer.apple.com/documentation/devicemanagement/getting-started-with-the-management-api#Authenticate)

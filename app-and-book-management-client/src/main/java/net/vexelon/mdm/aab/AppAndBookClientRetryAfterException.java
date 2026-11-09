@@ -43,11 +43,8 @@ public class AppAndBookClientRetryAfterException extends RuntimeException {
 	 * Case-insensitive lookup of the first non-empty {@code Retry-After} header value.
 	 */
 	static Optional<String> findRetryAfter(@Nonnull Map<String, List<String>> headers) {
-		return headers.entrySet().stream()
-				.filter(e -> HEADER_RETRY_AFTER.equalsIgnoreCase(e.getKey()))
-				.flatMap(e -> e.getValue().stream())
-				.filter(v -> !v.isEmpty())
-				.findFirst();
+		return headers.entrySet().stream().filter(e -> HEADER_RETRY_AFTER.equalsIgnoreCase(e.getKey()))
+				.flatMap(e -> e.getValue().stream()).filter(v -> !v.isEmpty()).findFirst();
 	}
 
 	public int getCode() {

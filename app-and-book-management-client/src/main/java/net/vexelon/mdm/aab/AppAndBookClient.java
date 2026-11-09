@@ -204,54 +204,6 @@ public interface AppAndBookClient {
 	}
 
 	/**
-	 * Fetches information about a set of users.
-	 * <p>
-	 * Results are paginated. Pass the {@code nextPageIndex} of the previous {@link GetUsersResponse} as
-	 * {@code pageIndex}, with the same options, until the response no longer contains a next page. To fetch only users
-	 * modified since a previous fetch, pass that response's {@code versionId} as
-	 * {@link FetchUsersOptions#sinceVersionId()}.
-	 * <p>
-	 * See <a href="https://developer.apple.com/documentation/devicemanagement/using-paginated-endpoints">Using paginated endpoints</a>
-	 *
-	 * @param options   see {@link FetchUsersOptions}
-	 * @param pageIndex the zero-based index of the page to fetch
-	 * @return {@link GetUsersResponse} object
-	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/get-users-4mwln">Get Users</a>
-	 */
-	@Nonnull
-	GetUsersResponse fetchUsers(@Nonnull FetchUsersOptions options, int pageIndex);
-
-	/**
-	 * Fetches the first page of users matching the given filters.
-	 *
-	 * @see #fetchUsers(FetchUsersOptions, int)
-	 */
-	@Nonnull
-	default GetUsersResponse fetchUsers(@Nonnull FetchUsersOptions options) {
-		return fetchUsers(options, 0);
-	}
-
-	/**
-	 * Fetches the given page of all users.
-	 *
-	 * @see #fetchUsers(FetchUsersOptions, int)
-	 */
-	@Nonnull
-	default GetUsersResponse fetchUsers(int pageIndex) {
-		return fetchUsers(FetchUsersOptions.ofEmpty(), pageIndex);
-	}
-
-	/**
-	 * Fetches the first page of all users.
-	 *
-	 * @see #fetchUsers(FetchUsersOptions, int)
-	 */
-	@Nonnull
-	default GetUsersResponse fetchUsers() {
-		return fetchUsers(FetchUsersOptions.ofEmpty(), 0);
-	}
-
-	/**
 	 * Assigns assets to users and devices.
 	 * <p>
 	 * The request is asynchronous: install the assets on a device only after the server sends a successful
@@ -325,6 +277,99 @@ public interface AppAndBookClient {
 	default EventResponse revokeAssetsBySerialNumbers(@Nonnull Set<String> serialNumbers) {
 		return revokeAssets(Set.of(), serialNumbers);
 	}
+
+	/**
+	 * Fetches information about a set of users.
+	 * <p>
+	 * Results are paginated. Pass the {@code nextPageIndex} of the previous {@link GetUsersResponse} as
+	 * {@code pageIndex}, with the same options, until the response no longer contains a next page. To fetch only users
+	 * modified since a previous fetch, pass that response's {@code versionId} as
+	 * {@link FetchUsersOptions#sinceVersionId()}.
+	 * <p>
+	 * See <a href="https://developer.apple.com/documentation/devicemanagement/using-paginated-endpoints">Using paginated endpoints</a>
+	 *
+	 * @param options   see {@link FetchUsersOptions}
+	 * @param pageIndex the zero-based index of the page to fetch
+	 * @return {@link GetUsersResponse} object
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/get-users-4mwln">Get Users</a>
+	 */
+	@Nonnull
+	GetUsersResponse fetchUsers(@Nonnull FetchUsersOptions options, int pageIndex);
+
+	/**
+	 * Fetches the first page of users matching the given filters.
+	 *
+	 * @see #fetchUsers(FetchUsersOptions, int)
+	 */
+	@Nonnull
+	default GetUsersResponse fetchUsers(@Nonnull FetchUsersOptions options) {
+		return fetchUsers(options, 0);
+	}
+
+	/**
+	 * Fetches the given page of all users.
+	 *
+	 * @see #fetchUsers(FetchUsersOptions, int)
+	 */
+	@Nonnull
+	default GetUsersResponse fetchUsers(int pageIndex) {
+		return fetchUsers(FetchUsersOptions.ofEmpty(), pageIndex);
+	}
+
+	/**
+	 * Fetches the first page of all users.
+	 *
+	 * @see #fetchUsers(FetchUsersOptions, int)
+	 */
+	@Nonnull
+	default GetUsersResponse fetchUsers() {
+		return fetchUsers(FetchUsersOptions.ofEmpty(), 0);
+	}
+
+	/**
+	 * Creates users.
+	 * <p>
+	 * The request is asynchronous: the server sends a notification when the event completes. Request size limits
+	 * are dynamic; see {@link ServiceConfigResponse#limits()} ({@code maxUsers}).
+	 *
+	 * @param users the users to create, or an empty set (sent as {@code []})
+	 * @return {@link EventResponse} object, whose {@code eventId} identifies the asynchronous event; see
+	 * {@link #fetchEventStatus(String)}
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/create-users">Create Users</a>
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/managing-users">Managing users</a>
+	 */
+	@Nonnull
+	EventResponse createUsers(@Nonnull Set<RequestUser> users);
+
+	/**
+	 * Updates users.
+	 * <p>
+	 * The request is asynchronous: the server sends a notification when the event completes. Request size limits
+	 * are the same as for {@link #createUsers(Set)}.
+	 *
+	 * @param users the users to update, or an empty set (sent as {@code []})
+	 * @return {@link EventResponse} object, whose {@code eventId} identifies the asynchronous event; see
+	 * {@link #fetchEventStatus(String)}
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/update-users">Update Users</a>
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/managing-users">Managing users</a>
+	 */
+	@Nonnull
+	EventResponse updateUsers(@Nonnull Set<RequestUser> users);
+
+	/**
+	 * Retires users.
+	 * <p>
+	 * The request is asynchronous: the server sends a notification when the event completes. Request size limits
+	 * are the same as for {@link #createUsers(Set)}.
+	 *
+	 * @param clientUserIds the client user IDs of the users to retire, or an empty set (sent as {@code []})
+	 * @return {@link EventResponse} object, whose {@code eventId} identifies the asynchronous event; see
+	 * {@link #fetchEventStatus(String)}
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/retire-users">Retire Users</a>
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/managing-users">Managing users</a>
+	 */
+	@Nonnull
+	EventResponse retireUsers(@Nonnull Set<String> clientUserIds);
 
 	/**
 	 * Fetches the status of an asynchronous event, such as associating, disassociating or revoking assets.
