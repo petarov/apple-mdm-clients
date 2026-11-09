@@ -28,9 +28,9 @@ public class AppAndBookClientException extends RuntimeException {
 	}
 
 	private AppAndBookClientException(HttpClientWrapperException exception, @Nullable ErrorResponse error) {
-		super(error == null
-				? exception.getMessage()
-				: "%s (%d) %s".formatted(exception.getMessage(), error.errorNumber(), error.errorMessage()), exception);
+		super(error == null ?
+				exception.getMessage() :
+				"%s (%d) %s".formatted(exception.getMessage(), error.errorNumber(), error.errorMessage()), exception);
 		this.statusCode = exception.getStatusCode();
 		this.code = error == null ? statusCode : error.errorNumber();
 		this.errorMessage = error == null ? exception.getStatusLine() : error.errorMessage();
@@ -38,8 +38,7 @@ public class AppAndBookClientException extends RuntimeException {
 
 	@Nullable
 	private static ErrorResponse parseErrorResponse(String body) {
-		// avoid scanning large bodies: only the beginning is checked for an error payload
-		if (!body.substring(0, Math.min(100, body.length())).contains("errorNumber")) {
+		if (!body.contains("\"errorNumber\"")) {
 			return null;
 		}
 		try {

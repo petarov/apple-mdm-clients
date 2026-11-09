@@ -50,7 +50,9 @@ public final class TestUtil {
 	static String serviceConfigJson(String baseUrl) {
 		return """
 				{"urls": {"getAssets": "%1$s/assets", "getAssignments": "%1$s/assignments", \
-				"getUsers": "%1$s/users", "clientConfig": "%1$s/client/config"}}
+				"getUsers": "%1$s/users", "clientConfig": "%1$s/client/config", \
+				"associateAssets": "%1$s/assets/associate", "disassociateAssets": "%1$s/assets/disassociate", \
+				"revokeAssets": "%1$s/assets/revoke", "eventStatus": "%1$s/status"}}
 				""".formatted(baseUrl);
 	}
 }

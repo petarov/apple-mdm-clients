@@ -6,6 +6,7 @@ import net.vexelon.mdm.aab.model.MdmInfo;
 import net.vexelon.mdm.aab.model.NotificationType;
 import net.vexelon.mdm.aab.model.PricingParam;
 import net.vexelon.mdm.aab.model.ProductType;
+import net.vexelon.mdm.aab.model.RequestAsset;
 import net.vexelon.mdm.aab.model.response.*;
 
 import java.util.Set;
@@ -253,6 +254,81 @@ public interface AppAndBookClient {
 	default GetUsersResponse fetchUsers() {
 		return fetchUsers(FetchUsersOptions.ofEmpty(), 0);
 	}
+
+	/**
+	 * Assigns assets to users and devices.
+	 * <p>
+	 * The request is asynchronous: install the assets on a device only after the server sends a successful
+	 * notification. Request size limits are dynamic; see {@link ServiceConfigResponse#limits()}
+	 * ({@code maxAssets}, {@code maxClientUserIds}, {@code maxSerialNumbers}).
+	 *
+	 * @param assets        the assets to assign. Must not be empty
+	 * @param clientUserIds the client user IDs to assign the assets to, or an empty set (sent as {@code []})
+	 * @param serialNumbers the device serial numbers to assign the assets to, or an empty set (sent as {@code []}).
+	 *                      At least one of {@code clientUserIds} and {@code serialNumbers} must be non-empty
+	 * @return {@link EventResponse} object, whose {@code eventId} identifies the asynchronous event
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/associate-assets">Associate Assets</a>
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/managing-assets">Managing assets</a>
+	 */
+	@Nonnull
+	EventResponse associateAssets(@Nonnull Set<RequestAsset> assets, @Nonnull Set<String> clientUserIds,
+			@Nonnull Set<String> serialNumbers);
+
+	/**
+	 * Unassigns the given assets from users and devices.
+	 * <p>
+	 * The request is asynchronous: remove the assets from a device only after the server sends a successful
+	 * notification. An unassigned asset that remains installed on a device becomes unusable after 30 days. Request
+	 * size limits are the same as for {@link #associateAssets(Set, Set, Set)}.
+	 *
+	 * @param assets        the assets to unassign. Must not be empty
+	 * @param clientUserIds the client user IDs to unassign the assets from, or an empty set (sent as {@code []})
+	 * @param serialNumbers the device serial numbers to unassign the assets from, or an empty set (sent as
+	 *                      {@code []}). At least one of {@code clientUserIds} and {@code serialNumbers} must be
+	 *                      non-empty
+	 * @return {@link EventResponse} object, whose {@code eventId} identifies the asynchronous event
+	 * @see #revokeAssets(Set, Set)
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/disassociate-assets">Disassociate Assets</a>
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/managing-assets">Managing assets</a>
+	 */
+	@Nonnull
+	EventResponse disassociateAssets(@Nonnull Set<RequestAsset> assets, @Nonnull Set<String> clientUserIds,
+			@Nonnull Set<String> serialNumbers);
+
+	/**
+	 * Unassigns all assigned revocable assets from users and devices.
+	 * <p>
+	 * Unlike {@link #disassociateAssets(Set, Set, Set)}, no assets are specified: every revocable asset currently
+	 * assigned to the given users and devices is unassigned. The request is asynchronous: remove the assets from a
+	 * device only after the server sends a successful notification. Request size limits are dynamic; see
+	 * {@link ServiceConfigResponse#limits()} ({@code maxRevokeClientUserIds}, {@code maxRevokeSerialNumbers}).
+	 *
+	 * @param clientUserIds the client user IDs to revoke all assets from, or an empty set (sent as {@code []})
+	 * @param serialNumbers the device serial numbers to revoke all assets from, or an empty set (sent as
+	 *                      {@code []}). At least one of {@code clientUserIds} and {@code serialNumbers} must be
+	 *                      non-empty
+	 * @return {@link EventResponse} object, whose {@code eventId} identifies the asynchronous event
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/revoke-assets">Revoke Assets</a>
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/managing-assets">Managing assets</a>
+	 */
+	@Nonnull
+	EventResponse revokeAssets(@Nonnull Set<String> clientUserIds, @Nonnull Set<String> serialNumbers);
+
+	/**
+	 * Fetches the status of an asynchronous event, such as associating, disassociating or revoking assets.
+	 * <p>
+	 * Compare {@link StatusResponse#numCompleted()} with {@link StatusResponse#numRequested()} to track the progress
+	 * of the event; {@link StatusResponse#failures()} describes each failure. Apple recommends using this call to
+	 * verify that an event is no longer pending when its notifications are missing.
+	 *
+	 * @param eventId the unique identifier of the event, as returned in {@link EventResponse#eventId()}. Must not be
+	 *                blank
+	 * @return {@link StatusResponse} object
+	 * @throws IllegalArgumentException if {@code eventId} is blank
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/events-status">Event Status</a>
+	 */
+	@Nonnull
+	StatusResponse fetchEventStatus(@Nonnull String eventId);
 
 	/**
 	 * Union of fetch assignment parameters. Only one of the two parameters {@code clientUserId} and

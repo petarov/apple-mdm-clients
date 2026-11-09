@@ -6,6 +6,7 @@ import jakarta.annotation.Nonnull;
 import net.vexelon.mdm.aab.model.NotificationType;
 import net.vexelon.mdm.aab.model.PricingParam;
 import net.vexelon.mdm.aab.model.ProductType;
+import net.vexelon.mdm.aab.model.RequestAsset;
 import net.vexelon.mdm.aab.model.response.*;
 import net.vexelon.mdm.shared.http.HttpClientWrapper;
 import net.vexelon.mdm.shared.http.HttpClientWrapperException;
@@ -20,9 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 class AppAndBookClientImpl implements AppAndBookClient {
 
@@ -102,7 +101,6 @@ class AppAndBookClientImpl implements AppAndBookClient {
 
 	private HttpRequest.BodyPublisher ofBody(Object obj) {
 		try {
-			System.out.println("\n\nREQUEST: " + objectMapper.writeValueAsString(obj) + "\n");
 			return HttpRequest.BodyPublishers.ofByteArray(objectMapper.writeValueAsBytes(obj));
 		} catch (JsonProcessingException e) {
 			throw new AppAndBookClientException("Error serializing to json: " + obj.getClass().getName(), e);
@@ -232,5 +230,72 @@ class AppAndBookClientImpl implements AppAndBookClient {
 		addParam(params, "sinceVersionId", options.sinceVersionId());
 
 		return execute(endpointRequestBuilder("getUsers", "/users", params).GET(), GetUsersResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public EventResponse associateAssets(@Nonnull Set<RequestAsset> assets, @Nonnull Set<String> clientUserIds,
+			@Nonnull Set<String> serialNumbers) {
+		var body = manageAssetsBody(assets, clientUserIds, serialNumbers);
+		return execute(endpointRequestBuilder("associateAssets", "/assets/associate", List.of()).POST(ofBody(body)),
+				EventResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public EventResponse disassociateAssets(@Nonnull Set<RequestAsset> assets, @Nonnull Set<String> clientUserIds,
+			@Nonnull Set<String> serialNumbers) {
+		var body = manageAssetsBody(assets, clientUserIds, serialNumbers);
+		return execute(
+				endpointRequestBuilder("disassociateAssets", "/assets/disassociate", List.of()).POST(ofBody(body)),
+				EventResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public EventResponse revokeAssets(@Nonnull Set<String> clientUserIds, @Nonnull Set<String> serialNumbers) {
+		var body = new LinkedHashMap<String, Object>();
+		putTargets(body, clientUserIds, serialNumbers);
+		return execute(endpointRequestBuilder("revokeAssets", "/assets/revoke", List.of()).POST(ofBody(body)),
+				EventResponse.class);
+	}
+
+	@Nonnull
+	@Override
+	public StatusResponse fetchEventStatus(@Nonnull String eventId) {
+		if (eventId.isBlank()) {
+			throw new IllegalArgumentException("eventId must not be blank");
+		}
+
+		var params = new ArrayList<String>();
+		addParam(params, "eventId", eventId);
+
+		return execute(endpointRequestBuilder("eventStatus", "/status", params).GET(), StatusResponse.class);
+	}
+
+	private static Map<String, Object> manageAssetsBody(Set<RequestAsset> assets, Set<String> clientUserIds,
+			Set<String> serialNumbers) {
+		var requestAssets = new ArrayList<Map<String, String>>();
+		for (var asset : assets) {
+			requirePricingParam(asset.pricingParam());
+
+			var requestAsset = new LinkedHashMap<String, String>();
+			requestAsset.put("adamId", asset.adamId());
+
+			if (asset.pricingParam() != null) {
+				requestAsset.put("pricingParam", asset.pricingParam().jsonName());
+			}
+			requestAssets.add(requestAsset);
+		}
+
+		var body = new LinkedHashMap<String, Object>();
+		body.put("assets", requestAssets);
+		putTargets(body, clientUserIds, serialNumbers);
+		return body;
+	}
+
+	private static void putTargets(Map<String, Object> body, Set<String> clientUserIds, Set<String> serialNumbers) {
+		body.put("clientUserIds", List.copyOf(clientUserIds));
+		body.put("serialNumbers", List.copyOf(serialNumbers));
 	}
 }
