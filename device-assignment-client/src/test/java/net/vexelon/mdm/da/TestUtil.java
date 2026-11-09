@@ -22,8 +22,7 @@ public final class TestUtil {
 
 	static HttpHeaders createDefaultHeaders() {
 		return com.github.tomakehurst.wiremock.http.HttpHeaders.noHeaders()
-				.plus(HttpHeader.httpHeader(HttpConsts.HEADER_CONTENT_TYPE,
-						HttpConsts.HEADER_VALUE_APPLICATION_JSON_UTF8));
+				.plus(HttpHeader.httpHeader(HttpConsts.HEADER_CONTENT_TYPE, HttpConsts.HEADER_VALUE_APPLICATION_JSON));
 	}
 
 	static String authSessionToken() {

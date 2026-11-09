@@ -11,6 +11,7 @@ on:
       - 'shared-apple-client/src/**'
       - 'device-assignment-client/src/**'
       - 'legacy-app-and-book-management-client/src/**'
+      - 'app-and-book-management-client/src/**'
       - 'apple-business-client/src/**'
       - '**/build.gradle'
       - '.github/workflows/docs.yml'

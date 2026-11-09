@@ -1,0 +1,15 @@
+version = '1.1.1-SNAPSHOT'
+description = "App and Book management client for Apple's MDM services"
+
+dependencies {
+    implementation project(':shared-apple-client')
+
+    testImplementation libs.junit.jupiter, libs.wiremock
+
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    // Use JUnit Platform for unit tests.
+    useJUnitPlatform()
+}

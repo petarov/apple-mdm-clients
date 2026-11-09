@@ -82,7 +82,7 @@ class LegacyAppAndBookClientImpl implements LegacyAppAndBookClient {
 	}
 
 	private <T> T execute(HttpRequest.Builder requestBuilder, Class<T> clazz) {
-		requestBuilder.setHeader(HttpConsts.HEADER_CONTENT_TYPE, HttpConsts.HEADER_VALUE_APPLICATION_JSON_UTF8);
+		requestBuilder.setHeader(HttpConsts.HEADER_CONTENT_TYPE, HttpConsts.HEADER_VALUE_APPLICATION_JSON);
 
 		try {
 			var resp = client.send(requestBuilder.build(), clazz);
