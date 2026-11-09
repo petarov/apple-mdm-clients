@@ -2,11 +2,7 @@ package net.vexelon.mdm.aab;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import net.vexelon.mdm.aab.model.MdmInfo;
-import net.vexelon.mdm.aab.model.NotificationType;
-import net.vexelon.mdm.aab.model.PricingParam;
-import net.vexelon.mdm.aab.model.ProductType;
-import net.vexelon.mdm.aab.model.RequestAsset;
+import net.vexelon.mdm.aab.model.*;
 import net.vexelon.mdm.aab.model.response.*;
 
 import java.util.Set;
@@ -313,6 +309,22 @@ public interface AppAndBookClient {
 	 */
 	@Nonnull
 	EventResponse revokeAssets(@Nonnull Set<String> clientUserIds, @Nonnull Set<String> serialNumbers);
+
+	/**
+	 * @see #revokeAssets(Set, Set)
+	 */
+	@Nonnull
+	default EventResponse revokeAssetsByClientUserIds(@Nonnull Set<String> clientUserIds) {
+		return revokeAssets(clientUserIds, Set.of());
+	}
+
+	/**
+	 * @see #revokeAssets(Set, Set)
+	 */
+	@Nonnull
+	default EventResponse revokeAssetsBySerialNumbers(@Nonnull Set<String> serialNumbers) {
+		return revokeAssets(Set.of(), serialNumbers);
+	}
 
 	/**
 	 * Fetches the status of an asynchronous event, such as associating, disassociating or revoking assets.
