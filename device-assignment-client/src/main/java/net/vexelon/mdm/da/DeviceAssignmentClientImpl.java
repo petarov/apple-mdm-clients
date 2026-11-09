@@ -65,7 +65,7 @@ class DeviceAssignmentClientImpl implements DeviceAssignmentClient {
 			refreshSessionId();
 		}
 
-		requestBuilder.setHeader(HttpConsts.HEADER_CONTENT_TYPE, HttpConsts.HEADER_VALUE_APPLICATION_JSON_UTF8);
+		requestBuilder.setHeader(HttpConsts.HEADER_CONTENT_TYPE, HttpConsts.HEADER_VALUE_APPLICATION_JSON);
 		requestBuilder.setHeader(HEADER_X_SERVER_PROTOCOL_VERSION, HEADER_X_SERVER_PROTOCOL_VERSION_VALUE);
 
 		boolean retry = false;

@@ -29,8 +29,6 @@ class AppAndBookClientImpl implements AppAndBookClient {
 
 	static final Duration SERVICE_CONFIG_TTL = Duration.ofMinutes(5);
 
-	private static final String CONTENT_TYPE_JSON = "application/json";
-
 	private final HttpClientWrapper client;
 	private final AppAndBookToken   serverToken;
 	private final Clock             clock;
@@ -52,7 +50,7 @@ class AppAndBookClientImpl implements AppAndBookClient {
 	}
 
 	private <T> T send(HttpRequest.Builder requestBuilder, Class<T> clazz) {
-		requestBuilder.setHeader(HttpConsts.HEADER_CONTENT_TYPE, CONTENT_TYPE_JSON);
+		requestBuilder.setHeader(HttpConsts.HEADER_CONTENT_TYPE, HttpConsts.HEADER_VALUE_APPLICATION_JSON);
 
 		try {
 			return client.send(requestBuilder.build(), clazz);

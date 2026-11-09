@@ -7,9 +7,7 @@ import net.vexelon.mdm.shared.http.HttpConsts;
 
 import java.time.Clock;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 public final class TestUtil {
 
@@ -34,8 +32,8 @@ public final class TestUtil {
 	}
 
 	static HttpHeaders createDefaultHeaders() {
-		return HttpHeaders.noHeaders().plus(HttpHeader.httpHeader(HttpConsts.HEADER_CONTENT_TYPE,
-				HttpConsts.HEADER_VALUE_APPLICATION_JSON_UTF8));
+		return HttpHeaders.noHeaders()
+				.plus(HttpHeader.httpHeader(HttpConsts.HEADER_CONTENT_TYPE, HttpConsts.HEADER_VALUE_APPLICATION_JSON));
 	}
 
 	/**

@@ -34,7 +34,7 @@ public class LegacyAppAndBookClientTests {
 
 		// verify the headers are right
 		verify(getRequestedFor(urlEqualTo("/VPPServiceConfigSrv")).withHeader("content-type",
-						equalTo(HttpConsts.HEADER_VALUE_APPLICATION_JSON_UTF8))
+						equalTo(HttpConsts.HEADER_VALUE_APPLICATION_JSON))
 				.withHeader(HttpConsts.HEADER_USER_AGENT, equalTo("apple-mdm-legacy-aab-v1")));
 
 		// verify the account data is right

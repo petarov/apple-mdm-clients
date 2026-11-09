@@ -7,11 +7,7 @@ import net.vexelon.mdm.ab.model.devices.AppleCareCoverageField;
 import net.vexelon.mdm.ab.model.devices.MdmDeviceDetailField;
 import net.vexelon.mdm.ab.model.devices.MdmDeviceField;
 import net.vexelon.mdm.ab.model.devices.OrgDeviceField;
-import net.vexelon.mdm.ab.model.response.device.AppleCareCoverageResponse;
-import net.vexelon.mdm.ab.model.response.device.MdmDeviceDetailResponse;
-import net.vexelon.mdm.ab.model.response.device.MdmDevicesResponse;
-import net.vexelon.mdm.ab.model.response.device.OrgDeviceResponse;
-import net.vexelon.mdm.ab.model.response.device.OrgDevicesResponse;
+import net.vexelon.mdm.ab.model.response.device.*;
 import net.vexelon.mdm.ab.model.response.servers.MdmServerResponse;
 import net.vexelon.mdm.ab.model.response.servers.MdmServersResponse;
 import net.vexelon.mdm.ab.model.servers.MdmServerField;
@@ -45,7 +41,7 @@ class AppleBusinessClientImpl implements AppleBusinessClient {
 	}
 
 	private <T> T executeFn(HttpRequest.Builder requestBuilder, Function<HttpRequest, T> sender) {
-		requestBuilder.setHeader(HttpConsts.HEADER_CONTENT_TYPE, HttpConsts.HEADER_VALUE_APPLICATION_JSON_UTF8);
+		requestBuilder.setHeader(HttpConsts.HEADER_CONTENT_TYPE, HttpConsts.HEADER_VALUE_APPLICATION_JSON);
 
 		boolean retry = false;
 		for (; ; ) {
@@ -171,9 +167,9 @@ class AppleBusinessClientImpl implements AppleBusinessClient {
 		var path = new StringBuilder("/mdmDevices/").append(URLEncoder.encode(id, StandardCharsets.UTF_8))
 				.append("/details");
 		if (!fields.isEmpty()) {
-			path.append("?").append(fieldsParam("mdmDeviceDetails")).append(fields.stream()
-					.map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
-					.collect(Collectors.joining(",")));
+			path.append("?").append(fieldsParam("mdmDeviceDetails"))
+					.append(fields.stream().map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
+							.collect(Collectors.joining(",")));
 		}
 		return execute(client.createRequestBuilder(client.complementURI(path.toString())).GET(),
 				MdmDeviceDetailResponse.class);
@@ -207,9 +203,9 @@ class AppleBusinessClientImpl implements AppleBusinessClient {
 	public MdmServerResponse fetchMdmService(@Nonnull String id, @Nonnull EnumSet<MdmServerField> fields) {
 		var path = new StringBuilder("/mdmServers/").append(URLEncoder.encode(id, StandardCharsets.UTF_8));
 		if (!fields.isEmpty()) {
-			path.append("?").append(fieldsParam("mdmServers")).append(fields.stream()
-					.map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
-					.collect(Collectors.joining(",")));
+			path.append("?").append(fieldsParam("mdmServers"))
+					.append(fields.stream().map(f -> URLEncoder.encode(f.fieldName(), StandardCharsets.UTF_8))
+							.collect(Collectors.joining(",")));
 		}
 		return execute(client.createRequestBuilder(client.complementURI(path.toString())).GET(),
 				MdmServerResponse.class);
