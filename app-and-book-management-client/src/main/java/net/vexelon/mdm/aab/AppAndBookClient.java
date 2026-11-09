@@ -211,9 +211,9 @@ public interface AppAndBookClient {
 	 * ({@code maxAssets}, {@code maxClientUserIds}, {@code maxSerialNumbers}).
 	 *
 	 * @param assets        the assets to assign. Must not be empty
-	 * @param clientUserIds the client user IDs to assign the assets to, or an empty set (sent as {@code []})
-	 * @param serialNumbers the device serial numbers to assign the assets to, or an empty set (sent as {@code []}).
-	 *                      At least one of {@code clientUserIds} and {@code serialNumbers} must be non-empty
+	 * @param clientUserIds the client user IDs to assign the assets to, or an empty set
+	 * @param serialNumbers the device serial numbers to assign the assets to, or an empty set.
+	 *                      At least one of {@code clientUserIds} and {@code serialNumbers} must be non-empty.
 	 * @return {@link EventResponse} object, whose {@code eventId} identifies the asynchronous event
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/associate-assets">Associate Assets</a>
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/managing-assets">Managing assets</a>
@@ -230,10 +230,9 @@ public interface AppAndBookClient {
 	 * size limits are the same as for {@link #associateAssets(Set, Set, Set)}.
 	 *
 	 * @param assets        the assets to unassign. Must not be empty
-	 * @param clientUserIds the client user IDs to unassign the assets from, or an empty set (sent as {@code []})
-	 * @param serialNumbers the device serial numbers to unassign the assets from, or an empty set (sent as
-	 *                      {@code []}). At least one of {@code clientUserIds} and {@code serialNumbers} must be
-	 *                      non-empty
+	 * @param clientUserIds the client user IDs to unassign the assets from, or an empty set
+	 * @param serialNumbers the device serial numbers to unassign the assets from, or an empty set.
+	 *                      At least one of {@code clientUserIds} and {@code serialNumbers} must be non-empty.
 	 * @return {@link EventResponse} object, whose {@code eventId} identifies the asynchronous event
 	 * @see #revokeAssets(Set, Set)
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/disassociate-assets">Disassociate Assets</a>
@@ -251,10 +250,9 @@ public interface AppAndBookClient {
 	 * device only after the server sends a successful notification. Request size limits are dynamic; see
 	 * {@link ServiceConfigResponse#limits()} ({@code maxRevokeClientUserIds}, {@code maxRevokeSerialNumbers}).
 	 *
-	 * @param clientUserIds the client user IDs to revoke all assets from, or an empty set (sent as {@code []})
-	 * @param serialNumbers the device serial numbers to revoke all assets from, or an empty set (sent as
-	 *                      {@code []}). At least one of {@code clientUserIds} and {@code serialNumbers} must be
-	 *                      non-empty
+	 * @param clientUserIds the client user IDs to revoke all assets from, or an empty set
+	 * @param serialNumbers the device serial numbers to revoke all assets from, or an empty set.
+	 *                      At least one of {@code clientUserIds} and {@code serialNumbers} must be non-empty.
 	 * @return {@link EventResponse} object, whose {@code eventId} identifies the asynchronous event
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/revoke-assets">Revoke Assets</a>
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/managing-assets">Managing assets</a>
@@ -332,7 +330,7 @@ public interface AppAndBookClient {
 	 * The request is asynchronous: the server sends a notification when the event completes. Request size limits
 	 * are dynamic; see {@link ServiceConfigResponse#limits()} ({@code maxUsers}).
 	 *
-	 * @param users the users to create, or an empty set (sent as {@code []})
+	 * @param users the users to create, or an empty set
 	 * @return {@link EventResponse} object, whose {@code eventId} identifies the asynchronous event; see
 	 * {@link #fetchEventStatus(String)}
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/create-users">Create Users</a>
@@ -347,7 +345,7 @@ public interface AppAndBookClient {
 	 * The request is asynchronous: the server sends a notification when the event completes. Request size limits
 	 * are the same as for {@link #createUsers(Set)}.
 	 *
-	 * @param users the users to update, or an empty set (sent as {@code []})
+	 * @param users the users to update, or an empty set
 	 * @return {@link EventResponse} object, whose {@code eventId} identifies the asynchronous event; see
 	 * {@link #fetchEventStatus(String)}
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/update-users">Update Users</a>
@@ -362,7 +360,7 @@ public interface AppAndBookClient {
 	 * The request is asynchronous: the server sends a notification when the event completes. Request size limits
 	 * are the same as for {@link #createUsers(Set)}.
 	 *
-	 * @param clientUserIds the client user IDs of the users to retire, or an empty set (sent as {@code []})
+	 * @param clientUserIds the client user IDs of the users to retire, or an empty set
 	 * @return {@link EventResponse} object, whose {@code eventId} identifies the asynchronous event; see
 	 * {@link #fetchEventStatus(String)}
 	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/retire-users">Retire Users</a>
