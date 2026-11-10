@@ -20,16 +20,11 @@ class SoftwareLookupServiceClientImpl implements SoftwareLookupServiceClient {
 	@Nonnull
 	@Override
 	public SoftwareLookupResponse fetchSoftwareReleases() {
-		SoftwareLookupResponse response;
 		try {
-			response = client.send(client.createRequestBuilder(client.complementURI("/pmv")).GET().build(),
+			return client.send(client.createRequestBuilder(client.complementURI("/pmv")).GET().build(),
 					SoftwareLookupResponse.class);
 		} catch (HttpClientWrapperException e) {
 			throw new SoftwareLookupServiceClientException(e);
 		}
-		if (response == null) {
-			throw new SoftwareLookupServiceClientException("Empty software lookup response", null);
-		}
-		return response;
 	}
 }

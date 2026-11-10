@@ -292,6 +292,9 @@ public class SoftwareLookupServiceClientTests {
 				() -> createClient(wm).fetchSoftwareReleases());
 
 		assertEquals(0, ex.getStatusCode());
+		assertEquals("Empty response body", ex.getMessage());
+		assertInstanceOf(HttpClientWrapperException.class, ex.getCause());
+		assertNull(ex.getCause().getCause());
 	}
 
 	@Test
