@@ -1,6 +1,7 @@
 package net.vexelon.mdm.sls;
 
 import jakarta.annotation.Nonnull;
+import net.vexelon.mdm.sls.model.response.SoftwareLookupResponse;
 
 /**
  * Client interface for Apple's Software Lookup Service.
@@ -18,4 +19,15 @@ public interface SoftwareLookupServiceClient {
 	static SoftwareLookupServiceClientBuilder newBuilder() {
 		return new SoftwareLookupServiceClientBuilder();
 	}
+
+	/**
+	 * Fetches the software releases Apple publishes for its platforms.
+	 *
+	 * @return the releases grouped by section and platform; sections or platforms missing from the response are
+	 * empty, never {@code null}
+	 * @throws SoftwareLookupServiceClientException if the request fails or the response cannot be parsed
+	 * @see <a href="https://developer.apple.com/documentation/devicemanagement/integrating-declarative-management-of-software-updates">Integrating declarative management of software updates</a>
+	 */
+	@Nonnull
+	SoftwareLookupResponse fetchSoftwareReleases();
 }

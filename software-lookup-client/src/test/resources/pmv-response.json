@@ -1,0 +1,149 @@
+{
+  "PublicAssetSets": {
+    "iOS": [
+      {
+        "ProductVersion": "27.2.1",
+        "Build": "24B92034",
+        "PostingDate": "2026-11-09",
+        "SupportedDevices": [
+          "iPhone19,4",
+          "iPad16,6"
+        ]
+      },
+      {
+        "ProductVersion": "26.7.2",
+        "Build": "23H321",
+        "PostingDate": "2026-10-20",
+        "ExpirationDate": "2027-02-08",
+        "SupportedDevices": [
+          "iPhone12,1",
+          "Watch7,1"
+        ]
+      }
+    ],
+    "visionOS": [
+      {
+        "ProductVersion": "27.1",
+        "Build": "24N501",
+        "PostingDate": "2026-11-03",
+        "SupportedDevices": [
+          "RealityDevice14,1"
+        ]
+      }
+    ],
+    "macOS": [
+      {
+        "ProductVersion": "27.2",
+        "Build": "26C84",
+        "PostingDate": "2026-11-09",
+        "SupportedDevices": [
+          "J132AP",
+          "Mac-1E7E29AD0135F9BC"
+        ]
+      },
+      {
+        "ProductVersion": "26.7.1",
+        "Build": "25H112",
+        "PostingDate": "2026-10-14",
+        "ExpirationDate": "2027-02-08",
+        "SupportedDevices": [
+          "VMA2MACOSAP",
+          "VMM-x86_64"
+        ]
+      }
+    ]
+  },
+  "AssetSets": {
+    "iOS": [
+      {
+        "ProductVersion": "26.7.2",
+        "Build": "23H321",
+        "PostingDate": "2026-10-20",
+        "ExpirationDate": "2027-02-08",
+        "SupportedDevices": [
+          "iPhone12,1"
+        ]
+      },
+      {
+        "ProductVersion": "26.7.2",
+        "Build": "23H321",
+        "PostingDate": "2026-10-20",
+        "ExpirationDate": "2027-03-15",
+        "SupportedDevices": [
+          "AppleTV18,1",
+          "AudioAccessory1,1",
+          "HomeAccessory17,1"
+        ]
+      },
+      {
+        "ProductVersion": "27.2.1",
+        "Build": "24B92034",
+        "PostingDate": "2026-11-09",
+        "SupportedDevices": [
+          "iPhone19,4"
+        ]
+      }
+    ],
+    "visionOS": [
+      {
+        "ProductVersion": "26.4",
+        "Build": "23O230",
+        "PostingDate": "2026-05-12",
+        "ExpirationDate": "2027-01-10",
+        "SupportedDevices": [
+          "RealityDevice14,1"
+        ]
+      }
+    ],
+    "macOS": [
+      {
+        "ProductVersion": "26.7.1",
+        "Build": "25H112",
+        "PostingDate": "2026-10-14",
+        "ExpirationDate": "2027-02-08",
+        "SupportedDevices": [
+          "J132AP"
+        ]
+      }
+    ]
+  },
+  "PublicBackgroundSecurityImprovements": {
+    "iOS": [
+      {
+        "ProductVersion": "26.3.1",
+        "Build": "23D771330a",
+        "ProductVersionExtra": "(a)",
+        "PrerequisiteBuild": "23D8133",
+        "PostingDate": "2026-03-17",
+        "ExpirationDate": "2027-02-08",
+        "SupportedDevices": [
+          "iPad11,1",
+          "iPhone12,1"
+        ]
+      },
+      {
+        "ProductVersion": "26.3.1",
+        "Build": "23D771330b",
+        "ProductVersionExtra": "(b)",
+        "PrerequisiteBuild": "23D771330a",
+        "PostingDate": "2026-04-02",
+        "SupportedDevices": [
+          "iPhone12,1"
+        ]
+      }
+    ],
+    "macOS": [
+      {
+        "ProductVersion": "26.3.1",
+        "Build": "25D771280a",
+        "ProductVersionExtra": "(a)",
+        "PrerequisiteBuild": "25D2128",
+        "PostingDate": "2026-03-17",
+        "ExpirationDate": "2027-02-08",
+        "SupportedDevices": [
+          "J132AP"
+        ]
+      }
+    ]
+  }
+}
