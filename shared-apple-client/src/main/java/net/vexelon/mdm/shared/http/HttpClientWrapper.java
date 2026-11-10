@@ -201,7 +201,7 @@ public class HttpClientWrapper {
 			Thread.currentThread().interrupt();
 			throw new HttpClientWrapperException("Send request interrupted", e);
 		}
-		
+
 		try {
 			if (isResponseOk(response.statusCode())) {
 				try (var input = decodeResponseBody(response)) {
