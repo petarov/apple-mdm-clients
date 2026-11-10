@@ -49,7 +49,7 @@ public abstract class MdmClientBuilder<T extends MdmClientBuilder<T, U>, U> {
 	}
 
 	/**
-	 * @param connectTimeout TCP socket connect timeout. Not set by default
+	 * @param connectTimeout TCP socket connect timeout. Not set by default.
 	 */
 	@SuppressWarnings("unchecked")
 	public T setConnectTimeout(@Nonnull Duration connectTimeout) {
@@ -58,7 +58,7 @@ public abstract class MdmClientBuilder<T extends MdmClientBuilder<T, U>, U> {
 	}
 
 	/**
-	 * @param readTimeout TCP socket read timeout. Not set by default
+	 * @param readTimeout TCP socket read timeout. Not set by default.
 	 */
 	@SuppressWarnings("unchecked")
 	public T setReadTimeout(@Nonnull Duration readTimeout) {
