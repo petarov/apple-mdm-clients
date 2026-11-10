@@ -3,7 +3,12 @@
 [![MvnRepository](https://badges.mvnrepository.com/badge/net.vexelon.mdm/legacy-app-and-book-management-client/badge.svg?label=MvnRepository)](https://mvnrepository.com/artifact/net.vexelon.mdm/legacy-app-and-book-management-client)
 
 Manage apps and books for students and employees. This API is still functional, however, Apple has deprecated it and
-no longer maintains it.
+no longer maintains it. Calls to the legacy App and Book Management API will begin to fail.
+
+> [!IMPORTANT]
+> Starting April 2027, Apple will being to fail calls to the legacy App and Book Management API. You need to migrate
+> to the [new AAB client](../app-and-book-management-client).  
+
 
 To use the Java client, you must already have a valid content token created in Apple Business Manager.
 See [Getting started with the management API](https://developer.apple.com/documentation/devicemanagement/getting-started-with-the-management-api#Authenticate)
